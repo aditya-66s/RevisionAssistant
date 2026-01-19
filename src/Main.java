@@ -56,7 +56,6 @@ public class Main extends Application {
         center.setLayoutX(880);
         center.setLayoutY(550);
 
-
         Text text3 = new Text("Press any key to continue!");
         text3.getStyleClass().add("text");
         VBox bottomText = new VBox(text3);
@@ -71,8 +70,6 @@ public class Main extends Application {
         varyingOpacity.setCycleCount(FadeTransition.INDEFINITE);
         varyingOpacity.setAutoReverse(true);
         varyingOpacity.play();
-
-
 
         splashPane.getChildren().addAll(logo, center, texts);
         return new Scene(splashPane, 1920, 1057);

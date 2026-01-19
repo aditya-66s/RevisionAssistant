@@ -66,7 +66,7 @@ public class Main extends Application {
         Group texts = new Group(topText, bottomText);
         FadeTransition varyingOpacity = new FadeTransition(Duration.seconds(2.5), texts);
         varyingOpacity.setFromValue(1.0);
-        varyingOpacity.setToValue(0.4);
+        varyingOpacity.setToValue(0.25);
         varyingOpacity.setCycleCount(FadeTransition.INDEFINITE);
         varyingOpacity.setAutoReverse(true);
         varyingOpacity.play();

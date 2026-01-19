@@ -14,7 +14,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Pane root = new Pane();
         Scene scene = new Scene(root, 800, 600);
-        primaryStage.setTitle("Blank JavaFX Scene");
+        primaryStage.setTitle("Blank JavaFX ");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -43,34 +43,96 @@ public class Main extends Application {
         Pane loginPane = new Pane();
         loginPane.getStyleClass().add("screens");
         ImageView logo = createLogoView();
+        Rectangle background = new Rectangle(1206,683, Color.WHITE);
+        background.setLayoutX(357);
+        background.setLayoutY(187);
+        background.setArcHeight(100);
+        background.setArcWidth(100);
+        Group contentLayer = new Group();
+        buildLoginContent(contentLayer);
+        loginPane.getChildren().addAll(logo, background, contentLayer);
+        return new Scene(loginPane, 1920, 1057);
+    }
+
+    private void buildLoginContent(Group contentLayer) {
 
 
-        Rectangle loginBackground = new Rectangle(1206,683, Color.WHITE);
-        loginBackground.setLayoutX(357);
-        loginBackground.setLayoutY(187);
-        loginBackground.setArcHeight(100);
-        loginBackground.setArcWidth(100);
+        Rectangle selectLogin = new Rectangle(334,98);
+        selectLogin.setLayoutX(578);
+        selectLogin.setLayoutY(215);
+        selectLogin.setArcHeight(50);
+        selectLogin.setArcWidth(50);
 
-        Rectangle loginButton = new Rectangle(334,98);
-        loginButton.setLayoutX(578);
-        loginButton.setLayoutY(215);
+        Rectangle selectRegister = new Rectangle(334,98, Color.GREY);
+        selectRegister.setLayoutX(972);
+        selectRegister.setLayoutY(215);
+        selectRegister.setArcHeight(50);
+        selectRegister.setArcWidth(50);
+
+        selectRegister.setOnMouseClicked(event -> {
+            buildRegistrationContent(contentLayer);
+        });
+
+        Rectangle emailInput = new Rectangle(530,98);
+        emailInput.setLayoutX(695);
+        emailInput.setLayoutY(372);
+        emailInput.setArcHeight(50);
+        emailInput.setArcWidth(50);
+        Rectangle passwordInput = new Rectangle(530, 98);
+        passwordInput.setLayoutX(695);
+        passwordInput.setLayoutY(510);
+        passwordInput.setArcHeight(50);
+        passwordInput.setArcWidth(50);
+
+        Rectangle loginButton = new Rectangle(1083,98, Color.BLACK);
+        loginButton.setLayoutX(430);
+        loginButton.setLayoutY(684);
         loginButton.setArcHeight(50);
         loginButton.setArcWidth(50);
-        Rectangle registerButton = new Rectangle(334,98, Color.GREY);
-        registerButton.setLayoutX(972);
-        registerButton.setLayoutY(215);
+
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, loginButton);
+
+    }
+
+    private void buildRegistrationContent(Group contentLayer) {
+        Rectangle selectLogin = new Rectangle(334,98, Color.GREY);
+        selectLogin.setLayoutX(578);
+        selectLogin.setLayoutY(215);
+        selectLogin.setArcHeight(50);
+        selectLogin.setArcWidth(50);
+        selectLogin.setOnMouseClicked(event -> {
+            buildLoginContent(contentLayer);
+        });
+
+        Rectangle selectRegister = new Rectangle(334,98);
+        selectRegister.setLayoutX(972);
+        selectRegister.setLayoutY(215);
+        selectRegister.setArcHeight(50);
+        selectRegister.setArcWidth(50);
+
+        Rectangle emailInput = new Rectangle(815,98);
+        emailInput.setLayoutX(531);
+        emailInput.setLayoutY(345);
+        emailInput.setArcHeight(50);
+        emailInput.setArcWidth(50);
+        Rectangle passwordInput = new Rectangle(815, 98);
+        passwordInput.setLayoutX(531);
+        passwordInput.setLayoutY(458);
+        passwordInput.setArcHeight(50);
+        passwordInput.setArcWidth(50);
+        Rectangle confirmPasswordInput = new Rectangle(815, 98);
+        confirmPasswordInput.setLayoutX(531);
+        confirmPasswordInput.setLayoutY(572);
+        confirmPasswordInput.setArcHeight(50);
+        confirmPasswordInput.setArcWidth(50);
+
+        Rectangle registerButton = new Rectangle(1083,98, Color.BLACK);
+        registerButton.setLayoutX(430);
+        registerButton.setLayoutY(699);
         registerButton.setArcHeight(50);
         registerButton.setArcWidth(50);
 
-        Rectangle emailInput = new Rectangle(530,177);
-        emailInput.setLayoutX(695);
-        emailInput.setLayoutY(372);
-        Rectangle passwordInput = new Rectangle(530, 177);
-        passwordInput.setLayoutX(695);
-        passwordInput.setLayoutY(510);
-
-        loginPane.getChildren().addAll(logo, loginBackground, registerButton, loginButton);
-        return new Scene(loginPane, 1920, 1057);
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, confirmPasswordInput, registerButton);
     }
 
 

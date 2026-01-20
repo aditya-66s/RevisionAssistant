@@ -1,15 +1,14 @@
-.splashScreen{
+.screens{
     -fx-background-color: black;
-
 }
 
-.splashScreen .title{
+.screens .title{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 130px;
     -fx-fill: white;
 }
 
-.text{
+.screens .text{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 80px;
     -fx-fill: white;

@@ -1,26 +1,24 @@
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.Objects;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main extends Application {
-    public ImageView logo = createLogoView();
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
     public Font Vipnagorgialla = Font.loadFont("file:src/resources/fonts/Vipnagorgialla.otf", 30);
     public static void main(String[] args) {
@@ -29,36 +27,84 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene splashScreen = createSplashScreen(primaryStage);
+        Scene splashScreen = createSplashScreen();
         splashScreen.getStylesheets().add("file:src/resources/styles/styles.css");
         primaryStage.setTitle("Revision Assistant");
         primaryStage.setScene(splashScreen);
         primaryStage.show();
-        System.out.println(Vipnagorgialla.getFamily());
+
+        Scene loginScreen = createLoginScreen();
+        loginScreen.getStylesheets().add("file:src/resources/styles/styles.css");
+        splashScreen.setOnKeyPressed(event -> primaryStage.setScene(loginScreen));
+        splashScreen.setOnMouseClicked(event -> primaryStage.setScene(loginScreen));
     }
 
-    private Scene createSplashScreen(Stage primaryStage) {
-        Pane splashPane = new Pane();
-        splashPane.getStyleClass().add("splashScreen");
+    private Scene createLoginScreen() {
+        Pane loginPane = new Pane();
+        loginPane.getStyleClass().add("screens");
+        ImageView logo = createLogoView();
 
-        Text text1 = new Text("Revision");
-        text1.getStyleClass().add("title");
-        Text text2 = new Text("Assistant");
-        text2.getStyleClass().add("title");
-        VBox topText = new VBox(text1, text2);
+
+        Rectangle loginBackground = new Rectangle(1206,683, Color.WHITE);
+        loginBackground.setLayoutX(357);
+        loginBackground.setLayoutY(187);
+        loginBackground.setArcHeight(100);
+        loginBackground.setArcWidth(100);
+
+        Rectangle loginButton = new Rectangle(334,98);
+        loginButton.setLayoutX(578);
+        loginButton.setLayoutY(215);
+        loginButton.setArcHeight(50);
+        loginButton.setArcWidth(50);
+        Rectangle registerButton = new Rectangle(334,98, Color.GREY);
+        registerButton.setLayoutX(972);
+        registerButton.setLayoutY(215);
+        registerButton.setArcHeight(50);
+        registerButton.setArcWidth(50);
+
+        Rectangle emailInput = new Rectangle(530,177);
+        emailInput.setLayoutX(695);
+        emailInput.setLayoutY(372);
+        Rectangle passwordInput = new Rectangle(530, 177);
+        passwordInput.setLayoutX(695);
+        passwordInput.setLayoutY(510);
+
+        loginPane.getChildren().addAll(logo, loginBackground, registerButton, loginButton);
+        return new Scene(loginPane, 1920, 1057);
+    }
+
+
+    private Scene createSplashScreen() {
+        Pane splashPane = new Pane();
+        splashPane.getStyleClass().add("screens");
+        ImageView logo = createLogoView();
+
+        Text titleText1 = new Text("Revision");
+        titleText1.getStyleClass().add("title");
+        Text titleText2 = new Text("Assistant");
+        titleText2.getStyleClass().add("title");
+        VBox topText = new VBox(titleText1, titleText2);
         topText.setAlignment(Pos.CENTER);
         topText.setLayoutX(420);
         topText.setLayoutY(100);
 
-        Image loading = new Image("file:src/resources/images/loading.gif");
+        Image loading = new Image("file:src/resources/images/loading.png");
         ImageView loadingView = new ImageView(loading);
-        VBox center = new VBox(loadingView);
-        center.setLayoutX(880);
-        center.setLayoutY(550);
+        loadingView.setFitWidth(100);
+        loadingView.setFitHeight(100);
+        loadingView.setLayoutX(880);
+        loadingView.setLayoutY(600);
 
-        Text text3 = new Text("Press any key to continue!");
-        text3.getStyleClass().add("text");
-        VBox bottomText = new VBox(text3);
+        RotateTransition loadingTransition = new RotateTransition(Duration.seconds(8), loadingView);
+        loadingTransition.setFromAngle(0);
+        loadingTransition.setToAngle(360);
+        loadingTransition.setInterpolator(Interpolator.EASE_IN);
+        loadingTransition.setCycleCount(Animation.INDEFINITE);
+        loadingTransition.play();
+
+        Text infoText = new Text("Press any key to continue!");
+        infoText.getStyleClass().add("text");
+        VBox bottomText = new VBox(infoText);
         bottomText.setAlignment(Pos.CENTER);
         bottomText.setLayoutX(225);
         bottomText.setLayoutY(825);
@@ -71,7 +117,7 @@ public class Main extends Application {
         varyingOpacity.setAutoReverse(true);
         varyingOpacity.play();
 
-        splashPane.getChildren().addAll(logo, center, texts);
+        splashPane.getChildren().addAll(logo, loadingView, texts);
         return new Scene(splashPane, 1920, 1057);
     }
 

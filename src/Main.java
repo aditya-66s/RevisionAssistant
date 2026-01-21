@@ -7,15 +7,20 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.awt.*;
 
 public class Main extends Application {
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
@@ -67,7 +72,7 @@ public class Main extends Application {
         user.setFitHeight(90);
         user.setFitWidth(95);
         ImageView lock = new ImageView("file:src/resources/images/lock.png");
-        lock.setFitHeight(90);
+        lock.setFitHeight(88);
         lock.setFitWidth(95);
         ImageView passwordShow = new ImageView("file:src/resources/images/passwordShow.png");
         passwordShow.setFitHeight(47);
@@ -97,7 +102,11 @@ public class Main extends Application {
         emailInput.setLayoutY(372);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
-        emailInput.setCursor(Cursor.TEXT);
+        TextField email = new TextField();
+        email.setPromptText("Enter Email");
+        email.getStyleClass().add("loginTextField");
+        email.setLayoutX(785);
+        email.setLayoutY(382);
 
         Rectangle passwordInput = new Rectangle(530, 98);
         passwordInput.setFill(Color.WHITE);
@@ -106,8 +115,8 @@ public class Main extends Application {
         passwordInput.setLayoutY(510);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
-        passwordInput.setCursor(Cursor.TEXT);
 
+        Group inputs = new Group(emailInput, email, passwordInput);
         user.setLayoutX(694);
         user.setLayoutY(376);
         lock.setLayoutX(694);
@@ -126,6 +135,7 @@ public class Main extends Application {
             passwordHide.setVisible(false);
             passwordShow.setVisible(true);
         });
+        Group icons = new Group(user, lock, passwordShow, passwordHide);
 
         Rectangle loginButton = new Rectangle(1083,98, Color.BLACK);
         loginButton.setLayoutX(430);
@@ -134,7 +144,7 @@ public class Main extends Application {
         loginButton.setArcWidth(50);
         loginButton.setCursor(Cursor.HAND);
 
-        contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, loginButton, user, lock, passwordShow, passwordHide);
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, loginButton, icons);
 
     }
 
@@ -152,7 +162,11 @@ public class Main extends Application {
         emailInput.setLayoutY(345);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
-        emailInput.setCursor(Cursor.TEXT);
+        TextField email = new TextField();
+        email.setPromptText("Enter Email");
+        email.setLayoutX(630);
+        email.setLayoutY(355);
+
         Rectangle passwordInput = new Rectangle(815, 98);
         passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
@@ -160,7 +174,17 @@ public class Main extends Application {
         passwordInput.setLayoutY(458);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
-        passwordInput.setCursor(Cursor.TEXT);
+        PasswordField password = new PasswordField();
+        TextField copyPw = new TextField();
+        copyPw.setLayoutX(630);
+        copyPw.setLayoutY(468);
+        copyPw.setVisible(false);
+        copyPw.setManaged(false);
+        copyPw.textProperty().bindBidirectional(password.textProperty());
+        password.setPromptText("Enter Password");
+        password.setLayoutX(630);
+        password.setLayoutY(468);
+
         Rectangle confirmPasswordInput = new Rectangle(815, 98);
         confirmPasswordInput.setFill(Color.WHITE);
         confirmPasswordInput.setStroke(Color.BLACK);
@@ -168,7 +192,83 @@ public class Main extends Application {
         confirmPasswordInput.setLayoutY(572);
         confirmPasswordInput.setArcHeight(50);
         confirmPasswordInput.setArcWidth(50);
-        confirmPasswordInput.setCursor(Cursor.TEXT);
+        PasswordField confirmPassword = new PasswordField();
+        TextField copyCPw = new TextField();
+        copyCPw.setLayoutX(630);
+        copyCPw.setLayoutY(582);
+        copyCPw.setVisible(false);
+        copyCPw.setManaged(false);
+        copyCPw.textProperty().bindBidirectional(confirmPassword.textProperty());
+        confirmPassword.setPromptText("Confirm Password");
+        confirmPassword.setLayoutX(630);
+        confirmPassword.setLayoutY(582);
+
+        ImageView lock2 = new ImageView("file:src/resources/images/lock.png");
+        lock2.setFitHeight(88);
+        lock2.setFitWidth(95);
+        ImageView passwordShow2 = new ImageView("file:src/resources/images/passwordShow.png");
+        passwordShow2.setFitHeight(47);
+        passwordShow2.setFitWidth(48);
+        ImageView passwordHide2 = new ImageView("file:src/resources/images/passwordHide.png");
+        passwordHide2.setFitHeight(47);
+        passwordHide2.setFitWidth(48);
+
+        user.setLayoutX(531);
+        user.setLayoutY(348);
+
+        lock.setLayoutX(531);
+        lock.setLayoutY(463);
+        passwordShow.setLayoutX(1290);
+        passwordShow.setLayoutY(483);
+        passwordShow.setVisible(true);
+        passwordHide.setLayoutX(1290);
+        passwordHide.setLayoutY(483);
+        passwordHide.setVisible(false);
+        passwordShow.setOnMouseClicked(event -> {
+            passwordHide.setVisible(true);
+            passwordShow.setVisible(false);
+            copyPw.setManaged(true);
+            copyPw.setVisible(true);
+            password.setVisible(false);
+            password.setManaged(false);
+        });
+        passwordHide.setOnMouseClicked(event -> {
+            passwordHide.setVisible(false);
+            passwordShow.setVisible(true);
+            password.setVisible(false);
+            copyPw.setManaged(false);
+            copyPw.setVisible(false);
+            password.setVisible(true);
+            password.setManaged(true);
+        });
+        Group inputs = new Group(emailInput, email, passwordInput, copyPw, password, confirmPasswordInput, copyCPw, confirmPassword);
+
+        lock2.setLayoutX(531);
+        lock2.setLayoutY(576);
+        passwordShow2.setLayoutX(1290);
+        passwordShow2.setLayoutY(598);
+        passwordShow2.setVisible(true);
+        passwordHide2.setLayoutX(1290);
+        passwordHide2.setLayoutY(598);
+        passwordHide2.setVisible(false);
+        passwordShow2.setOnMouseClicked(event -> {
+            passwordHide2.setVisible(true);
+            passwordShow2.setVisible(false);
+            copyCPw.setManaged(true);
+            copyCPw.setVisible(true);
+            confirmPassword.setVisible(false);
+            confirmPassword.setManaged(false);
+        });
+        passwordHide2.setOnMouseClicked(event -> {
+            passwordHide2.setVisible(false);
+            passwordShow2.setVisible(true);
+            copyCPw.setManaged(false);
+            copyCPw.setVisible(false);
+            confirmPassword.setVisible(true);
+            confirmPassword.setManaged(true);
+        });
+
+        Group icons = new Group(user, lock, passwordShow, passwordHide, lock2, passwordShow2, passwordHide2);
 
         Rectangle registerButton = new Rectangle(1083,98, Color.BLACK);
         registerButton.setLayoutX(430);
@@ -177,7 +277,7 @@ public class Main extends Application {
         registerButton.setArcWidth(50);
         registerButton.setCursor(Cursor.HAND);
 
-        contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, confirmPasswordInput, registerButton);
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, registerButton, icons);
     }
 
 
@@ -238,8 +338,4 @@ public class Main extends Application {
         return logoView;
     }
 
-    private ImageView createImageView(String url){
-        Image i = new Image(url);
-        return new ImageView(i);
-    }
 }

@@ -20,7 +20,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.*;
 
 public class Main extends Application {
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
@@ -105,7 +104,7 @@ public class Main extends Application {
         TextField email = new TextField();
         email.setPromptText("Enter Email");
         email.getStyleClass().add("loginTextField");
-        email.setLayoutX(785);
+        email.setLayoutX(790);
         email.setLayoutY(382);
 
         Rectangle passwordInput = new Rectangle(530, 98);
@@ -115,8 +114,20 @@ public class Main extends Application {
         passwordInput.setLayoutY(510);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
+        PasswordField password = new PasswordField();
+        password.getStyleClass().add("loginTextField");
+        TextField copyPw = new TextField();
+        copyPw.getStyleClass().add("loginTextField");
+        copyPw.setLayoutX(790);
+        copyPw.setLayoutY(520);
+        copyPw.setVisible(false);
+        copyPw.setManaged(false);
+        copyPw.textProperty().bindBidirectional(password.textProperty());
+        password.setPromptText("Enter Password");
+        password.setLayoutX(790);
+        password.setLayoutY(520);
 
-        Group inputs = new Group(emailInput, email, passwordInput);
+        Group inputs = new Group(emailInput, email, passwordInput, password, copyPw);
         user.setLayoutX(694);
         user.setLayoutY(376);
         lock.setLayoutX(694);
@@ -130,10 +141,18 @@ public class Main extends Application {
         passwordShow.setOnMouseClicked(event -> {
             passwordHide.setVisible(true);
             passwordShow.setVisible(false);
+            copyPw.setManaged(true);
+            copyPw.setVisible(true);
+            password.setVisible(false);
+            password.setManaged(false);
         });
         passwordHide.setOnMouseClicked(event -> {
             passwordHide.setVisible(false);
             passwordShow.setVisible(true);
+            copyPw.setManaged(false);
+            copyPw.setVisible(false);
+            password.setVisible(true);
+            password.setManaged(true);
         });
         Group icons = new Group(user, lock, passwordShow, passwordHide);
 
@@ -218,10 +237,10 @@ public class Main extends Application {
 
         lock.setLayoutX(531);
         lock.setLayoutY(463);
-        passwordShow.setLayoutX(1290);
+        passwordShow.setLayoutX(1280);
         passwordShow.setLayoutY(483);
         passwordShow.setVisible(true);
-        passwordHide.setLayoutX(1290);
+        passwordHide.setLayoutX(1280);
         passwordHide.setLayoutY(483);
         passwordHide.setVisible(false);
         passwordShow.setOnMouseClicked(event -> {
@@ -245,10 +264,10 @@ public class Main extends Application {
 
         lock2.setLayoutX(531);
         lock2.setLayoutY(576);
-        passwordShow2.setLayoutX(1290);
+        passwordShow2.setLayoutX(1280);
         passwordShow2.setLayoutY(598);
         passwordShow2.setVisible(true);
-        passwordHide2.setLayoutX(1290);
+        passwordHide2.setLayoutX(1280);
         passwordHide2.setLayoutY(598);
         passwordHide2.setVisible(false);
         passwordShow2.setOnMouseClicked(event -> {

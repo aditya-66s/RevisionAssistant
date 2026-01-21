@@ -17,8 +17,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main extends Application {
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
     public Font Vipnagorgialla = Font.loadFont("file:src/resources/fonts/Vipnagorgialla.otf", 30);
@@ -56,12 +54,14 @@ public class Main extends Application {
         selectLogin.setLayoutY(215);
         selectLogin.setArcHeight(50);
         selectLogin.setArcWidth(50);
+        selectLogin.setCursor(Cursor.HAND);
 
         Rectangle selectRegister = new Rectangle(334,98);
         selectRegister.setLayoutX(972);
         selectRegister.setLayoutY(215);
         selectRegister.setArcHeight(50);
         selectRegister.setArcWidth(50);
+        selectRegister.setCursor(Cursor.HAND);
 
         Group contentLayer = new Group();
         contentLayer.getChildren().addAll(selectLogin, selectRegister);
@@ -73,7 +73,6 @@ public class Main extends Application {
     private void buildLoginContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister) {
         selectRegister.setFill(Color.GREY);
         selectLogin.setFill(Color.BLACK);
-        selectRegister.setCursor(Cursor.HAND);
         selectRegister.setOnMouseClicked(event -> {
             buildRegistrationContent(contentLayer, selectLogin, selectRegister);
         });
@@ -85,6 +84,7 @@ public class Main extends Application {
         emailInput.setLayoutY(372);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
+        emailInput.setCursor(Cursor.TEXT);
         Rectangle passwordInput = new Rectangle(530, 98);
         passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
@@ -92,12 +92,14 @@ public class Main extends Application {
         passwordInput.setLayoutY(510);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
+        passwordInput.setCursor(Cursor.TEXT);
 
         Rectangle loginButton = new Rectangle(1083,98, Color.BLACK);
         loginButton.setLayoutX(430);
         loginButton.setLayoutY(684);
         loginButton.setArcHeight(50);
         loginButton.setArcWidth(50);
+        loginButton.setCursor(Cursor.HAND);
 
         contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, loginButton);
 
@@ -106,7 +108,6 @@ public class Main extends Application {
     private void buildRegistrationContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister) {
         selectRegister.setFill(Color.BLACK);
         selectLogin.setFill(Color.GREY);
-        selectLogin.setCursor(Cursor.HAND);
         selectLogin.setOnMouseClicked(event -> {
             buildLoginContent(contentLayer, selectLogin, selectRegister);
         });
@@ -118,6 +119,7 @@ public class Main extends Application {
         emailInput.setLayoutY(345);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
+        emailInput.setCursor(Cursor.TEXT);
         Rectangle passwordInput = new Rectangle(815, 98);
         passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
@@ -125,6 +127,7 @@ public class Main extends Application {
         passwordInput.setLayoutY(458);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
+        passwordInput.setCursor(Cursor.TEXT);
         Rectangle confirmPasswordInput = new Rectangle(815, 98);
         confirmPasswordInput.setFill(Color.WHITE);
         confirmPasswordInput.setStroke(Color.BLACK);
@@ -132,12 +135,14 @@ public class Main extends Application {
         confirmPasswordInput.setLayoutY(572);
         confirmPasswordInput.setArcHeight(50);
         confirmPasswordInput.setArcWidth(50);
+        confirmPasswordInput.setCursor(Cursor.TEXT);
 
         Rectangle registerButton = new Rectangle(1083,98, Color.BLACK);
         registerButton.setLayoutX(430);
         registerButton.setLayoutY(699);
         registerButton.setArcHeight(50);
         registerButton.setArcWidth(50);
+        registerButton.setCursor(Cursor.HAND);
 
         contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, confirmPasswordInput, registerButton);
     }

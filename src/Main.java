@@ -64,27 +64,29 @@ public class Main extends Application {
         selectRegister.setArcWidth(50);
 
         Group contentLayer = new Group();
+        contentLayer.getChildren().addAll(selectLogin, selectRegister);
         buildLoginContent(contentLayer, selectLogin, selectRegister);
         loginPane.getChildren().addAll(logo, background, contentLayer);
         return new Scene(loginPane, 1920, 1057);
     }
 
     private void buildLoginContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister) {
-
+        selectRegister.setFill(Color.GREY);
+        selectLogin.setFill(Color.BLACK);
         selectRegister.setCursor(Cursor.HAND);
         selectRegister.setOnMouseClicked(event -> {
             buildRegistrationContent(contentLayer, selectLogin, selectRegister);
         });
 
-        selectLogin.setFill(Color.BLACK);
-        selectRegister.setFill(Color.GREY);
-        Rectangle emailInput = new Rectangle(530,98, Color.WHITE);
+        Rectangle emailInput = new Rectangle(530,98);
+        emailInput.setFill(Color.WHITE);
         emailInput.setStroke(Color.BLACK);
         emailInput.setLayoutX(695);
         emailInput.setLayoutY(372);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
-        Rectangle passwordInput = new Rectangle(530, 98, Color.WHITE);
+        Rectangle passwordInput = new Rectangle(530, 98);
+        passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
         passwordInput.setLayoutX(695);
         passwordInput.setLayoutY(510);
@@ -98,30 +100,33 @@ public class Main extends Application {
         loginButton.setArcWidth(50);
 
         contentLayer.getChildren().setAll(selectLogin, selectRegister, emailInput, passwordInput, loginButton);
+
     }
 
     private void buildRegistrationContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister) {
-        selectLogin.setFill(Color.GREY);
         selectRegister.setFill(Color.BLACK);
+        selectLogin.setFill(Color.GREY);
         selectLogin.setCursor(Cursor.HAND);
         selectLogin.setOnMouseClicked(event -> {
             buildLoginContent(contentLayer, selectLogin, selectRegister);
         });
 
-
-        Rectangle emailInput = new Rectangle(815,98, Color.WHITE);
+        Rectangle emailInput = new Rectangle(815,98);
+        emailInput.setFill(Color.WHITE);
         emailInput.setStroke(Color.BLACK);
         emailInput.setLayoutX(531);
         emailInput.setLayoutY(345);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
-        Rectangle passwordInput = new Rectangle(815, 98, Color.WHITE);
+        Rectangle passwordInput = new Rectangle(815, 98);
+        passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
         passwordInput.setLayoutX(531);
         passwordInput.setLayoutY(458);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
-        Rectangle confirmPasswordInput = new Rectangle(815, 98, Color.WHITE);
+        Rectangle confirmPasswordInput = new Rectangle(815, 98);
+        confirmPasswordInput.setFill(Color.WHITE);
         confirmPasswordInput.setStroke(Color.BLACK);
         confirmPasswordInput.setLayoutX(531);
         confirmPasswordInput.setLayoutY(572);

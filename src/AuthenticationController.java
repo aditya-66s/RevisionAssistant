@@ -27,7 +27,7 @@ public class AuthenticationController {
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
         ArrayList<User> users = new ArrayList<User>();
         users.add(new User("a" , "b", "c", "d"));
-        try(BufferedReader br = new BufferedReader(new FileReader("users.csv"))){
+        try(BufferedReader br = new BufferedReader(new FileReader("\\\\srv043\\10920$\\Computing\\A Level\\A Level NEA\\RevisionAssistant\\src\\resources\\files\\users.csv"))){
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");

@@ -23,7 +23,7 @@ public class User {
         this.saltBase64 = salt;
     }
     public void setLastLogin(String lastLogin){
-        this.String = lastLogin;
+        this.lastLogin = lastLogin;
     }
 
     public String getEmail(){

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 
 public class AuthenticationController {
@@ -24,12 +25,14 @@ public class AuthenticationController {
         }
     }
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
-        ArrayList<User> users = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader("file:src/resources/files/users.csv"))){
+        ArrayList<User> users = new ArrayList<User>();
+        users.add(new User("a" , "b", "c", "d"));
+        try(BufferedReader br = new BufferedReader(new FileReader("users.csv"))){
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");
-                users.add(new User(temp[0], temp[1], temp[2], temp[3]));
+                User newUser = new User(temp[0], temp[1], temp[2], temp[3]);
+                users.add(newUser);
             }
         };
         return users;

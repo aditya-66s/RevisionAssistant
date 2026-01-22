@@ -30,6 +30,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        AuthenticationController ac = new AuthenticationController();
+        ac.convertCSVtoArrayList();
         Scene splashScreen = createSplashScreen();
         splashScreen.getStylesheets().add("file:src/resources/styles/styles.css");
         primaryStage.setTitle("Revision Assistant");

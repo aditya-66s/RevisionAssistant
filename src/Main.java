@@ -20,6 +20,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 
 public class Main extends Application {
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
@@ -31,7 +35,19 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         AuthenticationController ac = new AuthenticationController();
-        ac.convertCSVtoArrayList();
+        if(ac.registerUser("doggy@gmail.com", "sham")){
+            System.out.println("User doggy registered");
+        }
+        Scanner sc = new Scanner(System.in);
+        for(int i = 0; i<2; i++) {
+            System.out.println("Please enter your email: ");
+            String email = sc.nextLine();
+            System.out.println("Please enter your password: ");
+            String password = sc.nextLine();
+            if (ac.loginUser(email, password)) {
+                System.out.println("THIS SHIT FUCKIGN WORKS IM GONNA CREAM");
+            }
+        }
         Scene splashScreen = createSplashScreen();
         splashScreen.getStylesheets().add("file:src/resources/styles/styles.css");
         primaryStage.setTitle("Revision Assistant");

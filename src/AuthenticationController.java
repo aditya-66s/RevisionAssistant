@@ -6,39 +6,70 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
+import java.util.Objects;
 
 
 public class AuthenticationController {
     private byte[] salt;
 
-
-    public void registerUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
+    public boolean registerUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
         // make this a function, Search through CSV find email, if no then continue, if yes return error message
-        generateSalt();
-        String hashedPassword = hashPassword(inpPassword,getSalt());
-        String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
-        User user = new User(email, hashedPassword, saltBase64, getDate());
-        // Opens in append mode, won't overwrite the file
-        try (FileWriter addUser = new FileWriter("file:src/resources/files/users.csv", true)) {
-            addUser.write(user.getEmail() + "," + user.getHashedPassword() + "," + user.getSaltBase64() + "," + user.getLastLogin());
+        if (!doesEmailExist(email)) {
+            generateSalt();
+            String hashedPassword = hashPassword(inpPassword, getSalt());
+            String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
+            User user = new User(email, hashedPassword, saltBase64, getDate());
+            // Opens in append mode, won't overwrite the file
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(Objects.requireNonNull(getClass().getResource("/users.csv")).getPath(), true))) {
+                bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin());
+                bw.newLine();
+            }
+            return true;
+        }else{
+            return false;
         }
     }
+
+    public boolean loginUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
+        if (doesEmailExist(email)) {
+            ArrayList<User> users = convertCSVtoArrayList();
+            User temp = null;
+            for(int i = 0; i < users.size(); i++){
+                if(users.get(i).getEmail().equals(email)){
+                    temp = users.get(i);
+                }
+            }
+            if(verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64())){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
-        ArrayList<User> users = new ArrayList<User>();
-        users.add(new User("a" , "b", "c", "d"));
-        try(BufferedReader br = new BufferedReader(new FileReader("\\\\srv043\\10920$\\Computing\\A Level\\A Level NEA\\RevisionAssistant\\src\\resources\\files\\users.csv"))){
+        ArrayList<User> users = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(Objects.requireNonNull(getClass().getResource("/users.csv")).getPath()))) {
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");
+                if (temp.length < 4) {          // adjust 4 to your expected column count
+                    System.out.println("BAD ROW: " + line);
+                    continue;
+                }
                 User newUser = new User(temp[0], temp[1], temp[2], temp[3]);
                 users.add(newUser);
             }
         };
         return users;
     }
-    public boolean doesEmailExist(){
-
+    public boolean doesEmailExist(String email) throws IOException {
+        ArrayList<User> users = convertCSVtoArrayList();
+        for(int i = 0; i < users.size(); i++){
+            if(users.get(i).getEmail().equals(email)){
+                return true;
+            };
+        }
         return false;
     }
 

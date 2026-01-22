@@ -45,7 +45,7 @@ public class Main extends Application {
             System.out.println("Please enter your password: ");
             String password = sc.nextLine();
             if (ac.loginUser(email, password)) {
-                System.out.println("THIS SHIT FUCKIGN WORKS IM GONNA CREAM");
+                System.out.println("THIS  WORKS IM GONNA ");
             }
         }
         Scene splashScreen = createSplashScreen();

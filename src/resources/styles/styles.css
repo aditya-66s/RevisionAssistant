@@ -23,3 +23,20 @@
 .loginTextField{
     -fx-pref-width: 370px;
 }
+
+.buttonText{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 60px;
+    -fx-fill: white;
+}
+.smallButtonText{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 40px;
+    -fx-fill: white;
+}
+
+.smallerButtonText{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 20px;
+    -fx-fill: white;
+}

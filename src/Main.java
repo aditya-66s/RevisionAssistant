@@ -7,11 +7,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
@@ -20,34 +20,20 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 
 public class Main extends Application {
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
     public Font Vipnagorgialla = Font.loadFont("file:src/resources/fonts/Vipnagorgialla.otf", 30);
+    public final AuthenticationController ac = new AuthenticationController();
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        AuthenticationController ac = new AuthenticationController();
-        if(ac.registerUser("doggy@gmail.com", "sham")){
-            System.out.println("User doggy registered");
-        }
-        Scanner sc = new Scanner(System.in);
-        for(int i = 0; i<2; i++) {
-            System.out.println("Please enter your email: ");
-            String email = sc.nextLine();
-            System.out.println("Please enter your password: ");
-            String password = sc.nextLine();
-            if (ac.loginUser(email, password)) {
-                System.out.println("THIS  WORKS IM GONNA ");
-            }
-        }
         Scene splashScreen = createSplashScreen();
         splashScreen.getStylesheets().add("file:src/resources/styles/styles.css");
         primaryStage.setTitle("Revision Assistant");
@@ -71,19 +57,25 @@ public class Main extends Application {
         background.setArcHeight(100);
         background.setArcWidth(100);
 
-        Rectangle selectLogin = new Rectangle(334,98);
+        Rectangle selectLoginRect = new Rectangle(334,98);
+        selectLoginRect.setArcHeight(50);
+        selectLoginRect.setArcWidth(50);
+        Text selectLoginText = new Text("Login");
+        selectLoginText.getStyleClass().add("smallButtonText");
+        StackPane selectLogin = new StackPane(selectLoginRect, selectLoginText);
+        selectLogin.setCursor(Cursor.HAND);
         selectLogin.setLayoutX(578);
         selectLogin.setLayoutY(215);
-        selectLogin.setArcHeight(50);
-        selectLogin.setArcWidth(50);
-        selectLogin.setCursor(Cursor.HAND);
 
-        Rectangle selectRegister = new Rectangle(334,98);
+        Rectangle selectRegisterRect = new Rectangle(334,98);
+        selectRegisterRect.setArcHeight(50);
+        selectRegisterRect.setArcWidth(50);
+        Text selectRegisterText = new Text("Register");
+        selectRegisterText.getStyleClass().add("smallButtonText");
+        StackPane selectRegister = new StackPane(selectRegisterRect, selectRegisterText);
+        selectRegister.setCursor(Cursor.HAND);
         selectRegister.setLayoutX(972);
         selectRegister.setLayoutY(215);
-        selectRegister.setArcHeight(50);
-        selectRegister.setArcWidth(50);
-        selectRegister.setCursor(Cursor.HAND);
 
         ImageView user = new ImageView("file:src/resources/images/user.png");
         user.setFitHeight(90);
@@ -100,16 +92,16 @@ public class Main extends Application {
 
         Group contentLayer = new Group();
         contentLayer.getChildren().addAll(selectLogin, selectRegister);
-        buildLoginContent(contentLayer, selectLogin, selectRegister, user, lock, passwordShow, passwordHide);
+        buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin);
         loginPane.getChildren().addAll(logo, background, contentLayer);
         return new Scene(loginPane, 1920, 1057);
     }
 
-    private void buildLoginContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide) {
-        selectRegister.setFill(Color.GREY);
-        selectLogin.setFill(Color.BLACK);
+    private void buildLoginContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide, StackPane selectRegister, StackPane selectLogin) {
+        selectRegisterRect.setFill(Color.GREY);
+        selectLoginRect.setFill(Color.BLACK);
         selectRegister.setOnMouseClicked(event -> {
-            buildRegistrationContent(contentLayer, selectLogin, selectRegister, user, lock, passwordShow, passwordHide);
+            buildRegistrationContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin);
         });
 
         Rectangle emailInput = new Rectangle(530,98);
@@ -174,23 +166,23 @@ public class Main extends Application {
         });
         Group icons = new Group(user, lock, passwordShow, passwordHide);
 
-        Rectangle loginButton = new Rectangle(1083,98, Color.BLACK);
+        Rectangle loginRect = new Rectangle(1083,98, Color.BLACK);
+        loginRect.setArcHeight(50);
+        loginRect.setArcWidth(50);
+        Text loginText = new Text("Login");
+        loginText.getStyleClass().add("buttonText");
+        StackPane loginButton = new StackPane(loginRect, loginText);
         loginButton.setLayoutX(430);
         loginButton.setLayoutY(684);
-        loginButton.setArcHeight(50);
-        loginButton.setArcWidth(50);
         loginButton.setCursor(Cursor.HAND);
-
         contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, loginButton, icons);
 
     }
 
-    private void buildRegistrationContent(Group contentLayer, Rectangle selectLogin, Rectangle selectRegister, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide) {
-        selectRegister.setFill(Color.BLACK);
-        selectLogin.setFill(Color.GREY);
-        selectLogin.setOnMouseClicked(event -> {
-            buildLoginContent(contentLayer, selectLogin, selectRegister, user, lock, passwordShow, passwordHide);
-        });
+    private void buildRegistrationContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide, StackPane selectRegister, StackPane selectLogin) {
+        selectRegisterRect.setFill(Color.BLACK);
+        selectLoginRect.setFill(Color.GREY);
+        selectLogin.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin));
 
         Rectangle emailInput = new Rectangle(815,98);
         emailInput.setFill(Color.WHITE);
@@ -307,17 +299,62 @@ public class Main extends Application {
 
         Group icons = new Group(user, lock, passwordShow, passwordHide, lock2, passwordShow2, passwordHide2);
 
-        Rectangle registerButton = new Rectangle(1083,98, Color.BLACK);
+        Rectangle registerRect = new Rectangle(1083,98, Color.BLACK);
+        registerRect.setArcHeight(50);
+        registerRect.setArcWidth(50);
+        Text registerText = new Text("Register");
+        registerText.getStyleClass().add("buttonText");
+        StackPane registerButton = new StackPane(registerRect, registerText);
         registerButton.setLayoutX(430);
         registerButton.setLayoutY(699);
-        registerButton.setArcHeight(50);
-        registerButton.setArcWidth(50);
         registerButton.setCursor(Cursor.HAND);
+        registerButton.setOnMouseClicked(event ->{
+            int option = userRegistration(email.getText(), password.getText(), confirmPassword.getText());
+            switch(option){
+                case 1:
+                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Account successfully registered");
+                    success.show();
+                    break;
+                case 2:
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Email may already exist, problem with files.");
+                    error.show();
+                    break;
+                case 3:
+                    Alert passwordDoNotMatch = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
+                    passwordDoNotMatch.show();
+                    break;
+            }
+        });
 
-        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, registerButton, icons);
+        Rectangle alreadyHaveAccountRect = new Rectangle(700,60, Color.BLACK);
+        alreadyHaveAccountRect.setArcHeight(50);
+        alreadyHaveAccountRect.setArcWidth(50);
+        Text alreadyHaveAccountText = new Text("Already have an account?");
+        alreadyHaveAccountText.getStyleClass().add("smallerButtonText");
+        StackPane alreadyHaveAccount = new StackPane(alreadyHaveAccountRect, alreadyHaveAccountText);
+        alreadyHaveAccount.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin) );
+        alreadyHaveAccount.setLayoutX(600);
+        alreadyHaveAccount.setLayoutY(805);
+
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, registerButton, icons, alreadyHaveAccount);
     }
 
-
+    public int userRegistration(String email, String password, String confirmPassword){
+        if(confirmPassword.equals(password)){
+            boolean added;
+            try {
+                added = ac.registerUser(email, password);
+            } catch (NoSuchAlgorithmException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            if(added){
+                return  1;
+            }else{
+                return 2;
+            }
+        }
+        return 3;
+    }
     private Scene createSplashScreen() {
         Pane splashPane = new Pane();
         splashPane.getStyleClass().add("screens");

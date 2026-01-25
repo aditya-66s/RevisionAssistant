@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -11,6 +13,8 @@ import java.util.Objects;
 
 public class AuthenticationController {
     private byte[] salt;
+    //getResourceAsStream() is for reading packaged resources, not for storing/editing data
+    private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
 
     public boolean registerUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
         // make this a function, Search through CSV find email, if no then continue, if yes return error message
@@ -20,7 +24,7 @@ public class AuthenticationController {
             String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
             User user = new User(email, hashedPassword, saltBase64, getDate());
             // Opens in append mode, won't overwrite the file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(Objects.requireNonNull(getClass().getResource("/users.csv")).getPath(), true))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString(), true))) {
                 bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin());
                 bw.newLine();
             }
@@ -49,7 +53,7 @@ public class AuthenticationController {
     }
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
         ArrayList<User> users = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(Objects.requireNonNull(getClass().getResource("/users.csv")).getPath()))) {
+        try(BufferedReader br = new BufferedReader(new FileReader(csvPath.toString()))) {
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");

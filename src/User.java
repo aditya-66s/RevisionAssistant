@@ -5,6 +5,8 @@ public class User {
     private String hashedPassword;
     private String saltBase64;
     private String lastLogin;
+    public String resetToken;
+    public long resetTokenExpiryTime;
 
     public User(String email, String hashedPassword, String saltBase64, String date){
         this.email = email;
@@ -25,6 +27,12 @@ public class User {
     public void setLastLogin(String lastLogin){
         this.lastLogin = lastLogin;
     }
+    public void setResetToken(String resetToken){
+        this.resetToken = resetToken;
+    }
+    public void setResetTokenExpiryTime(long resetTokenExpiryTime){
+        this.resetTokenExpiryTime = resetTokenExpiryTime;
+    }
 
     public String getEmail(){
         return this.email;
@@ -37,5 +45,11 @@ public class User {
     }
     public String getLastLogin(){
         return this.lastLogin;
+    }
+    public String getResetToken(){
+        return this.resetToken;
+    }
+    public long getResetTokenExpiryTime() {
+        return resetTokenExpiryTime;
     }
 }

@@ -149,20 +149,10 @@ public class Main extends Application {
         passwordHide.setLayoutY(534);
         passwordHide.setVisible(false);
         passwordShow.setOnMouseClicked(event -> {
-            passwordHide.setVisible(true);
-            passwordShow.setVisible(false);
-            copyPw.setManaged(true);
-            copyPw.setVisible(true);
-            password.setVisible(false);
-            password.setManaged(false);
+            showPassword(passwordHide, passwordShow, copyPw, password);
         });
         passwordHide.setOnMouseClicked(event -> {
-            passwordHide.setVisible(false);
-            passwordShow.setVisible(true);
-            copyPw.setManaged(false);
-            copyPw.setVisible(false);
-            password.setVisible(true);
-            password.setManaged(true);
+            hidePassword(passwordHide, passwordShow, copyPw, password);
         });
         Group icons = new Group(user, lock, passwordShow, passwordHide);
 
@@ -175,8 +165,70 @@ public class Main extends Application {
         loginButton.setLayoutX(430);
         loginButton.setLayoutY(684);
         loginButton.setCursor(Cursor.HAND);
-        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, loginButton, icons);
+        loginButton.setOnMouseClicked(event -> {
+            int option = 0;
+            if(!email.getText().isEmpty() && !password.getText().isEmpty()) {
+                option = userLogin(email.getText(), password.getText());
+            }
+            switch(option) {
+                case 0:
+                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
+                    emptyError.show();
+                    break;
+                case 1:
+                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Logged in successfully");
+                    success.show();
+                    break;
+                case 2:
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Invalid email or password, or possible problems with files.");
+                    error.show();
+                    break;
+            }
+        });
 
+        Rectangle forgetPasswordRect = new Rectangle(700,60, Color.BLACK);
+        forgetPasswordRect.setArcHeight(50);
+        forgetPasswordRect.setArcWidth(50);
+        Text forgotPasswordText = new Text("Forgot Password?");
+        forgotPasswordText.getStyleClass().add("smallerButtonText");
+        StackPane forgotPassword = new StackPane(forgetPasswordRect, forgotPasswordText);
+        forgotPassword.setLayoutX(600);
+        forgotPassword.setLayoutY(790);
+        forgotPassword.setCursor(Cursor.HAND);
+        contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, loginButton, icons, forgotPassword);
+
+    }
+
+    private void hidePassword(ImageView passwordHide, ImageView passwordShow, TextField copyPw, PasswordField password) {
+        passwordHide.setVisible(false);
+        passwordShow.setVisible(true);
+        copyPw.setManaged(false);
+        copyPw.setVisible(false);
+        password.setVisible(true);
+        password.setManaged(true);
+    }
+
+    private void showPassword(ImageView passwordHide, ImageView passwordShow, TextField copyPw, PasswordField password) {
+        passwordHide.setVisible(true);
+        passwordShow.setVisible(false);
+        copyPw.setManaged(true);
+        copyPw.setVisible(true);
+        password.setVisible(false);
+        password.setManaged(false);
+    }
+
+    private int userLogin(String email, String password) {
+        boolean valid;
+        try{
+            valid = ac.loginUser(email, password);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(valid) {
+            return 1;
+        }else{
+            return 2;
+        }
     }
 
     private void buildRegistrationContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide, StackPane selectRegister, StackPane selectLogin) {
@@ -254,21 +306,10 @@ public class Main extends Application {
         passwordHide.setLayoutY(483);
         passwordHide.setVisible(false);
         passwordShow.setOnMouseClicked(event -> {
-            passwordHide.setVisible(true);
-            passwordShow.setVisible(false);
-            copyPw.setManaged(true);
-            copyPw.setVisible(true);
-            password.setVisible(false);
-            password.setManaged(false);
+            showPassword(passwordHide, passwordShow, copyPw, password);
         });
         passwordHide.setOnMouseClicked(event -> {
-            passwordHide.setVisible(false);
-            passwordShow.setVisible(true);
-            password.setVisible(false);
-            copyPw.setManaged(false);
-            copyPw.setVisible(false);
-            password.setVisible(true);
-            password.setManaged(true);
+            hidePassword(passwordHide, passwordShow, copyPw, password);
         });
         Group inputs = new Group(emailInput, email, passwordInput, copyPw, password, confirmPasswordInput, copyCPw, confirmPassword);
 
@@ -309,14 +350,21 @@ public class Main extends Application {
         registerButton.setLayoutY(699);
         registerButton.setCursor(Cursor.HAND);
         registerButton.setOnMouseClicked(event ->{
-            int option = userRegistration(email.getText(), password.getText(), confirmPassword.getText());
+            int option = 0;
+            if(!email.getText().isEmpty() && !password.getText().isEmpty() &&  !confirmPassword.getText().isEmpty()) {
+                option = userRegistration(email.getText(), password.getText(), confirmPassword.getText());
+            }
             switch(option){
+                case 0:
+                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
+                    emptyError.show();
+                    break;
                 case 1:
                     Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Account successfully registered");
                     success.show();
                     break;
                 case 2:
-                    Alert error = new Alert(Alert.AlertType.ERROR, "Email may already exist, problem with files.");
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Email may already exist, or possible problem with files.");
                     error.show();
                     break;
                 case 3:
@@ -355,6 +403,7 @@ public class Main extends Application {
         }
         return 3;
     }
+
     private Scene createSplashScreen() {
         Pane splashPane = new Pane();
         splashPane.getStyleClass().add("screens");

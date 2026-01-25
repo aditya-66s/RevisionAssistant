@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Objects;
 
 
+
 public class AuthenticationController {
     private byte[] salt;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
@@ -76,6 +77,15 @@ public class AuthenticationController {
         }
         return false;
     }
+    public User findUserByEmail(String email) throws IOException {
+        ArrayList<User> users = convertCSVtoArrayList();
+        for(int i = 0; i < users.size(); i++){
+            if(users.get(i).getEmail().equals(email)){
+                return users.get(i);
+            };
+        }
+        return null;
+    }
 
     // Hash password algorithm via SHA-512 (even though, others are better, I'll describe in write up); throws exception in case MessageDigest instance fails.
     public String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException {
@@ -104,7 +114,6 @@ public class AuthenticationController {
         // true if the hashed input matches the hashed password
         return newHash.equals(hashedPassword);
     }
-
     public void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)
         SecureRandom random = new SecureRandom();

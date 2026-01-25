@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
-
-
 public class AuthenticationController {
     private byte[] salt;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data

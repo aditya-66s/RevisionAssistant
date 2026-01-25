@@ -185,7 +185,9 @@ public class Main extends Application {
                     break;
             }
         });
-
+        for (int i = 0; i < 2; i++) {
+            System.out.println("l");
+        }
         Rectangle forgetPasswordRect = new Rectangle(700,60, Color.BLACK);
         forgetPasswordRect.setArcHeight(50);
         forgetPasswordRect.setArcWidth(50);

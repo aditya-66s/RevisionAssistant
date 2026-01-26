@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -104,11 +105,9 @@ public class Main extends Application {
             buildRegistrationContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin);
         });
 
-        Rectangle emailInput = new Rectangle(530,98);
+        Rectangle emailInput = new Rectangle(695, 372, 530,98);
         emailInput.setFill(Color.WHITE);
         emailInput.setStroke(Color.BLACK);
-        emailInput.setLayoutX(695);
-        emailInput.setLayoutY(372);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
         TextField email = new TextField();
@@ -117,11 +116,9 @@ public class Main extends Application {
         email.setLayoutX(790);
         email.setLayoutY(382);
 
-        Rectangle passwordInput = new Rectangle(530, 98);
+        Rectangle passwordInput = new Rectangle(695, 510, 530, 98);
         passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
-        passwordInput.setLayoutX(695);
-        passwordInput.setLayoutY(510);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
         PasswordField password = new PasswordField();
@@ -236,11 +233,9 @@ public class Main extends Application {
         selectLoginRect.setFill(Color.GREY);
         selectLogin.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin));
 
-        Rectangle emailInput = new Rectangle(815,98);
+        Rectangle emailInput = new Rectangle(531, 345, 815,98);
         emailInput.setFill(Color.WHITE);
         emailInput.setStroke(Color.BLACK);
-        emailInput.setLayoutX(531);
-        emailInput.setLayoutY(345);
         emailInput.setArcHeight(50);
         emailInput.setArcWidth(50);
         TextField email = new TextField();
@@ -248,11 +243,9 @@ public class Main extends Application {
         email.setLayoutX(630);
         email.setLayoutY(355);
 
-        Rectangle passwordInput = new Rectangle(815, 98);
+        Rectangle passwordInput = new Rectangle(531,458, 815, 98);
         passwordInput.setFill(Color.WHITE);
         passwordInput.setStroke(Color.BLACK);
-        passwordInput.setLayoutX(531);
-        passwordInput.setLayoutY(458);
         passwordInput.setArcHeight(50);
         passwordInput.setArcWidth(50);
         PasswordField password = new PasswordField();
@@ -266,11 +259,9 @@ public class Main extends Application {
         password.setLayoutX(630);
         password.setLayoutY(468);
 
-        Rectangle confirmPasswordInput = new Rectangle(815, 98);
+        Rectangle confirmPasswordInput = new Rectangle(531, 572, 815, 98);
         confirmPasswordInput.setFill(Color.WHITE);
         confirmPasswordInput.setStroke(Color.BLACK);
-        confirmPasswordInput.setLayoutX(531);
-        confirmPasswordInput.setLayoutY(572);
         confirmPasswordInput.setArcHeight(50);
         confirmPasswordInput.setArcWidth(50);
         PasswordField confirmPassword = new PasswordField();
@@ -350,27 +341,25 @@ public class Main extends Application {
         registerButton.setLayoutY(699);
         registerButton.setCursor(Cursor.HAND);
         registerButton.setOnMouseClicked(event ->{
-            int option = 0;
-            if(!email.getText().isEmpty() && !password.getText().isEmpty() &&  !confirmPassword.getText().isEmpty()) {
-                option = userRegistration(email.getText(), password.getText(), confirmPassword.getText());
-            }
-            switch(option){
-                case 0:
-                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
-                    emptyError.show();
-                    break;
-                case 1:
-                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Account successfully registered");
-                    success.show();
-                    break;
-                case 2:
-                    Alert error = new Alert(Alert.AlertType.ERROR, "Email may already exist, or possible problem with files.");
-                    error.show();
-                    break;
-                case 3:
+            if (!email.getText().isEmpty() && !password.getText().isEmpty() && !confirmPassword.getText().isEmpty()) {
+                if (!password.getText().equals(confirmPassword.getText())) {
                     Alert passwordDoNotMatch = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
                     passwordDoNotMatch.show();
-                    break;
+                }else {
+                    try {
+                        if (ac.doesEmailExist(email.getText())) {
+                            Alert error = new Alert(Alert.AlertType.ERROR, "Email already exists.");
+                            error.show();
+                        } else {
+                            buildRecoveryWordEntrance(contentLayer, email.getText(), password.getText());
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
+                emptyError.show();
             }
         });
 
@@ -387,21 +376,70 @@ public class Main extends Application {
         contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, registerButton, icons, alreadyHaveAccount);
     }
 
-    public int userRegistration(String email, String password, String confirmPassword){
-        if(confirmPassword.equals(password)){
-            boolean added;
-            try {
-                added = ac.registerUser(email, password);
-            } catch (NoSuchAlgorithmException | IOException e) {
-                throw new RuntimeException(e);
+    public void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
+        Text infoText = new Text("Enter a recovery word to use \n when resetting password");
+        infoText.getStyleClass().add("infoText");
+        infoText.setTextAlignment(TextAlignment.CENTER);
+        infoText.setLayoutX(430);
+        infoText.setLayoutY(300);
+        Rectangle recoveryWordRect = new Rectangle(531, 460, 815, 98);
+        recoveryWordRect.setFill(Color.WHITE);
+        recoveryWordRect.setStroke(Color.BLACK);
+        recoveryWordRect.setArcHeight(50);
+        recoveryWordRect.setArcWidth(50);
+        TextField recoveryWordInput = new TextField();
+        recoveryWordInput.setLayoutX(640);
+        recoveryWordInput.setLayoutY(470);
+        recoveryWordInput.setPromptText("Enter Recovery Word");
+        ImageView recovery = new ImageView("file:src/resources/images/recover.png");
+        recovery.setFitHeight(90);
+        recovery.setFitWidth(95);
+        recovery.setLayoutX(534);
+        recovery.setLayoutY(463);
+        ImageView enter = new ImageView("file:src/resources/images/enter.png");
+        enter.setFitHeight(90);
+        enter.setFitWidth(95);
+        enter.setLayoutX(1245);
+        enter.setLayoutY(463);
+        enter.setCursor(Cursor.HAND);
+        enter.setOnMouseClicked(event -> {
+            int option;
+            if(recoveryWordInput.getText().isEmpty()){
+                option = 0;
+            }else {
+                option = userRegistration(email, password, recoveryWordInput.getText());
             }
-            if(added){
-                return  1;
-            }else{
-                return 2;
+            switch(option){
+                case 0:
+                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
+                    emptyError.show();
+                    break;
+                case 1:
+                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Account successfully registered");
+                    success.show();
+                    break;
+                case 2:
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Possible problem with files.");
+                    error.show();
+                    break;
             }
+        });
+        Group input = new Group(recoveryWordRect, recoveryWordInput, recovery, enter);
+        contentLayer.getChildren().setAll(input, infoText);
+    }
+
+    public int userRegistration(String email, String password, String recoveryWord){
+        boolean added;
+        try {
+            added = ac.registerUser(email, password, recoveryWord);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
         }
-        return 3;
+        if(added){
+            return  1;
+        }else{
+            return 2;
+        }
     }
 
     private Scene createSplashScreen() {

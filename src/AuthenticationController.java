@@ -15,16 +15,16 @@ public class AuthenticationController {
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
     private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
 
-    public boolean registerUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
+    public boolean registerUser(String email, String inpPassword, String recoveryWord) throws NoSuchAlgorithmException, IOException {
         // make this a function, Search through CSV find email, if no then continue, if yes return error message
         if (!doesEmailExist(email)) {
             generateSalt();
             String hashedPassword = hashPassword(inpPassword, getSalt());
             String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
-            User user = new User(email, hashedPassword, saltBase64, getDate());
+            User user = new User(email, hashedPassword, saltBase64, getDate(), "");
             // Opens in append mode, won't overwrite the file
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString(), true))) {
-                bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin());
+                bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin() + "," + recoveryWord);
                 bw.newLine();
             }
             return true;
@@ -32,7 +32,6 @@ public class AuthenticationController {
             return false;
         }
     }
-
     public boolean loginUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
         if (doesEmailExist(email)) {
             ArrayList<User> users = convertCSVtoArrayList();
@@ -56,11 +55,11 @@ public class AuthenticationController {
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");
-                if (temp.length < 4) {          // adjust 4 to your expected column count
+                if (temp.length < 5) {          // adjust 4 to your expected column count
                     System.out.println("BAD ROW: " + line);
                     continue;
                 }
-                User newUser = new User(temp[0], temp[1], temp[2], temp[3]);
+                User newUser = new User(temp[0], temp[1], temp[2], temp[3], temp[4]);
                 users.add(newUser);
             }
         };
@@ -84,7 +83,6 @@ public class AuthenticationController {
         }
         return null;
     }
-
     // Hash password algorithm via SHA-512 (even though, others are better, I'll describe in write up); throws exception in case MessageDigest instance fails.
     public String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException {
         // Create a MessageDigest instance using the SHA-512 hashing algorithm
@@ -96,7 +94,6 @@ public class AuthenticationController {
         // Convert the raw hash bytes to a base 64 string so it can be stored safely in the .csv file
         return Base64.getEncoder().encodeToString(hashedPassword);
     }
-
     // Verify the password is correct, taking the user's input password comparing with hashed password.
     public boolean verifyPassword(String inpPassword, String hashedPassword, String saltBase64) throws NoSuchAlgorithmException {
         // Convert the string salt to a byte array

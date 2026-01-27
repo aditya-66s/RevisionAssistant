@@ -1,7 +1,10 @@
 .screens{
     -fx-background-color: black;
 }
-
+.logo{
+    -fx-fit-height: 100px;
+    -fx-fit-width: 100px;
+}
 .screens .title{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 130px;
@@ -14,6 +17,19 @@
     -fx-fill: white;
 }
 
+Rectangle{
+    -fx-arc-height: 50px;
+    -fx-arc-width: 50px;
+}
+.backgroundRect{
+    -fx-arc-height: 100px;
+    -fx-arc-width: 100px;
+    -fx-fill: #ffffff;
+}
+.inputRect{
+    -fx-fill: #ffffff;
+    -fx-stroke: #000000;
+}
 .text-field {
     -fx-pref-width: 600px;
     -fx-pref-height: 80px;
@@ -23,7 +39,10 @@
 .loginTextField{
     -fx-pref-width: 370px;
 }
-
+.passwordImage{
+    -fx-fit-height: 47px;
+    -fx-fit-width: 48px;
+}
 .buttonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 60px;

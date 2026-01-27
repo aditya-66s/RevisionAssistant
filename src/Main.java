@@ -52,15 +52,9 @@ public class Main extends Application {
         loginPane.getStyleClass().add("screens");
         ImageView logo = createLogoView();
 
-        Rectangle background = new Rectangle(1206,683, Color.WHITE);
-        background.setLayoutX(357);
-        background.setLayoutY(187);
-        background.setArcHeight(100);
-        background.setArcWidth(100);
-
+        Rectangle background = new Rectangle(357, 187, 1206,683);
+        background.getStyleClass().add("backgroundRect");
         Rectangle selectLoginRect = new Rectangle(334,98);
-        selectLoginRect.setArcHeight(50);
-        selectLoginRect.setArcWidth(50);
         Text selectLoginText = new Text("Login");
         selectLoginText.getStyleClass().add("smallButtonText");
         StackPane selectLogin = new StackPane(selectLoginRect, selectLoginText);
@@ -69,8 +63,6 @@ public class Main extends Application {
         selectLogin.setLayoutY(215);
 
         Rectangle selectRegisterRect = new Rectangle(334,98);
-        selectRegisterRect.setArcHeight(50);
-        selectRegisterRect.setArcWidth(50);
         Text selectRegisterText = new Text("Register");
         selectRegisterText.getStyleClass().add("smallButtonText");
         StackPane selectRegister = new StackPane(selectRegisterRect, selectRegisterText);
@@ -84,78 +76,40 @@ public class Main extends Application {
         ImageView lock = new ImageView("file:src/resources/images/lock.png");
         lock.setFitHeight(88);
         lock.setFitWidth(95);
-        ImageView passwordShow = new ImageView("file:src/resources/images/passwordShow.png");
-        passwordShow.setFitHeight(47);
-        passwordShow.setFitWidth(48);
-        ImageView passwordHide = new ImageView("file:src/resources/images/passwordHide.png");
-        passwordHide.setFitHeight(47);
-        passwordHide.setFitWidth(48);
 
         Group contentLayer = new Group();
         contentLayer.getChildren().addAll(selectLogin, selectRegister);
-        buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin);
+        buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin);
         loginPane.getChildren().addAll(logo, background, contentLayer);
         return new Scene(loginPane, 1920, 1057);
     }
 
-    private void buildLoginContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide, StackPane selectRegister, StackPane selectLogin) {
+    private void buildLoginContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, StackPane selectRegister, StackPane selectLogin) {
         selectRegisterRect.setFill(Color.GREY);
         selectLoginRect.setFill(Color.BLACK);
         selectRegister.setOnMouseClicked(event -> {
-            buildRegistrationContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin);
+            buildRegistrationContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin);
         });
 
         Rectangle emailInput = new Rectangle(695, 372, 530,98);
-        emailInput.setFill(Color.WHITE);
-        emailInput.setStroke(Color.BLACK);
-        emailInput.setArcHeight(50);
-        emailInput.setArcWidth(50);
+        emailInput.getStyleClass().add("inputRect");
         TextField email = new TextField();
         email.setPromptText("Enter Email");
         email.getStyleClass().add("loginTextField");
         email.setLayoutX(790);
         email.setLayoutY(382);
 
-        Rectangle passwordInput = new Rectangle(695, 510, 530, 98);
-        passwordInput.setFill(Color.WHITE);
-        passwordInput.setStroke(Color.BLACK);
-        passwordInput.setArcHeight(50);
-        passwordInput.setArcWidth(50);
-        PasswordField password = new PasswordField();
-        password.getStyleClass().add("loginTextField");
-        TextField copyPw = new TextField();
-        copyPw.getStyleClass().add("loginTextField");
-        copyPw.setLayoutX(790);
-        copyPw.setLayoutY(520);
-        copyPw.setVisible(false);
-        copyPw.setManaged(false);
-        copyPw.textProperty().bindBidirectional(password.textProperty());
-        password.setPromptText("Enter Password");
-        password.setLayoutX(790);
-        password.setLayoutY(520);
-
-        Group inputs = new Group(emailInput, email, passwordInput, password, copyPw);
+        PasswordBundle loginPasswordInput = buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 1166, 534);
+        loginPasswordInput.getCopyPw().getStyleClass().add("loginTextField");
+        loginPasswordInput.getPassword().getStyleClass().add("loginTextField");
+        Group inputs = new Group(emailInput, email, loginPasswordInput.getInputs());
         user.setLayoutX(694);
         user.setLayoutY(376);
         lock.setLayoutX(694);
         lock.setLayoutY(513);
-        passwordShow.setLayoutX(1166);
-        passwordShow.setLayoutY(534);
-        passwordShow.setVisible(true);
-        passwordHide.setLayoutX(1166);
-        passwordHide.setLayoutY(534);
-        passwordHide.setVisible(false);
-        passwordShow.setOnMouseClicked(event -> {
-            showPassword(passwordHide, passwordShow, copyPw, password);
-        });
-        passwordHide.setOnMouseClicked(event -> {
-            hidePassword(passwordHide, passwordShow, copyPw, password);
-        });
-        Group icons = new Group(user, lock, passwordShow, passwordHide);
+        Group icons = new Group(user, lock, loginPasswordInput.getShowIcon(), loginPasswordInput.getHideIcon());
 
         Rectangle loginRect = new Rectangle(1083,98, Color.BLACK);
-        loginRect.setArcHeight(50);
-        loginRect.setArcWidth(50);
         Text loginText = new Text("Login");
         loginText.getStyleClass().add("buttonText");
         StackPane loginButton = new StackPane(loginRect, loginText);
@@ -164,8 +118,8 @@ public class Main extends Application {
         loginButton.setCursor(Cursor.HAND);
         loginButton.setOnMouseClicked(event -> {
             int option = 0;
-            if(!email.getText().isEmpty() && !password.getText().isEmpty()) {
-                option = userLogin(email.getText(), password.getText());
+            if(!email.getText().isEmpty() && !loginPasswordInput.getPassword().getText().isEmpty()) {
+                option = userLogin(email.getText(), loginPasswordInput.getPassword().getText());
             }
             switch(option) {
                 case 0:
@@ -184,18 +138,58 @@ public class Main extends Application {
         });
 
         Rectangle forgetPasswordRect = new Rectangle(700,60, Color.BLACK);
-        forgetPasswordRect.setArcHeight(50);
-        forgetPasswordRect.setArcWidth(50);
         Text forgotPasswordText = new Text("Forgot Password?");
         forgotPasswordText.getStyleClass().add("smallerButtonText");
         StackPane forgotPassword = new StackPane(forgetPasswordRect, forgotPasswordText);
         forgotPassword.setLayoutX(600);
         forgotPassword.setLayoutY(790);
         forgotPassword.setCursor(Cursor.HAND);
+        forgotPassword.setOnMouseClicked(event -> {
+            forgotPassword(contentLayer);
+        });
         contentLayer.getChildren().setAll(selectLogin, selectRegister, inputs, loginButton, icons, forgotPassword);
-
     }
 
+    private PasswordBundle buildPasswordInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText, int iconX, int iconY){
+        Rectangle passwordInpRect = new Rectangle(rectX, rectY, rectW, 98);
+        passwordInpRect.getStyleClass().add("inputRect");
+
+        PasswordField password = new PasswordField();
+        password.setPromptText(promptText);
+        password.setLayoutX(fieldX);
+        password.setLayoutY(fieldY);
+
+        TextField copyPw = new TextField();
+        copyPw.setLayoutX(fieldX);
+        copyPw.setLayoutY(fieldY);
+        copyPw.setVisible(false);
+        copyPw.setManaged(false);
+
+        copyPw.textProperty().bindBidirectional(password.textProperty());
+        ImageView passwordShow = new ImageView("file:src/resources/images/passwordShow.png");
+        ImageView passwordHide = new ImageView("file:src/resources/images/passwordHide.png");
+
+        passwordShow.setLayoutX(iconX);
+        passwordShow.setLayoutY(iconY);
+        passwordShow.setVisible(true);
+        passwordShow.getStyleClass().add("passwordImage");
+
+        passwordHide.setLayoutX(iconX);
+        passwordHide.setLayoutY(iconY);
+        passwordHide.setVisible(false);
+        passwordHide.getStyleClass().add("passwordImage");
+
+        passwordShow.setOnMouseClicked(e -> showPassword(passwordHide, passwordShow, copyPw, password));
+        passwordHide.setOnMouseClicked(e -> hidePassword(passwordHide, passwordShow, copyPw, password));
+
+        Group inputs = new Group(passwordInpRect, password, copyPw);
+
+        return new PasswordBundle(inputs, password, copyPw, passwordShow, passwordHide);
+    }
+
+    private void forgotPassword(Group contentLayer) {
+
+    }
     private void hidePassword(ImageView passwordHide, ImageView passwordShow, TextField copyPw, PasswordField password) {
         passwordHide.setVisible(false);
         passwordShow.setVisible(true);
@@ -228,112 +222,34 @@ public class Main extends Application {
         }
     }
 
-    private void buildRegistrationContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, ImageView passwordShow, ImageView passwordHide, StackPane selectRegister, StackPane selectLogin) {
+    private void buildRegistrationContent(Group contentLayer, Rectangle selectLoginRect, Rectangle selectRegisterRect, ImageView user, ImageView lock, StackPane selectRegister, StackPane selectLogin) {
         selectRegisterRect.setFill(Color.BLACK);
         selectLoginRect.setFill(Color.GREY);
-        selectLogin.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin));
+        selectLogin.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin));
 
         Rectangle emailInput = new Rectangle(531, 345, 815,98);
-        emailInput.setFill(Color.WHITE);
-        emailInput.setStroke(Color.BLACK);
-        emailInput.setArcHeight(50);
-        emailInput.setArcWidth(50);
+        emailInput.getStyleClass().add("inputRect");
         TextField email = new TextField();
         email.setPromptText("Enter Email");
         email.setLayoutX(630);
         email.setLayoutY(355);
 
-        Rectangle passwordInput = new Rectangle(531,458, 815, 98);
-        passwordInput.setFill(Color.WHITE);
-        passwordInput.setStroke(Color.BLACK);
-        passwordInput.setArcHeight(50);
-        passwordInput.setArcWidth(50);
-        PasswordField password = new PasswordField();
-        TextField copyPw = new TextField();
-        copyPw.setLayoutX(630);
-        copyPw.setLayoutY(468);
-        copyPw.setVisible(false);
-        copyPw.setManaged(false);
-        copyPw.textProperty().bindBidirectional(password.textProperty());
-        password.setPromptText("Enter Password");
-        password.setLayoutX(630);
-        password.setLayoutY(468);
-
-        Rectangle confirmPasswordInput = new Rectangle(531, 572, 815, 98);
-        confirmPasswordInput.setFill(Color.WHITE);
-        confirmPasswordInput.setStroke(Color.BLACK);
-        confirmPasswordInput.setArcHeight(50);
-        confirmPasswordInput.setArcWidth(50);
-        PasswordField confirmPassword = new PasswordField();
-        TextField copyCPw = new TextField();
-        copyCPw.setLayoutX(630);
-        copyCPw.setLayoutY(582);
-        copyCPw.setVisible(false);
-        copyCPw.setManaged(false);
-        copyCPw.textProperty().bindBidirectional(confirmPassword.textProperty());
-        confirmPassword.setPromptText("Confirm Password");
-        confirmPassword.setLayoutX(630);
-        confirmPassword.setLayoutY(582);
+        PasswordBundle registrationPassword = buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 1280, 483);
+        PasswordBundle confirmRegistrationPassword = buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 1280, 598);
 
         ImageView lock2 = new ImageView("file:src/resources/images/lock.png");
         lock2.setFitHeight(88);
         lock2.setFitWidth(95);
-        ImageView passwordShow2 = new ImageView("file:src/resources/images/passwordShow.png");
-        passwordShow2.setFitHeight(47);
-        passwordShow2.setFitWidth(48);
-        ImageView passwordHide2 = new ImageView("file:src/resources/images/passwordHide.png");
-        passwordHide2.setFitHeight(47);
-        passwordHide2.setFitWidth(48);
-
         user.setLayoutX(531);
         user.setLayoutY(348);
-
         lock.setLayoutX(531);
         lock.setLayoutY(463);
-        passwordShow.setLayoutX(1280);
-        passwordShow.setLayoutY(483);
-        passwordShow.setVisible(true);
-        passwordHide.setLayoutX(1280);
-        passwordHide.setLayoutY(483);
-        passwordHide.setVisible(false);
-        passwordShow.setOnMouseClicked(event -> {
-            showPassword(passwordHide, passwordShow, copyPw, password);
-        });
-        passwordHide.setOnMouseClicked(event -> {
-            hidePassword(passwordHide, passwordShow, copyPw, password);
-        });
-        Group inputs = new Group(emailInput, email, passwordInput, copyPw, password, confirmPasswordInput, copyCPw, confirmPassword);
-
+        Group inputs = new Group(emailInput, email, registrationPassword.getInputs(), confirmRegistrationPassword.getInputs());
         lock2.setLayoutX(531);
         lock2.setLayoutY(576);
-        passwordShow2.setLayoutX(1280);
-        passwordShow2.setLayoutY(598);
-        passwordShow2.setVisible(true);
-        passwordHide2.setLayoutX(1280);
-        passwordHide2.setLayoutY(598);
-        passwordHide2.setVisible(false);
-        passwordShow2.setOnMouseClicked(event -> {
-            passwordHide2.setVisible(true);
-            passwordShow2.setVisible(false);
-            copyCPw.setManaged(true);
-            copyCPw.setVisible(true);
-            confirmPassword.setVisible(false);
-            confirmPassword.setManaged(false);
-        });
-        passwordHide2.setOnMouseClicked(event -> {
-            passwordHide2.setVisible(false);
-            passwordShow2.setVisible(true);
-            copyCPw.setManaged(false);
-            copyCPw.setVisible(false);
-            confirmPassword.setVisible(true);
-            confirmPassword.setManaged(true);
-        });
-
-        Group icons = new Group(user, lock, passwordShow, passwordHide, lock2, passwordShow2, passwordHide2);
+        Group icons = new Group(user, lock, registrationPassword.getShowIcon(), registrationPassword.getHideIcon(), lock2, confirmRegistrationPassword.getShowIcon(), confirmRegistrationPassword.getHideIcon());
 
         Rectangle registerRect = new Rectangle(1083,98, Color.BLACK);
-        registerRect.setArcHeight(50);
-        registerRect.setArcWidth(50);
         Text registerText = new Text("Register");
         registerText.getStyleClass().add("buttonText");
         StackPane registerButton = new StackPane(registerRect, registerText);
@@ -341,8 +257,8 @@ public class Main extends Application {
         registerButton.setLayoutY(699);
         registerButton.setCursor(Cursor.HAND);
         registerButton.setOnMouseClicked(event ->{
-            if (!email.getText().isEmpty() && !password.getText().isEmpty() && !confirmPassword.getText().isEmpty()) {
-                if (!password.getText().equals(confirmPassword.getText())) {
+            if (!email.getText().isEmpty() && !registrationPassword.getPassword().getText().isEmpty() && !confirmRegistrationPassword.getPassword().getText().isEmpty()) {
+                if (!registrationPassword.getPassword().getText().equals(confirmRegistrationPassword.getPassword().getText())) {
                     Alert passwordDoNotMatch = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
                     passwordDoNotMatch.show();
                 }else {
@@ -351,7 +267,7 @@ public class Main extends Application {
                             Alert error = new Alert(Alert.AlertType.ERROR, "Email already exists.");
                             error.show();
                         } else {
-                            buildRecoveryWordEntrance(contentLayer, email.getText(), password.getText());
+                            buildRecoveryWordEntrance(contentLayer, email.getText(), registrationPassword.getPassword().getText());
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -364,12 +280,10 @@ public class Main extends Application {
         });
 
         Rectangle alreadyHaveAccountRect = new Rectangle(700,60, Color.BLACK);
-        alreadyHaveAccountRect.setArcHeight(50);
-        alreadyHaveAccountRect.setArcWidth(50);
         Text alreadyHaveAccountText = new Text("Already have an account?");
         alreadyHaveAccountText.getStyleClass().add("smallerButtonText");
         StackPane alreadyHaveAccount = new StackPane(alreadyHaveAccountRect, alreadyHaveAccountText);
-        alreadyHaveAccount.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, passwordShow, passwordHide, selectRegister, selectLogin) );
+        alreadyHaveAccount.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin) );
         alreadyHaveAccount.setLayoutX(600);
         alreadyHaveAccount.setLayoutY(805);
 
@@ -383,10 +297,7 @@ public class Main extends Application {
         infoText.setLayoutX(430);
         infoText.setLayoutY(300);
         Rectangle recoveryWordRect = new Rectangle(531, 460, 815, 98);
-        recoveryWordRect.setFill(Color.WHITE);
-        recoveryWordRect.setStroke(Color.BLACK);
-        recoveryWordRect.setArcHeight(50);
-        recoveryWordRect.setArcWidth(50);
+        recoveryWordRect.getStyleClass().add("inputRect");
         TextField recoveryWordInput = new TextField();
         recoveryWordInput.setLayoutX(640);
         recoveryWordInput.setLayoutY(470);
@@ -492,8 +403,7 @@ public class Main extends Application {
     private ImageView createLogoView() {
         Image logo = new Image("file:src/resources/images/logo.png");
         ImageView logoView = new ImageView(logo);
-        logoView.setFitWidth(100);
-        logoView.setFitHeight(100);
+        logoView.getStyleClass().add("logo");
         logoView.setLayoutX(0);
         logoView.setLayoutY(0);
         return logoView;

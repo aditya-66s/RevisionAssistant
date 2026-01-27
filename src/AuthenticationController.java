@@ -109,6 +109,32 @@ public class AuthenticationController {
         // true if the hashed input matches the hashed password
         return newHash.equals(hashedPassword);
     }
+
+    public boolean resetPassword(User temp, String newPassword) throws NoSuchAlgorithmException, IOException {
+        generateSalt();
+        String hashedPassword = hashPassword(newPassword, getSalt());
+        String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
+        ArrayList<User> users = convertCSVtoArrayList();
+        for(User u : users){
+            if(u.getEmail().equals(temp.getEmail())){
+                u.setPasswordHash(hashedPassword);
+                u.setSaltBase64(saltBase64);
+                break;
+            }
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
+            for (User u : users) {
+                //DEBUGGED VIA
+//                String line = u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord();
+//                bw.write(line);
+//                System.out.println(line);
+                bw.write(u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord());
+
+                bw.newLine();
+            }
+        }
+        return true;
+    }
     public void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)
         SecureRandom random = new SecureRandom();

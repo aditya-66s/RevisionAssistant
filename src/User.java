@@ -19,10 +19,14 @@ public class User {
     public void setEmail(String email){
         this.email = email;
     }
-    public void setPasswordHash(String passwordHash){
-        this.hashedPassword = hashedPassword;
+    // ERROR
+//    public void setPasswordHash(String passwordHash){
+//        this.hashedPassword = hashedPassword;
+//    }
+        public void setPasswordHash(String passwordHash){
+        this.hashedPassword = passwordHash;
     }
-    private void setSaltBase64(String salt){
+    public void setSaltBase64(String salt){
         this.saltBase64 = salt;
     }
     public void setLastLogin(String lastLogin){

@@ -9,13 +9,15 @@ public class PasswordBundle {
     private final TextField copyPw;
     private final ImageView showIcon;
     private final ImageView hideIcon;
+    private final ImageView leftIcon;
 
-    public PasswordBundle(Group passwordGroup, PasswordField password, TextField copyPw, ImageView showIcon, ImageView hideIcon){
+    public PasswordBundle(Group passwordGroup, PasswordField password, TextField copyPw, ImageView showIcon, ImageView hideIcon, ImageView leftIcon) {
         this.passwordGroup = passwordGroup;
         this.password = password;
         this.copyPw = copyPw;
         this.showIcon = showIcon;
         this.hideIcon = hideIcon;
+        this.leftIcon = leftIcon;
     }
     public PasswordField getPassword() {
         return password;
@@ -35,6 +37,12 @@ public class PasswordBundle {
 
     public ImageView getShowIcon() {
         return showIcon;
+    }
+    public ImageView getLeftIcon() {
+        return leftIcon;
+    }
+    public Group getIconGroup() {
+        return new Group(hideIcon, showIcon, leftIcon);
     }
 }
 

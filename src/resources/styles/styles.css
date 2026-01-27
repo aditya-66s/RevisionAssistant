@@ -1,7 +1,7 @@
 .screens{
     -fx-background-color: black;
 }
-.logo{
+.constantImages{
     -fx-fit-height: 100px;
     -fx-fit-width: 100px;
 }

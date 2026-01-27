@@ -57,7 +57,9 @@ Rectangle{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 40px;
 }
-
+StackPane{
+    -fx-cursor: hand;
+}
 .smallerButtonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 20px;

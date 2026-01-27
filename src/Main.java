@@ -58,7 +58,6 @@ public class Main extends Application {
         Text selectLoginText = new Text("Login");
         selectLoginText.getStyleClass().add("smallButtonText");
         StackPane selectLogin = new StackPane(selectLoginRect, selectLoginText);
-        selectLogin.setCursor(Cursor.HAND);
         selectLogin.setLayoutX(578);
         selectLogin.setLayoutY(215);
 
@@ -66,7 +65,6 @@ public class Main extends Application {
         Text selectRegisterText = new Text("Register");
         selectRegisterText.getStyleClass().add("smallButtonText");
         StackPane selectRegister = new StackPane(selectRegisterRect, selectRegisterText);
-        selectRegister.setCursor(Cursor.HAND);
         selectRegister.setLayoutX(972);
         selectRegister.setLayoutY(215);
 
@@ -90,19 +88,13 @@ public class Main extends Application {
         selectRegister.setOnMouseClicked(event -> {
             buildRegistrationContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin);
         });
-
-        Rectangle emailInput = new Rectangle(695, 372, 530,98);
-        emailInput.getStyleClass().add("inputRect");
-        TextField email = new TextField();
-        email.setPromptText("Enter Email");
-        email.getStyleClass().add("loginTextField");
-        email.setLayoutX(790);
-        email.setLayoutY(382);
+        textBundle email = buildTextFieldInput(695, 372, 530, 790, 382, "Enter Email");
+        email.getTf().getStyleClass().add("loginTextField");
 
         PasswordBundle loginPasswordInput = buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 1166, 534);
         loginPasswordInput.getCopyPw().getStyleClass().add("loginTextField");
         loginPasswordInput.getPassword().getStyleClass().add("loginTextField");
-        Group inputs = new Group(emailInput, email, loginPasswordInput.getInputs());
+        Group inputs = new Group(email.getGroup(), loginPasswordInput.getPasswordGroup());
         user.setLayoutX(694);
         user.setLayoutY(376);
         lock.setLayoutX(694);
@@ -115,11 +107,10 @@ public class Main extends Application {
         StackPane loginButton = new StackPane(loginRect, loginText);
         loginButton.setLayoutX(430);
         loginButton.setLayoutY(684);
-        loginButton.setCursor(Cursor.HAND);
         loginButton.setOnMouseClicked(event -> {
             int option = 0;
-            if(!email.getText().isEmpty() && !loginPasswordInput.getPassword().getText().isEmpty()) {
-                option = userLogin(email.getText(), loginPasswordInput.getPassword().getText());
+            if(!email.getTf().getText().isEmpty() && !loginPasswordInput.getPassword().getText().isEmpty()) {
+                option = userLogin(email.getTf().getText(), loginPasswordInput.getPassword().getText());
             }
             switch(option) {
                 case 0:
@@ -143,7 +134,6 @@ public class Main extends Application {
         StackPane forgotPassword = new StackPane(forgetPasswordRect, forgotPasswordText);
         forgotPassword.setLayoutX(600);
         forgotPassword.setLayoutY(790);
-        forgotPassword.setCursor(Cursor.HAND);
         forgotPassword.setOnMouseClicked(event -> {
             forgotPassword(contentLayer);
         });
@@ -187,6 +177,16 @@ public class Main extends Application {
         return new PasswordBundle(inputs, password, copyPw, passwordShow, passwordHide);
     }
 
+    private textBundle buildTextFieldInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText){
+        Rectangle inputRect = new Rectangle(rectX, rectY, rectW, 98);
+        inputRect.getStyleClass().add("inputRect");
+        TextField tf = new TextField();
+        tf.setPromptText(promptText);
+        tf.setLayoutX(fieldX);
+        tf.setLayoutY(fieldY);
+        Group tfInps = new Group(inputRect, tf);
+        return new textBundle(tfInps, tf);
+    }
     private void forgotPassword(Group contentLayer) {
 
     }
@@ -227,12 +227,7 @@ public class Main extends Application {
         selectLoginRect.setFill(Color.GREY);
         selectLogin.setOnMouseClicked(event -> buildLoginContent(contentLayer, selectLoginRect, selectRegisterRect, user, lock, selectRegister, selectLogin));
 
-        Rectangle emailInput = new Rectangle(531, 345, 815,98);
-        emailInput.getStyleClass().add("inputRect");
-        TextField email = new TextField();
-        email.setPromptText("Enter Email");
-        email.setLayoutX(630);
-        email.setLayoutY(355);
+        textBundle email = buildTextFieldInput(531, 345, 815, 630, 355, "Enter Email");
 
         PasswordBundle registrationPassword = buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 1280, 483);
         PasswordBundle confirmRegistrationPassword = buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 1280, 598);
@@ -244,7 +239,7 @@ public class Main extends Application {
         user.setLayoutY(348);
         lock.setLayoutX(531);
         lock.setLayoutY(463);
-        Group inputs = new Group(emailInput, email, registrationPassword.getInputs(), confirmRegistrationPassword.getInputs());
+        Group inputs = new Group(email.getGroup(), registrationPassword.getPasswordGroup(), confirmRegistrationPassword.getPasswordGroup());
         lock2.setLayoutX(531);
         lock2.setLayoutY(576);
         Group icons = new Group(user, lock, registrationPassword.getShowIcon(), registrationPassword.getHideIcon(), lock2, confirmRegistrationPassword.getShowIcon(), confirmRegistrationPassword.getHideIcon());
@@ -255,19 +250,18 @@ public class Main extends Application {
         StackPane registerButton = new StackPane(registerRect, registerText);
         registerButton.setLayoutX(430);
         registerButton.setLayoutY(699);
-        registerButton.setCursor(Cursor.HAND);
         registerButton.setOnMouseClicked(event ->{
-            if (!email.getText().isEmpty() && !registrationPassword.getPassword().getText().isEmpty() && !confirmRegistrationPassword.getPassword().getText().isEmpty()) {
+            if (!email.getTf().getText().isEmpty() && !registrationPassword.getPassword().getText().isEmpty() && !confirmRegistrationPassword.getPassword().getText().isEmpty()) {
                 if (!registrationPassword.getPassword().getText().equals(confirmRegistrationPassword.getPassword().getText())) {
                     Alert passwordDoNotMatch = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
                     passwordDoNotMatch.show();
                 }else {
                     try {
-                        if (ac.doesEmailExist(email.getText())) {
+                        if (ac.doesEmailExist(email.getTf().getText())) {
                             Alert error = new Alert(Alert.AlertType.ERROR, "Email already exists.");
                             error.show();
                         } else {
-                            buildRecoveryWordEntrance(contentLayer, email.getText(), registrationPassword.getPassword().getText());
+                            buildRecoveryWordEntrance(contentLayer, email.getTf().getText(), registrationPassword.getPassword().getText());
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);

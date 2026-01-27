@@ -4,14 +4,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
 public class PasswordBundle {
-    private final Group inputs;
+    private final Group passwordGroup;
     private final PasswordField password;
     private final TextField copyPw;
     private final ImageView showIcon;
     private final ImageView hideIcon;
 
-    public PasswordBundle(Group inputs, PasswordField password, TextField copyPw, ImageView showIcon, ImageView hideIcon){
-        this.inputs = inputs;
+    public PasswordBundle(Group passwordGroup, PasswordField password, TextField copyPw, ImageView showIcon, ImageView hideIcon){
+        this.passwordGroup = passwordGroup;
         this.password = password;
         this.copyPw = copyPw;
         this.showIcon = showIcon;
@@ -25,8 +25,8 @@ public class PasswordBundle {
         return copyPw;
     }
 
-    public Group getInputs() {
-        return inputs;
+    public Group getPasswordGroup() {
+        return passwordGroup;
     }
 
     public ImageView getHideIcon() {

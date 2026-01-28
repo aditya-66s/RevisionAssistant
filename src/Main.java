@@ -1,3 +1,6 @@
+import RecordClasses.PasswordBundle;
+import RecordClasses.RectangleButtonBundle;
+import RecordClasses.TextBundle;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -27,18 +30,27 @@ import java.util.Stack;
 import java.util.function.Predicate;
 
 public class Main extends Application {
+    // Custom Fonts Xirod and Vipnagorgialla loaded from local files
     public Font Xirod = Font.loadFont("file:src/resources/fonts/Xirod.otf", 30);
     public Font Vipnagorgialla = Font.loadFont("file:src/resources/fonts/Vipnagorgialla.otf", 30);
+
+    // Authentication Controller for account-related operations
     public final AuthenticationController ac = new AuthenticationController();
+
+    // Validation Requirements used across multiple subroutines
     public String emailReq = "Email should follow the standard format";
     public String passwordReq = "Password should have a minimum of 6 characters, including a special character";
+
+    // Stack maintains navigation history for backtracking
     private Stack<List<Node>> history = new Stack<>();
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Set global stage
         ScreenManager.setStage(primaryStage);
 
         Scene splashScreen = createSplashScreen();
@@ -110,7 +122,7 @@ public class Main extends Application {
         RectangleButtonBundle selectLogin = buildRectangularButtonBundle(334, 98, "Login", "smallButtonText", 578, 215);
         RectangleButtonBundle selectRegister = buildRectangularButtonBundle(334,98, "Register", "smallButtonText", 972, 215);
 
-        Group contentLayer = new Group(selectLogin.getButton(), selectRegister.getButton());
+        Group contentLayer = new Group(selectLogin.button(), selectRegister.button());
         buildLoginContent(contentLayer, selectRegister, selectLogin);
         loginPane.getChildren().addAll(logo, background, contentLayer);
         return new Scene(loginPane, 1920, 1057);
@@ -124,28 +136,28 @@ public class Main extends Application {
     }
 
     private void buildLoginContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
-        selectRegister.getButtonRect().setFill(Color.GREY);
-        selectLogin.getButtonRect().setFill(Color.BLACK);
-        selectRegister.getButton().setOnMouseClicked(event -> {
+        selectRegister.buttonRect().setFill(Color.GREY);
+        selectLogin.buttonRect().setFill(Color.BLACK);
+        selectRegister.button().setOnMouseClicked(event -> {
             buildRegistrationContent(contentLayer, selectRegister, selectLogin);
         });
         String iconURL = "file:src/resources/images/user.png";
         TextBundle emailInput = buildTextFieldInput(695, 372, 530, 790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
-        emailInput.getTf().getStyleClass().add("loginTextField");
+        emailInput.tf().getStyleClass().add("loginTextField");
 
         PasswordBundle loginPasswordInput = buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 694, 513,1166, 534);
-        loginPasswordInput.getCopyPw().getStyleClass().add("loginTextField");
-        loginPasswordInput.getPassword().getStyleClass().add("loginTextField");
-        Group inputs = new Group(emailInput.getGroup(), loginPasswordInput.getPasswordGroup());
+        loginPasswordInput.copyPw().getStyleClass().add("loginTextField");
+        loginPasswordInput.password().getStyleClass().add("loginTextField");
+        Group inputs = new Group(emailInput.group(), loginPasswordInput.passwordGroup());
 
-        Group icons = new Group(emailInput.getIcon(), loginPasswordInput.getIconGroup());
+        Group icons = new Group(emailInput.icon(), loginPasswordInput.getIconGroup());
 
         RectangleButtonBundle login = buildRectangularButtonBundle(1083, 98, "Login", "buttonText", 430, 684);
-        login.getButton().setOnMouseClicked(event -> {
+        login.button().setOnMouseClicked(event -> {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             int option = 0;
-            if(!emailInput.getTf().getText().isEmpty() && !loginPasswordInput.getPassword().getText().isEmpty()) {
-                option = userLogin(emailInput.getTf().getText(), loginPasswordInput.getPassword().getText());
+            if(!emailInput.tf().getText().isEmpty() && !loginPasswordInput.password().getText().isEmpty()) {
+                option = userLogin(emailInput.tf().getText(), loginPasswordInput.password().getText());
             }
             switch(option) {
                 case 0:
@@ -162,14 +174,14 @@ public class Main extends Application {
         });
         RectangleButtonBundle forgotPassword = buildRectangularButtonBundle(700, 60, "Forgot Password", "smallerButtonText", 600, 790);
 
-        forgotPassword.getButton().setOnMouseClicked(event -> {
+        forgotPassword.button().setOnMouseClicked(event -> {
             try {
                 forgotPassword(contentLayer);
             } catch (IOException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
         });
-        switchContent(contentLayer, selectLogin.getButton(), selectRegister.getButton(), inputs, login.getButton(), icons, forgotPassword.getButton());
+        switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, login.button(), icons, forgotPassword.button());
     }
     private void forgotPassword(Group contentLayer) throws IOException, NoSuchAlgorithmException {
         String userURL = "file:src/resources/images/user.png";
@@ -178,33 +190,33 @@ public class Main extends Application {
         TextBundle recoveryWord = buildTextFieldInput(531, 370, 815 ,633, 380, "Enter Recovery Word", recoveryURL, 534, 373 ,95, 90);
         PasswordBundle resetPassword = buildPasswordInput(531, 489, 815, 633, 499, "Enter Password", 531, 495 ,1280, 515);
         PasswordBundle confirmResetPassword = buildPasswordInput(531, 609, 815, 633, 619, "Confirm password", 531, 615, 1280, 635);
-        attachValidator(emailInput.getTf(), this::isValidEmail, "error");
-        attachValidator(resetPassword.getPassword(), this::isValidPassword, "error", resetPassword.getCopyPw());
-        attachValidator(confirmResetPassword.getPassword(), this::isValidPassword, "error", confirmResetPassword.getCopyPw());
+        attachValidator(emailInput.tf(), this::isValidEmail, "error");
+        attachValidator(resetPassword.password(), this::isValidPassword, "error", resetPassword.copyPw());
+        attachValidator(confirmResetPassword.password(), this::isValidPassword, "error", confirmResetPassword.copyPw());
         RectangleButtonBundle resetPasswordRectangle = buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
-        resetPasswordRectangle.getButton().setOnMouseClicked(event -> {
+        resetPasswordRectangle.button().setOnMouseClicked(event -> {
             int option = -1;
-            boolean validInputs = isValidEmail(emailInput.getTf().getText()) && isValidPassword(resetPassword.getPassword().getText()) && isValidPassword(confirmResetPassword.getPassword().getText());
+            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText());
             if(!validInputs) {
                 option = 0; //empty
             }else {
                 User temp = null;
                 try {
-                    temp = ac.findUserByEmail(emailInput.getTf().getText());
+                    temp = ac.findUserByEmail(emailInput.tf().getText());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 if (temp == null) {
                     option = 1; //email not found
                 } else {
-                    if (!temp.getRecoveryWord().equals(recoveryWord.getTf().getText())) {
+                    if (!temp.getRecoveryWord().equals(recoveryWord.tf().getText())) {
                         option = 2; // recovery word does not match
                     } else {
-                        if (!resetPassword.getPassword().getText().equals(confirmResetPassword.getPassword().getText())) {
+                        if (!resetPassword.password().getText().equals(confirmResetPassword.password().getText())) {
                             option = 3; // passwords do not match
                         } else {
                             try {
-                                if (ac.resetPassword(temp, resetPassword.getPassword().getText())) {
+                                if (ac.resetPassword(temp, resetPassword.password().getText())) {
                                     option = 4; // success
                                 }
                             } catch (NoSuchAlgorithmException | IOException e) {
@@ -236,8 +248,8 @@ public class Main extends Application {
         });
         ImageView back = createBRImageView("back");
         back.setOnMouseClicked(event -> {goBack(contentLayer);});
-        Group icons  = new Group(emailInput.getIcon(), recoveryWord.getIcon(), resetPassword.getIconGroup(), confirmResetPassword.getIconGroup(), back);
-        switchContent(contentLayer, emailInput.getGroup(), recoveryWord.getGroup(), resetPassword.getPasswordGroup(), confirmResetPassword.getPasswordGroup(), resetPasswordRectangle.getButton(), icons);
+        Group icons  = new Group(emailInput.icon(), recoveryWord.icon(), resetPassword.getIconGroup(), confirmResetPassword.getIconGroup(), back);
+        switchContent(contentLayer, emailInput.group(), recoveryWord.group(), resetPassword.passwordGroup(), confirmResetPassword.passwordGroup(), resetPasswordRectangle.button(), icons);
     }
     private int userLogin(String email, String password) {
         boolean valid;
@@ -314,38 +326,38 @@ public class Main extends Application {
     }
 
     private void buildRegistrationContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
-        selectRegister.getButtonRect().setFill(Color.BLACK);
-        selectLogin.getButtonRect().setFill(Color.GREY);
-        selectLogin.getButton().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
+        selectRegister.buttonRect().setFill(Color.BLACK);
+        selectLogin.buttonRect().setFill(Color.GREY);
+        selectLogin.button().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
 
         String iconURL = "file:src/resources/images/user.png";
         TextBundle emailInput = buildTextFieldInput(531, 345, 815, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
         PasswordBundle registrationPassword = buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
         PasswordBundle confirmRegistrationPassword = buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 531, 576, 1280, 598);
-        attachValidator(registrationPassword.getPassword(), this::isValidPassword, "error", registrationPassword.getCopyPw());
-        attachValidator(confirmRegistrationPassword.getPassword(), this::isValidPassword, "error", confirmRegistrationPassword.getCopyPw());
-        attachValidator(emailInput.getTf(), this::isValidEmail,  "error");
+        attachValidator(registrationPassword.password(), this::isValidPassword, "error", registrationPassword.copyPw());
+        attachValidator(confirmRegistrationPassword.password(), this::isValidPassword, "error", confirmRegistrationPassword.copyPw());
+        attachValidator(emailInput.tf(), this::isValidEmail,  "error");
         ImageView question = createBRImageView("question");
-        Group inputs = new Group(emailInput.getGroup(), registrationPassword.getPasswordGroup(), confirmRegistrationPassword.getPasswordGroup());
-        Group icons = new Group(emailInput.getIcon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
+        Group inputs = new Group(emailInput.group(), registrationPassword.passwordGroup(), confirmRegistrationPassword.passwordGroup());
+        Group icons = new Group(emailInput.icon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
         RectangleButtonBundle register = buildRectangularButtonBundle(1083, 98, "Register", "buttonText", 430, 699);
         question.setOnMouseClicked(event -> {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             CustomAlert.info(alertWindow, (emailReq + "\n" + passwordReq));
         });
-        register.getButton().setOnMouseClicked(event ->{
+        register.button().setOnMouseClicked(event ->{
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            boolean validInputs = isValidEmail(emailInput.getTf().getText()) && isValidPassword(registrationPassword.getPassword().getText()) && isValidPassword(confirmRegistrationPassword.getPassword().getText());
+            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(registrationPassword.password().getText()) && isValidPassword(confirmRegistrationPassword.password().getText());
             if(!validInputs) {
                 CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq);
-            }else if(!registrationPassword.getPassword().getText().equals(confirmRegistrationPassword.getPassword().getText())) {
+            }else if(!registrationPassword.password().getText().equals(confirmRegistrationPassword.password().getText())) {
                 CustomAlert.error(alertWindow, "Passwords do not match");
             }else{
                 try {
-                    if (ac.doesEmailExist(emailInput.getTf().getText())) {
+                    if (ac.doesEmailExist(emailInput.tf().getText())) {
                         CustomAlert.error(alertWindow, "Email already exists.");
                         } else {
-                            buildRecoveryWordEntrance(contentLayer, emailInput.getTf().getText(), registrationPassword.getPassword().getText());
+                            buildRecoveryWordEntrance(contentLayer, emailInput.tf().getText(), registrationPassword.password().getText());
                         }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -353,8 +365,8 @@ public class Main extends Application {
             }
         });
         RectangleButtonBundle alreadyHaveAccount = buildRectangularButtonBundle(700,60, "Already have an account", "smallerButtonText", 600, 805);
-        alreadyHaveAccount.getButton().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
-        switchContent(contentLayer, selectLogin.getButton(), selectRegister.getButton(), inputs, register.getButton(), icons, alreadyHaveAccount.getButton());
+        alreadyHaveAccount.button().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
+        switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, register.button(), icons, alreadyHaveAccount.button());
     }
     public void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
         Text infoText = new Text("Enter a recovery word to use \n when resetting password");
@@ -374,10 +386,10 @@ public class Main extends Application {
         enter.setOnMouseClicked(event -> {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             int option;
-            if(recoveryWord.getTf().getText().isEmpty()){
+            if(recoveryWord.tf().getText().isEmpty()){
                 option = 0;
             }else {
-                option = userRegistration(email, password, recoveryWord.getTf().getText());
+                option = userRegistration(email, password, recoveryWord.tf().getText());
             }
             switch(option){
                 case 0:
@@ -392,7 +404,7 @@ public class Main extends Application {
                     break;
             }
         });
-        Group input = new Group(recoveryWord.getGroup(), recoveryWord.getIcon(), enter);
+        Group input = new Group(recoveryWord.group(), recoveryWord.icon(), enter);
         ImageView back  = createBRImageView("back");
         back.setOnMouseClicked(event -> {goBack(contentLayer);});
         switchContent(contentLayer, input, infoText, back);

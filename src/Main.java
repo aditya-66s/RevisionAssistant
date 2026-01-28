@@ -20,6 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -162,23 +163,15 @@ public class Main extends Application {
 
         RectangleButtonBundle login = buildRectangularButtonBundle(1083, 98, "Login", "buttonText", 430, 684);
         login.getButton().setOnMouseClicked(event -> {
+            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             int option = 0;
             if(!emailInput.getTf().getText().isEmpty() && !loginPasswordInput.getPassword().getText().isEmpty()) {
                 option = userLogin(emailInput.getTf().getText(), loginPasswordInput.getPassword().getText());
             }
             switch(option) {
-                case 0:
-                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
-                    emptyError.show();
-                    break;
-                case 1:
-                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Logged in successfully");
-                    success.show();
-                    break;
-                case 2:
-                    Alert error = new Alert(Alert.AlertType.ERROR, "Invalid email or password, or possible problems with files.");
-                    error.show();
-                    break;
+                case 0 -> CustomAlert.error(alertWindow, "Cannot be empty");
+                case 1 -> CustomAlert.success(alertWindow, "Logged in successfully");
+                case 2 -> CustomAlert.error(alertWindow, "Invalid email or password, or possible problems with files.");
             }
         });
         RectangleButtonBundle forgotPassword = buildRectangularButtonBundle(700, 60, "Forgot Password", "smallerButtonText", 600, 790);
@@ -294,27 +287,23 @@ public class Main extends Application {
                     }
                 }
             }
+            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             switch(option){
                 case 0:
-                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
-                    emptyError.show();
+                    CustomAlert.error(alertWindow, "Cannot be empty");
                     break;
                 case 1:
-                    Alert emailError = new Alert(Alert.AlertType.ERROR, "Email not found");
-                    emailError.show();
+                    CustomAlert.error(alertWindow, "Email not found");
                     break;
                 case 2:
-                    Alert rwError = new Alert(Alert.AlertType.ERROR, "Recovery word does not match");
-                    rwError.show();
+                    CustomAlert.error(alertWindow, "Recovery word does not match");
                     break;
                 case 3:
-                    Alert pwError = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
-                    pwError.show();
+                    CustomAlert.error(alertWindow, "Passwords do not match");
                     break;
                 case 4:
-                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Password reset successfully, you will be redirected to the login screen!");
-                    success.show();
-                    success.setOnCloseRequest(e -> goBack(contentLayer));
+                    CustomAlert.success(alertWindow, "Password reset successfully, you will be redirected to the login screen!" );
+                    goBack(contentLayer);
                     break;
             }
         });

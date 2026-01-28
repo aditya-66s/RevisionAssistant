@@ -8,7 +8,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -100,7 +99,6 @@ public class Main extends Application {
         splashPane.getChildren().addAll(logo, loadingView, texts);
         return new Scene(splashPane, 1920, 1057);
     }
-
     private ImageView createLogoView() {
         ImageView logoView = new ImageView("file:src/resources/images/logo.png");
         logoView.getStyleClass().add("constantImages");
@@ -108,15 +106,14 @@ public class Main extends Application {
         logoView.setLayoutY(0);
         return logoView;
     }
-    private ImageView createBackView(){
-        ImageView backView = new ImageView("file:src/resources/images/back.png");
-        backView.getStyleClass().add("constantImages");
-        backView.setLayoutX(1776);
-        backView.setLayoutY(916);
-        backView.setCursor(Cursor.HAND);
-        return backView;
+    private ImageView createBRImageView(String name){
+        ImageView iv = new ImageView("file:src/resources/images/" + name + ".png");
+        iv.getStyleClass().add("constantImages");
+        iv.setLayoutX(1776);
+        iv.setLayoutY(916);
+        iv.setCursor(Cursor.HAND);
+        return iv;
     }
-
     private Scene createLoginScreen() {
         Pane loginPane = new Pane();
         loginPane.getStyleClass().add("screens");
@@ -133,7 +130,6 @@ public class Main extends Application {
         loginPane.getChildren().addAll(logo, background, contentLayer);
         return new Scene(loginPane, 1920, 1057);
     }
-
     private RectangleButtonBundle buildRectangularButtonBundle(int rectW, int rectH, String text, String typeOfText, int StackPaneX, int StackPaneY) {
         Rectangle buttonRect = new Rectangle(rectW, rectH);
         Text buttonText = new Text(text);
@@ -143,7 +139,6 @@ public class Main extends Application {
         button.setLayoutY(StackPaneY);
         return new RectangleButtonBundle(buttonRect, buttonText, button);
     }
-
     private void buildLoginContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
         selectRegister.getButtonRect().setFill(Color.GREY);
         selectLogin.getButtonRect().setFill(Color.BLACK);
@@ -185,7 +180,6 @@ public class Main extends Application {
         });
         switchContent(contentLayer, selectLogin.getButton(), selectRegister.getButton(), inputs, login.getButton(), icons, forgotPassword.getButton());
     }
-
     private PasswordBundle buildPasswordInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText, int lIconX, int lIconY, int rIconX, int rIconY){
         Rectangle passwordInpRect = new Rectangle(rectX, rectY, rectW, 98);
         passwordInpRect.getStyleClass().add("inputRect");
@@ -228,7 +222,6 @@ public class Main extends Application {
 
         return new PasswordBundle(inputs, password, copyPw, passwordShow, passwordHide, lock);
     }
-
     private TextBundle buildTextFieldInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText, String iconURL, int iconX, int iconY, int iconW, int iconH){
         Rectangle inputRect = new Rectangle(rectX, rectY, rectW, 98);
         inputRect.getStyleClass().add("inputRect");
@@ -246,7 +239,6 @@ public class Main extends Application {
         Group tfInps = new Group(inputRect, tf);
         return new TextBundle(tfInps, tf, icon);
     }
-
     private void forgotPassword(Group contentLayer) throws IOException, NoSuchAlgorithmException {
         String userURL = "file:src/resources/images/user.png";
         TextBundle emailInput = buildTextFieldInput(531, 248, 815, 633, 258, "Enter Email", userURL, 531, 251, 95, 90);
@@ -308,12 +300,11 @@ public class Main extends Application {
             }
         });
 
-        ImageView back = createBackView();
+        ImageView back = createBRImageView("back");
         back.setOnMouseClicked(event -> {goBack(contentLayer);});
         Group icons  = new Group(emailInput.getIcon(), recoveryWord.getIcon(), resetPassword.getIconGroup(), confirmResetPassword.getIconGroup(), back);
         switchContent(contentLayer, emailInput.getGroup(), recoveryWord.getGroup(), resetPassword.getPasswordGroup(), confirmResetPassword.getPasswordGroup(), resetPasswordRectangle.getButton(), icons);
     }
-
     private void hidePassword(ImageView passwordHide, ImageView passwordShow, TextField copyPw, PasswordField password) {
         passwordHide.setVisible(false);
         passwordShow.setVisible(true);
@@ -322,7 +313,6 @@ public class Main extends Application {
         password.setVisible(true);
         password.setManaged(true);
     }
-
     private void showPassword(ImageView passwordHide, ImageView passwordShow, TextField copyPw, PasswordField password) {
         passwordHide.setVisible(true);
         passwordShow.setVisible(false);
@@ -331,7 +321,6 @@ public class Main extends Application {
         password.setVisible(false);
         password.setManaged(false);
     }
-
     private int userLogin(String email, String password) {
         boolean valid;
         try{
@@ -345,7 +334,6 @@ public class Main extends Application {
             return 2;
         }
     }
-
     private void buildRegistrationContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
         selectRegister.getButtonRect().setFill(Color.BLACK);
         selectLogin.getButtonRect().setFill(Color.GREY);
@@ -354,23 +342,27 @@ public class Main extends Application {
         String iconURL = "file:src/resources/images/user.png";
         TextBundle emailInput = buildTextFieldInput(531, 345, 815, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
         PasswordBundle registrationPassword = buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
+        attachPasswordValidation(registrationPassword.getPassword());
         PasswordBundle confirmRegistrationPassword = buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 531, 576, 1280, 598);
-
+        ImageView question = createBRImageView("question");
         Group inputs = new Group(emailInput.getGroup(), registrationPassword.getPasswordGroup(), confirmRegistrationPassword.getPasswordGroup());
-        Group icons = new Group(emailInput.getIcon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup());
-
+        Group icons = new Group(emailInput.getIcon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
         RectangleButtonBundle register = buildRectangularButtonBundle(1083, 98, "Register", "buttonText", 430, 699);
-
+        String usernameReq = "Username should have a minimum of three characters";
+        String passwordReq = "Password should have a minimum of 6, including a special character";
+        question.setOnMouseClicked(event -> {
+            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
+            CustomAlert.info(alertWindow, (usernameReq + "\n" + passwordReq));
+        });
         register.getButton().setOnMouseClicked(event ->{
+            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             if (!emailInput.getTf().getText().isEmpty() && !registrationPassword.getPassword().getText().isEmpty() && !confirmRegistrationPassword.getPassword().getText().isEmpty()) {
                 if (!registrationPassword.getPassword().getText().equals(confirmRegistrationPassword.getPassword().getText())) {
-                    Alert passwordDoNotMatch = new Alert(Alert.AlertType.ERROR, "Passwords do not match");
-                    passwordDoNotMatch.show();
+                    CustomAlert.error(alertWindow, "Passwords do not match");
                 }else {
                     try {
                         if (ac.doesEmailExist(emailInput.getTf().getText())) {
-                            Alert error = new Alert(Alert.AlertType.ERROR, "Email already exists.");
-                            error.show();
+                            CustomAlert.error(alertWindow, "Email already exists.");
                         } else {
                             buildRecoveryWordEntrance(contentLayer, emailInput.getTf().getText(), registrationPassword.getPassword().getText());
                         }
@@ -379,15 +371,13 @@ public class Main extends Application {
                     }
                 }
             } else {
-                Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
-                emptyError.show();
+                CustomAlert.error(alertWindow, "Cannot be empty");
             }
         });
         RectangleButtonBundle alreadyHaveAccount = buildRectangularButtonBundle(700,60, "Already have an account", "smallerButtonText", 600, 805);
         alreadyHaveAccount.getButton().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
         switchContent(contentLayer, selectLogin.getButton(), selectRegister.getButton(), inputs, register.getButton(), icons, alreadyHaveAccount.getButton());
     }
-
     public void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
         Text infoText = new Text("Enter a recovery word to use \n when resetting password");
         infoText.getStyleClass().add("infoText");
@@ -404,6 +394,7 @@ public class Main extends Application {
         enter.setLayoutY(463);
         enter.setCursor(Cursor.HAND);
         enter.setOnMouseClicked(event -> {
+            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             int option;
             if(recoveryWord.getTf().getText().isEmpty()){
                 option = 0;
@@ -412,25 +403,21 @@ public class Main extends Application {
             }
             switch(option){
                 case 0:
-                    Alert emptyError = new Alert(Alert.AlertType.ERROR, "Cannot be empty");
-                    emptyError.show();
+                    CustomAlert.error(alertWindow, "Cannot be empty");
                     break;
                 case 1:
-                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Account successfully registered");
-                    success.show();
+                    CustomAlert.success(alertWindow, "Account successfully registered");
                     break;
                 case 2:
-                    Alert error = new Alert(Alert.AlertType.ERROR, "Possible problem with files.");
-                    error.show();
+                    CustomAlert.error(alertWindow, "Possible problem with files.");
                     break;
             }
         });
         Group input = new Group(recoveryWord.getGroup(), recoveryWord.getIcon(), enter);
-        ImageView back  = createBackView();
+        ImageView back  = createBRImageView("back");
         back.setOnMouseClicked(event -> {goBack(contentLayer);});
         switchContent(contentLayer, input, infoText, back);
     }
-
     public int userRegistration(String email, String password, String recoveryWord){
         boolean added;
         try {
@@ -452,5 +439,28 @@ public class Main extends Application {
         if(!history.isEmpty()){
             contentLayer.getChildren().setAll(history.pop());
         }
+    }
+    private void attachPasswordValidation(PasswordField passwordField) {
+        passwordField.textProperty().addListener((obs, oldText, newText) -> {
+            boolean valid =
+                    newText.length() >= 6 &&
+                            newText.matches(".*[^a-zA-Z0-9].*");
+            passwordField.getStyleClass().remove("error");
+            if (!valid) {
+                passwordField.getStyleClass().add("error");
+            }
+        });
+    }
+    private boolean isValidEmail(String email){
+        if (email == null){
+            return false;
+        }
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    }
+    private boolean isValidPassword(String pw){
+        if(pw == null){
+            return false;
+        }
+        return pw.length()>=6 && pw.matches(".*[^a-zA-Z0-9].*");
     }
 }

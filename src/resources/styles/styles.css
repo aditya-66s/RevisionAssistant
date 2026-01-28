@@ -65,3 +65,6 @@ StackPane{
     -fx-font-size: 20px;
     -fx-fill: white;
 }
+.error{
+    -fx-text-fill: red;
+}

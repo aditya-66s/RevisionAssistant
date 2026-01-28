@@ -1,0 +1,53 @@
+.dialog-pane {
+    -fx-background-color: #1e1e1e;
+    -fx-padding: 20;
+}
+
+.dialog-pane .content {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .label {
+    -fx-font-family: "Xirod-Regular";
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 14px;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 18;
+    -fx-background-radius: 6;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: #5a5d5f;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:default {
+    -fx-background-color: #0078d7;
+}
+
+.dialog-pane .button:default:hover {
+    -fx-background-color: #1492ff;
+}
+
+/* ERROR */
+.dialog-pane.error {
+    -fx-border-color: #b00020;
+    -fx-border-width: 3;
+}
+
+/* CONFIRMATION / SUCCESS */
+.dialog-pane.confirmation {
+    -fx-border-color: #1e6f3e;
+    -fx-border-width: 3;
+}
+
+/* INFORMATION */
+.dialog-pane.information {
+    -fx-border-color: #005a9e;
+    -fx-border-width: 3;
+}

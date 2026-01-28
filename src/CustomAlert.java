@@ -2,6 +2,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
+import java.util.Objects;
+
 
 public class CustomAlert {
     public CustomAlert(){}
@@ -37,6 +39,13 @@ public class CustomAlert {
         a.getDialogPane().getButtonTypes().setAll(buttons);
         a.getDialogPane().setMinHeight(Control.USE_PREF_SIZE);
         a.getDialogPane().setMinWidth(420);
+        a.getDialogPane().getStyleClass()
+                .add(alertType.name().toLowerCase());
+        a.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(CustomAlert.class
+                                .getResource("/resources/styles/alert.css"))
+                        .toExternalForm()
+        );
         return a;
     }
 

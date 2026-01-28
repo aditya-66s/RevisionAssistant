@@ -11,11 +11,11 @@ public class ScreenManager {
     public static void setStage(Stage primaryStage){
         stage = primaryStage;
     }
-    public static void switchScene(Parent root){
+    public static void switchScene(Scene root){
         if(stage.getScene() != null){
             history.push(stage.getScene());
         }
-        stage.setScene(new Scene(root));
+        stage.setScene(root);
     }
     public static void goBack(){
         if(!history.isEmpty()){

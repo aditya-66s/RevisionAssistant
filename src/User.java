@@ -1,13 +1,17 @@
 import java.util.Date;
-
+// Represents a user account in the system
 public class User {
+    // User's email address, used for login
     private String email;
+    // Hashed version of passwor, cannot store pw as plain text
     private String hashedPassword;
+    // Salt used during password hashing
     private String saltBase64;
+    // Stores user's last login time as a string
     private String lastLogin;
-
+    // Word used for account recovery
     private String recoveryWord;
-
+    // Constructor initialises all user fields when a User object is created
     public User(String email, String hashedPassword, String saltBase64, String date, String recoveryWord){
         this.email = email;
         this.hashedPassword = hashedPassword;
@@ -15,7 +19,7 @@ public class User {
         this.lastLogin = date;
         this.recoveryWord = recoveryWord;
     }
-
+    // Getters and Setters for attributes
     public void setEmail(String email){
         this.email = email;
     }
@@ -23,7 +27,7 @@ public class User {
 //    public void setPasswordHash(String passwordHash){
 //        this.hashedPassword = hashedPassword;
 //    }
-        public void setPasswordHash(String passwordHash){
+    public void setPasswordHash(String passwordHash){
         this.hashedPassword = passwordHash;
     }
     public void setSaltBase64(String salt){

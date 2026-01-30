@@ -1,3 +1,5 @@
+package Components;
+
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.Stack;

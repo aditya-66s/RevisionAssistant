@@ -1,3 +1,7 @@
+package Controllers;
+
+import Models.User;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,7 +71,7 @@ public class AuthenticationController {
                     System.out.println("BAD ROW: " + line);
                     continue;
                 }
-                // Create a User from CSV columns
+                // Create a Models.User from CSV columns
                 User newUser = new User(temp[0], temp[1], temp[2], temp[3], temp[4]);
                 users.add(newUser);
             }
@@ -84,7 +88,7 @@ public class AuthenticationController {
         }
         return false;
     }
-    // Finds and returns the User object for given email
+    // Finds and returns the Models.User object for given email
     public User findUserByEmail(String email) throws IOException {
         ArrayList<User> users = convertCSVtoArrayList();
         for(int i = 0; i < users.size(); i++){

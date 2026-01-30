@@ -1,3 +1,5 @@
+package Components;
+
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
@@ -57,7 +59,7 @@ public class CustomAlert {
         a.getDialogPane().getStyleClass().add(alertType.name().toLowerCase());
         // Apply custom stylesheet for alert styling
         a.getDialogPane().getStylesheets().add(
-                Objects.requireNonNull(CustomAlert.class.getResource("/resources/styles/alert.css")).toExternalForm()
+                Objects.requireNonNull(CustomAlert.class.getResource("/styles/alert.css")).toExternalForm()
         );
         return a;
     }

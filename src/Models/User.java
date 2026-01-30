@@ -1,7 +1,8 @@
-import java.util.Date;
+package Models;
+
 // Represents a user account in the system
 public class User {
-    // User's email address, used for login
+    // Models.User's email address, used for login
     private String email;
     // Hashed version of passwor, cannot store pw as plain text
     private String hashedPassword;
@@ -11,7 +12,7 @@ public class User {
     private String lastLogin;
     // Word used for account recovery
     private String recoveryWord;
-    // Constructor initialises all user fields when a User object is created
+    // Constructor initialises all user fields when a Models.User object is created
     public User(String email, String hashedPassword, String saltBase64, String date, String recoveryWord){
         this.email = email;
         this.hashedPassword = hashedPassword;

@@ -21,11 +21,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Set stage reference for scene management
         ScreenManager.setStage(primaryStage);
-
-        //Creates and configures the splash screen, linking the stylesheet to it.
+        // Creates and configures the splash screen, linking the stylesheet to it.
         SplashScreen splashScreen = new SplashScreen();
         AuthScreen auth = new AuthScreen();
-
         Scene splashScene = splashScreen.create(() -> ScreenManager.switchScene(auth.create()));
         primaryStage.setTitle("Revision Assistant");
         primaryStage.setScene(splashScene);

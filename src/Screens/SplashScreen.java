@@ -44,7 +44,7 @@ public class SplashScreen {
         loadingView.setLayoutX(880);
         loadingView.setLayoutY(600);
 
-        // Animate the loading indicator with continuos rotation
+        // Animate the loading indicator with continuous rotation
         RotateTransition loadingTransition = new RotateTransition(Duration.seconds(8), loadingView);
         loadingTransition.setFromAngle(0);
         loadingTransition.setToAngle(360);

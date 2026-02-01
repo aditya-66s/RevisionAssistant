@@ -34,8 +34,8 @@ public class AuthScreen {
     private final ContentNavigator nav = new ContentNavigator();
 
     // Validation Requirements used across multiple subroutines
-    public String emailReq = "Email should follow the standard format";
-    public String passwordReq = "Password should have a minimum of 6 characters, including a special character";
+    private final String emailReq = "Email should follow the standard format";
+    private final String passwordReq = "Password should have a minimum of 6 characters, including a special character";
 
     public Scene create(){
         Pane root = new Pane();
@@ -279,7 +279,7 @@ public class AuthScreen {
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, register.button(), icons, alreadyHaveAccount.button());
     }
     // Builds recovery word input screen when all inputs are valid
-    public void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
+    private void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
         // Create informational text
         Text infoText = new Text("Enter a recovery word to use \n when resetting password \n Minimum 3 Characters");
         infoText.getStyleClass().add("infoText");

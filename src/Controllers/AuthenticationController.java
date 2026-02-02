@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -56,7 +57,7 @@ public class AuthenticationController {
         // Email not found
         return false;
     }
-    // Readers users.csv and converts each row into a user object
+    // Reads users.csv and converts each row into a user object
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
         // Ensure folders and CSV exist before reading
         ensureCSVExists();
@@ -66,23 +67,27 @@ public class AuthenticationController {
             String line;
             while((line = br.readLine())!=null){
                 String[] temp = line.split(",");
-                // Validate row lengths to avoid ArrayIndexOutOfBoundsException
+                // Validate row lengths to avoid ArrayIndexOutOfBoundsException, throw an exception
                 if (temp.length < 5) {
-                    System.out.println("BAD ROW: " + line);
-                    continue;
+                    throw new IllegalArgumentException("Corrupted Row: " + line);
                 }
                 // Create a Models.User from CSV columns
                 User newUser = new User(temp[0], temp[1], temp[2], temp[3], temp[4]);
                 users.add(newUser);
             }
+        } catch (Exception e) {
+            quarantineCorruptedCSV(e);
+            // Act as if there are no users if corrupted.
+            return new ArrayList<>();
         }
         return users;
     }
     // Checks if a given email exists in the CSV
     public boolean doesEmailExist(String email) throws IOException {
         ArrayList<User> users = convertCSVtoArrayList();
-        for(int i = 0; i < users.size(); i++){
-            if(users.get(i).getEmail().equals(email)){
+        for (User user : users) {
+            // Will not be case-sensitive
+            if (user.getEmail().equalsIgnoreCase(email)) {
                 return true;
             }
         }
@@ -91,9 +96,9 @@ public class AuthenticationController {
     // Finds and returns the Models.User object for given email
     public User findUserByEmail(String email) throws IOException {
         ArrayList<User> users = convertCSVtoArrayList();
-        for(int i = 0; i < users.size(); i++){
-            if(users.get(i).getEmail().equals(email)){
-                return users.get(i);
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
             }
         }
         return null;
@@ -163,6 +168,26 @@ public class AuthenticationController {
         if(!Files.exists(csvPath)){
             Files.createFile(csvPath);
         }
+    }
+    // Quarantining Corrupted files, creating a replacement
+    private void quarantineCorruptedCSV(Exception cause) throws IOException {
+        // Ensure parent folder exists (do NOT recreate the file before moving it)
+        if (!Files.exists(csvPath.getParent())) {
+            Files.createDirectories(csvPath.getParent());
+        }
+        // Only quarantine if the corrupted file actually exists
+        if(Files.exists(csvPath)){
+            // Generate a timestamp so each corrupted back-up has a unique filename
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
+            // Create a new path in same directory
+            // Keep the corrupted file for recovery or debugging
+            Path backup = csvPath.resolveSibling("user_corrupted" + timestamp + ".csv");
+            // Move corrupted file to back up location
+            // REPLACE_EXISTING ensures there is no conflict
+            Files.move(csvPath, backup, StandardCopyOption.REPLACE_EXISTING);
+        }
+        // Create an empty users.csv so the system can continue
+        Files.createFile(csvPath);
     }
     public void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)

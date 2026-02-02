@@ -70,6 +70,8 @@ public class AuthScreen {
         // Set up button to switch content when clicked
         selectRegister.button().setOnMouseClicked(event -> {
             buildRegistrationContent(contentLayer, selectRegister, selectLogin);
+            selectRegister.buttonRect().setFill(Color.BLACK);
+            selectLogin.buttonRect().setFill(Color.GREY);
         });
 
         // Create input field with user icon
@@ -223,7 +225,11 @@ public class AuthScreen {
         selectRegister.buttonRect().setFill(Color.BLACK);
         selectLogin.buttonRect().setFill(Color.GREY);
         // Set up button to switch content when clicked
-        selectLogin.button().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
+        selectLogin.button().setOnMouseClicked(event -> {
+                buildLoginContent(contentLayer, selectRegister, selectLogin);
+                selectRegister.buttonRect().setFill(Color.GREY);
+                selectLogin.buttonRect().setFill(Color.BLACK);
+        });
 
         // Create input field
         String iconURL = "/images/user.png";
@@ -362,10 +368,11 @@ public class AuthScreen {
             field.getStyleClass().add(errorClass);
         }
     }
+
     // Validates email format via regex
     private boolean isValidEmail(String email){
         if (email == null) return false;
-        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     }
     // Validates strength of password
     private boolean isValidPassword(String pw){

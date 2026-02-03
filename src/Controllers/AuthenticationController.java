@@ -19,6 +19,8 @@ import java.util.Objects;
 public class AuthenticationController {
     // Stores most recently generated salt
     private byte[] salt;
+    // Holds the application's current user
+    private User currentUser;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
     private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
     // Registers a user
@@ -38,6 +40,7 @@ public class AuthenticationController {
                 bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin() + "," + recoveryWord);
                 bw.newLine();
             }
+            currentUser = user;
             return true;
         }else{
             // Email already in CSV
@@ -52,7 +55,11 @@ public class AuthenticationController {
             User temp = findUserByEmail(email);
             // Check if password matches,
             // Objects.requireNonNull(temp) prevents a NullPointerException without explanation, (if null, it throws immediately)
-            return verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
+            boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
+            if(loggedIn){
+                currentUser = temp;
+                return true;
+            }
         }
         // Email not found
         return false;
@@ -198,9 +205,18 @@ public class AuthenticationController {
         random.nextBytes(salt);
         this.salt = salt;
     }
+    //Setters
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
     // Getters for attributes
     public byte[] getSalt(){
         return this.salt;
+    }
+    public User getCurrentUser(){
+        return this.currentUser;
     }
     public String getDate(){
         LocalDateTime time = LocalDateTime.now();

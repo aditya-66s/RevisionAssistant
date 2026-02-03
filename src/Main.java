@@ -1,5 +1,6 @@
 import Components.ScreenManager;
 import Screens.AuthScreen;
+import Screens.MainMenuScreen;
 import Screens.SplashScreen;
 import javafx.application.Application;
 import javafx.scene.*;
@@ -8,12 +9,27 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Main extends Application {
     // Custom Fonts Xirod and Vipnagorgialla loaded from local files
-    public Font Xirod = Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/Xirod.otf")).toExternalForm(), 30);
-    public Font Vipnagorgialla = Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/Vipnagorgialla.otf")).toExternalForm(), 30);
+    public Font Xirod = Font.loadFont(getClass().getResourceAsStream("/fonts/Xirod.otf"), 30);
+    public Font Vipnagorgialla = Font.loadFont(getClass().getResourceAsStream("/fonts/Vipnagorgialla.otf"), 30);
     public static void main(String[] args) {
+//        Scanner sc = new Scanner(System.in);
+//        boolean yes = true;
+//        do{
+//            System.out.println("Width: ");
+//            double w = sc.nextDouble();
+//            if(w == 0){
+//                yes = false;
+//            }else {
+//                System.out.println(1920 * (w / 33.867));
+//                System.out.println("Height: ");
+//                double h = sc.nextDouble();
+//                System.out.println(1057 * (h / 19.05));
+//            }
+//        }while (yes);
         launch(args);
     }
 
@@ -28,5 +44,9 @@ public class Main extends Application {
         primaryStage.setTitle("Revision Assistant");
         primaryStage.setScene(splashScene);
         primaryStage.show();
+//        MainMenuScreen mMS = new MainMenuScreen();
+//        Scene mainMenuTest = mMS.create();
+//        primaryStage.setScene(mainMenuTest);
+//        primaryStage.show();
     }
 }

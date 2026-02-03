@@ -5,7 +5,11 @@
     -fx-fit-height: 100px;
     -fx-fit-width: 100px;
 }
-.screens .title{
+.icons{
+    -fx-fit-height: 141px;
+    -fx-fit-width: 144px;
+}
+.title{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 130px;
     -fx-fill: white;

@@ -6,6 +6,8 @@ import RecordClasses.TextBundle;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -73,6 +75,7 @@ public class UIComponents {
         tf.setPromptText(promptText);
         tf.setLayoutX(fieldX);
         tf.setLayoutY(fieldY);
+        tf.setContextMenu(createContextMenu(tf));
         // Create icon
         ImageView icon = new ImageView(iconURL);
         icon.setLayoutX(iconX);
@@ -130,5 +133,20 @@ public class UIComponents {
         copyPw.setVisible(true);
         password.setVisible(false);
         password.setManaged(false);
+    }
+    private ContextMenu createContextMenu(TextField tf){
+        MenuItem cut = new MenuItem("Cut");
+        cut.setOnAction(e -> tf.cut());
+
+        MenuItem copy = new MenuItem("Copy");
+        copy.setOnAction(e -> tf.copy());
+
+        MenuItem paste = new MenuItem("Paste");
+        paste.setOnAction(e -> tf.paste());
+
+        ContextMenu cm = new ContextMenu(cut, copy, paste);
+        cm.getStyleClass().add("context-menu");
+
+        return cm;
     }
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
-public class AuthenticationController {
+public class  AuthenticationController {
     // Stores most recently generated salt
     private byte[] salt;
     // Holds the application's current user

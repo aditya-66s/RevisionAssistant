@@ -43,6 +43,19 @@ Rectangle{
 .loginTextField{
     -fx-pref-width: 370px;
 }
+.context-menu {
+    -fx-font-size: 12px;
+    -fx-padding: 2px;
+}
+.context-menu .menu-item {
+    -fx-padding: 3px 10px;
+}
+.context-menu .text,
+.context-menu .label {
+    -fx-font-size: 12px;
+    -fx-text-fill: black;
+    -fx-fill: black;
+}
 .passwordImage{
     -fx-fit-height: 47px;
     -fx-fit-width: 48px;

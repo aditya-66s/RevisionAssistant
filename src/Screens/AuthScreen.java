@@ -36,6 +36,7 @@ public class AuthScreen {
     // Validation Requirements used across multiple subroutines
     private final String emailReq = "Email should follow the standard format";
     private final String passwordReq = "Password should have a minimum of 6 characters, including a special character";
+    private final String rwReq = "Recovery Word must be a minimum of 3 characters";
 
     public Scene create(){
         Pane root = new Pane();
@@ -140,12 +141,13 @@ public class AuthScreen {
         attachValidator(emailInput.tf(), this::isValidEmail, "error");
         attachValidator(resetPassword.password(), this::isValidPassword, "error", resetPassword.copyPw());
         attachValidator(confirmResetPassword.password(), this::isValidPassword, "error", confirmResetPassword.copyPw());
+        attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
         // Create password reset button
         RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
         resetPasswordRectangle.button().setOnMouseClicked(event -> {
             int option = -1;
             // Validate input
-            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText());
+            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText()) && isValidRecoveryW(recoveryWord.tf().getText());
             if(!validInputs) {
                 option = 0; // invalid input
             }else {
@@ -180,7 +182,7 @@ public class AuthScreen {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
             switch(option){
                 case 0:
-                    CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq);
+                    CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
                     break;
                 case 1:
                     CustomAlert.error(alertWindow, "Email not found");
@@ -253,7 +255,7 @@ public class AuthScreen {
         // Show requirements when question mark is clicked
         question.setOnMouseClicked(event -> {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            CustomAlert.info(alertWindow, (emailReq + "\n" + passwordReq));
+            CustomAlert.info(alertWindow, (emailReq + "\n" + passwordReq + "\n" + rwReq));
         });
         // Handle registration button click
         register.button().setOnMouseClicked(event ->{
@@ -261,7 +263,7 @@ public class AuthScreen {
             // Check if inputs are valid
             boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(registrationPassword.password().getText()) && isValidPassword(confirmRegistrationPassword.password().getText());
             if(!validInputs) {
-                CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq);
+                CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
             }else if(!registrationPassword.password().getText().equals(confirmRegistrationPassword.password().getText())) {
                 CustomAlert.error(alertWindow, "Passwords do not match");
             }else{

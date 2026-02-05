@@ -9,11 +9,15 @@ import Models.User;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -84,9 +88,9 @@ public class AuthScreen {
         PasswordBundle loginPasswordInput = ui.buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 694, 513,1166, 534);
         loginPasswordInput.copyPw().getStyleClass().add("loginTextField");
         loginPasswordInput.password().getStyleClass().add("loginTextField");
-
-        loginPasswordInput.password().setOnAction(e -> loginSubmit(e, emailInput, loginPasswordInput));
-        emailInput.tf().setOnAction(e -> loginSubmit(e, emailInput, loginPasswordInput));
+        // Add enter to submit
+        EventHandler<ActionEvent> loginHandler = event -> loginSubmit(event, emailInput, loginPasswordInput);
+        bindEnter(loginHandler, emailInput.tf(), loginPasswordInput.password(), loginPasswordInput.copyPw());
         // Groups inputs together
         Group inputs = new Group(emailInput.group(), loginPasswordInput.passwordGroup());
         // Group icons together
@@ -146,12 +150,8 @@ public class AuthScreen {
         attachValidator(confirmResetPassword.password(), this::isValidPassword, "error", confirmResetPassword.copyPw());
         attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
         // Can be reset on enter for convenience
-        emailInput.tf().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
-        recoveryWord.tf().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
-        resetPassword.password().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
-        resetPassword.copyPw().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
-        confirmResetPassword.password().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
-        confirmResetPassword.copyPw().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        EventHandler<ActionEvent> resetHandler = e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer);
+        bindEnter(resetHandler, emailInput.tf(), resetPassword.password(), resetPassword.copyPw(), confirmResetPassword.password(), confirmResetPassword.copyPw(), recoveryWord.tf());
         // Create password reset button
         RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
         resetPasswordRectangle.button().setOnMouseClicked(event -> resetSubmit(event, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
@@ -261,11 +261,8 @@ public class AuthScreen {
         ImageView question = ui.createBRImageView("question");
 
         // Enter to submit for convenience
-        emailInput.tf().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
-        registrationPassword.password().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
-        registrationPassword.copyPw().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
-        confirmRegistrationPassword.password().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
-        confirmRegistrationPassword.copyPw().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
+        EventHandler<ActionEvent> registerHandler = e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer);
+        bindEnter(registerHandler, emailInput.tf(), registrationPassword.password(), registrationPassword.copyPw(), confirmRegistrationPassword.password(), confirmRegistrationPassword.copyPw());
         // Group inputs fields and icons
         Group inputs = new Group(emailInput.group(), registrationPassword.passwordGroup(), confirmRegistrationPassword.passwordGroup());
         Group icons = new Group(emailInput.icon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
@@ -410,4 +407,14 @@ public class AuthScreen {
         return recoveryWord != null && recoveryWord.length() >= 3;
     }
 
+    // Bind Enter Button to submit in Text Fields
+    private void bindEnter(EventHandler<ActionEvent> handler, Node... fields) {
+        for (Node node : fields) {
+            if(node instanceof TextField tf){
+                tf.setOnAction(handler);
+            }else if(node instanceof PasswordField pf){
+                pf.setOnAction(handler);
+            }
+        }
+    }
 }

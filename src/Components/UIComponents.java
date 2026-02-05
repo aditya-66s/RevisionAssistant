@@ -106,7 +106,7 @@ public class UIComponents {
 
     // Creates an image view positioned in the bottom right of the page
     public ImageView createBRImageView(String name){
-        ImageView iv = new ImageView(Objects.requireNonNull(getClass().getResource("/images/" + name + ".png")).toExternalForm());
+        ImageView iv = new ImageView(Objects.requireNonNull(getClass().getResource("/images/Constant/" + name + ".png")).toExternalForm());
         iv.getStyleClass().add("constantImages");
         iv.setLayoutX(1776);
         iv.setLayoutY(916);

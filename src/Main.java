@@ -16,23 +16,25 @@ public class Main extends Application {
     public Font Xirod = Font.loadFont(getClass().getResourceAsStream("/fonts/Xirod.otf"), 30);
     public Font Vipnagorgialla = Font.loadFont(getClass().getResourceAsStream("/fonts/Vipnagorgialla.otf"), 30);
     public static void main(String[] args) {
-//        Scanner sc = new Scanner(System.in);
-//        boolean yes = true;
-//        do{
-//            System.out.println("Width: ");
-//            double w = sc.nextDouble();
-//            if(w == 0){
-//                yes = false;
-//            }else {
-//                System.out.println(1920 * (w / 33.867));
-//                System.out.println("Height: ");
-//                double h = sc.nextDouble();
-//                System.out.println(1057 * (h / 19.05));
-//            }
-//        }while (yes);
+        // conversion();
         launch(args);
     }
-
+    public void conversion(){
+        Scanner sc = new Scanner(System.in);
+        boolean yes = true;
+        do{
+            System.out.println("Width: ");
+            double w = sc.nextDouble();
+            if(w == 0){
+                yes = false;
+            }else {
+                System.out.println(1920 * (w / 33.867));
+                System.out.println("Height: ");
+                double h = sc.nextDouble();
+                System.out.println(1057 * (h / 19.05));
+            }
+        }while (yes);
+    }
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Set stage reference for scene management
@@ -44,9 +46,11 @@ public class Main extends Application {
         primaryStage.setTitle("Revision Assistant");
         primaryStage.setScene(splashScene);
         primaryStage.show();
-//        MainMenuScreen mMS = new MainMenuScreen();
-//        Scene mainMenuTest = mMS.create();
-//        primaryStage.setScene(mainMenuTest);
-//        primaryStage.show();
+        primaryStage.setResizable(false);
+        primaryStage.setMaximized(true);
+        MainMenuScreen mMS = new MainMenuScreen();
+        Scene mainMenuTest = mMS.create();
+        primaryStage.setScene(mainMenuTest);
+        primaryStage.show();
     }
 }

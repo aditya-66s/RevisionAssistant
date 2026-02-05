@@ -108,8 +108,8 @@ public class UIComponents {
     public ImageView createBRImageView(String name){
         ImageView iv = new ImageView(Objects.requireNonNull(getClass().getResource("/images/Constant/" + name + ".png")).toExternalForm());
         iv.getStyleClass().add("constantImages");
-        iv.setLayoutX(1776);
-        iv.setLayoutY(916);
+        iv.setLayoutX(1820);
+        iv.setLayoutY(957);
         iv.setCursor(Cursor.HAND);
         return iv;
     }

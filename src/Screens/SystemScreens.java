@@ -1,5 +1,6 @@
 package Screens;
 
+import Components.ContentNavigator;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
 import javafx.scene.Group;
@@ -16,6 +17,7 @@ import static javafx.scene.text.TextAlignment.CENTER;
 public abstract class SystemScreens {
     public final UIComponents ui = new UIComponents();
     public final AuthenticationController ac = new AuthenticationController();
+    public final ContentNavigator nav = new  ContentNavigator();
     // Constant rectangular button dimensions set
     public final int rectW = 1300;
     public final int rectH = 133;
@@ -38,9 +40,9 @@ public abstract class SystemScreens {
         iconView.setLayoutY(iconY);
         return iconView;
     }
-//    public void setTitle(String titleText) {
-//        this.title = new Text(titleText);
-//    }
+    public void setTitle(String titleText) {
+        this.title = new Text(titleText);
+    }
 
     public Text getTitle(){
         return title;

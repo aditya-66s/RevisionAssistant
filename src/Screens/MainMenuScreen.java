@@ -1,6 +1,7 @@
 package Screens;
 
 import Components.CustomAlert;
+import Components.ScreenManager;
 import Components.UIComponents;
 import RecordClasses.RectangleButtonBundle;
 import javafx.event.Event;
@@ -21,10 +22,6 @@ public class MainMenuScreen extends SystemScreens {
         // Creating the background rectangle using the inherited method from the SystemScreens Class
         Group background = createBackground("Main Menu");
         getTitle().setLayoutX(450);
-        getTitle().setLayoutY(160);
-        // Constant rectangular button dimensions set
-        int rectW = 1300;
-        int rectH = 133;
         // Creating buttons bundles for all
         RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", 310, 250);
         revisionSystem.button().setOnMouseClicked(event -> revisionSystemMouseClick());
@@ -52,12 +49,13 @@ public class MainMenuScreen extends SystemScreens {
 
     private void logout(Event e) {
         Window alertWindow = ((Node) e.getSource()).getScene().getWindow();
-//        CustomAlert.confirm()
-        // add a save data method
-        ac.setCurrentUser(null);
+        if(CustomAlert.confirm(alertWindow, "Logout Confirmation", "Are you sure you would like to log out?")){
+            ac.logout();
+        }
     }
 
     private void settingsMouseClick() {
+        ScreenManager.switchScene(new SettingsScreen().create());
     }
 
     private void userManagementMouseClick() {

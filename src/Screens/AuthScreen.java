@@ -9,12 +9,14 @@ import Models.User;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -69,7 +71,7 @@ public class AuthScreen {
         selectLogin.buttonRect().setFill(Color.BLACK);
 
         // Set up button to switch content when clicked
-        selectRegister.button().setOnMouseClicked(event -> {
+        selectRegister.button().setOnMouseClicked(_ -> {
             buildRegistrationContent(contentLayer, selectRegister, selectLogin);
             selectRegister.buttonRect().setFill(Color.BLACK);
             selectLogin.buttonRect().setFill(Color.GREY);
@@ -79,12 +81,13 @@ public class AuthScreen {
         String iconURL = "/images/user.png";
         TextBundle emailInput = ui.buildTextFieldInput(695, 372, 530, 790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
         emailInput.tf().getStyleClass().add("loginTextField");
-
         // Create password input field with show and hide functionality
         PasswordBundle loginPasswordInput = ui.buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 694, 513,1166, 534);
         loginPasswordInput.copyPw().getStyleClass().add("loginTextField");
         loginPasswordInput.password().getStyleClass().add("loginTextField");
 
+        loginPasswordInput.password().setOnAction(e -> loginSubmit(e, emailInput, loginPasswordInput));
+        emailInput.tf().setOnAction(e -> loginSubmit(e, emailInput, loginPasswordInput));
         // Groups inputs together
         Group inputs = new Group(emailInput.group(), loginPasswordInput.passwordGroup());
         // Group icons together
@@ -92,38 +95,39 @@ public class AuthScreen {
 
         // Create a login button
         RectangleButtonBundle login = ui.buildRectangularButtonBundle(1083, 98, "Login", "buttonText", 430, 684);
-        login.button().setOnMouseClicked(event -> {
-            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            int option = 0;
-
-            // Validate that fields are not empty before attempting to login
-            if(!emailInput.tf().getText().isEmpty() && !loginPasswordInput.password().getText().isEmpty()) {
-                option = userLogin(emailInput.tf().getText(), loginPasswordInput.password().getText());
-            }
-            // Handle different login outcomes displaying alerts depending outcome
-            switch(option) {
-                case 0:
-                    CustomAlert.error(alertWindow, "Cannot be empty");
-                    break;
-                case 1:
-                    CustomAlert.success(alertWindow, "Logged in successfully");
-                    ScreenManager.switchScene(new MainMenuScreen().create());
-                    break;
-                case 2:
-                    CustomAlert.error(alertWindow, "Invalid email or password, or possible problems with files.");
-                    break;
-            }
-        });
+        login.button().setOnMouseClicked(event -> loginSubmit(event, emailInput, loginPasswordInput));
 
         // Create a "Forgot Password" button
         RectangleButtonBundle forgotPassword = ui.buildRectangularButtonBundle(700, 60, "Forgot Password", "smallerButtonText", 600, 790);
-        forgotPassword.button().setOnMouseClicked(event -> {
+        forgotPassword.button().setOnMouseClicked(_ -> {
             // Change content to display forgot password options
             forgotPassword(contentLayer);
         });
 
         // Replace content layer with login elements
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, login.button(), icons, forgotPassword.button());
+    }
+    // Displays correct Alert depending on scenario, on enter or login click.
+    private void loginSubmit(Event event, TextBundle emailInput, PasswordBundle loginPasswordInput){
+        Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
+        int option = 0;
+        // Validate that fields are not empty before attempting to login
+        if(!emailInput.tf().getText().isEmpty() && !loginPasswordInput.password().getText().isEmpty()) {
+            option = userLogin(emailInput.tf().getText(), loginPasswordInput.password().getText());
+        }
+        // Handle different login outcomes displaying alerts depending outcome
+        switch(option) {
+            case 0:
+                CustomAlert.error(alertWindow, "Cannot be empty");
+                break;
+            case 1:
+                CustomAlert.success(alertWindow, "Logged in successfully");
+                ScreenManager.switchScene(new MainMenuScreen().create());
+                break;
+            case 2:
+                CustomAlert.error(alertWindow, "Invalid email or password, or possible problems with files.");
+                break;
+        }
     }
     // Displays forgotPassword form, when option is selected
     private void forgotPassword(Group contentLayer) {
@@ -142,69 +146,79 @@ public class AuthScreen {
         attachValidator(resetPassword.password(), this::isValidPassword, "error", resetPassword.copyPw());
         attachValidator(confirmResetPassword.password(), this::isValidPassword, "error", confirmResetPassword.copyPw());
         attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
+        // Can be reset on enter for convenience
+        emailInput.tf().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        recoveryWord.tf().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        resetPassword.password().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        resetPassword.copyPw().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        confirmResetPassword.password().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        confirmResetPassword.copyPw().setOnAction(e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
         // Create password reset button
         RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
-        resetPasswordRectangle.button().setOnMouseClicked(event -> {
-            int option = -1;
-            // Validate input
-            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText()) && isValidRecoveryW(recoveryWord.tf().getText());
-            if(!validInputs) {
-                option = 0; // invalid input
-            }else {
-                // Find user by email
-                User temp;
-                try {
-                    temp = ac.findUserByEmail(emailInput.tf().getText());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                if (temp == null) {
-                    option = 1; // Email not found
+        resetPasswordRectangle.button().setOnMouseClicked(event -> resetSubmit(event, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
+        // Create a back button to return to login screen
+        ImageView back = ui.createBRImageView("back");
+        back.setOnMouseClicked(_ -> nav.goBack(contentLayer));
+        Group icons  = new Group(emailInput.icon(), recoveryWord.icon(), resetPassword.getIconGroup(), confirmResetPassword.getIconGroup(), back);
+        // Replace content with password reset content
+        nav.switchContent(contentLayer, emailInput.group(), recoveryWord.group(), resetPassword.passwordGroup(), confirmResetPassword.passwordGroup(), resetPasswordRectangle.button(), icons);
+    }
+    // Displays correct alert depending on scenario, or enter or reset password button click
+    private void resetSubmit(Event event, TextBundle recoveryWord, TextBundle emailInput, PasswordBundle resetPassword, PasswordBundle confirmResetPassword, Group contentLayer) {
+        int option = -1;
+        // Validate input
+        boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText()) && isValidRecoveryW(recoveryWord.tf().getText());
+        if (!validInputs) {
+            option = 0; // invalid input
+        } else {
+            // Find user by email
+            User temp;
+            try {
+                temp = ac.findUserByEmail(emailInput.tf().getText());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (temp == null) {
+                option = 1; // Email not found
+            } else {
+                if (!temp.getRecoveryWord().equals(recoveryWord.tf().getText())) {
+                    option = 2; // Recovery word does not match
                 } else {
-                    if (!temp.getRecoveryWord().equals(recoveryWord.tf().getText())) {
-                        option = 2; // Recovery word does not match
+                    if (!resetPassword.password().getText().equals(confirmResetPassword.password().getText())) {
+                        option = 3; // Passwords do not match
                     } else {
-                        if (!resetPassword.password().getText().equals(confirmResetPassword.password().getText())) {
-                            option = 3; // Passwords do not match
-                        } else {
-                            try {
-                                if (ac.resetPassword(temp, resetPassword.password().getText())) {
-                                    option = 4; // Success
-                                }
-                            } catch (NoSuchAlgorithmException | IOException e) {
-                                throw new RuntimeException(e);
+                        try {
+                            if (ac.resetPassword(temp, resetPassword.password().getText())) {
+                                option = 4; // Success
                             }
+                        } catch (NoSuchAlgorithmException | IOException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }
             }
-            // Display appropriate alert based on outcome
-            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            switch(option){
-                case 0:
-                    CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
-                    break;
-                case 1:
-                    CustomAlert.error(alertWindow, "Email not found");
-                    break;
-                case 2:
-                    CustomAlert.error(alertWindow, "Recovery word does not match");
-                    break;
-                case 3:
-                    CustomAlert.error(alertWindow, "Passwords do not match");
-                    break;
-                case 4:
-                    CustomAlert.success(alertWindow, "Password reset successfully, you will be redirected to the login screen!" );
-                    nav.goBack(contentLayer);
-                    break;
-            }
-        });
-        // Create a back button to return to login screen
-        ImageView back = ui.createBRImageView("back");
-        back.setOnMouseClicked(event -> {nav.goBack(contentLayer);});
-        Group icons  = new Group(emailInput.icon(), recoveryWord.icon(), resetPassword.getIconGroup(), confirmResetPassword.getIconGroup(), back);
-        // Replace content with password reset content
-        nav.switchContent(contentLayer, emailInput.group(), recoveryWord.group(), resetPassword.passwordGroup(), confirmResetPassword.passwordGroup(), resetPasswordRectangle.button(), icons);
+        }
+
+        // Display appropriate alert based on outcome
+        Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
+        switch(option){
+            case 0:
+                CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
+                break;
+            case 1:
+                CustomAlert.error(alertWindow, "Email not found");
+                break;
+            case 2:
+                CustomAlert.error(alertWindow, "Recovery word does not match");
+                break;
+            case 3:
+                CustomAlert.error(alertWindow, "Passwords do not match");
+                break;
+            case 4:
+                CustomAlert.success(alertWindow, "Password reset successfully, you will be redirected to the login screen!" );
+                nav.goBack(contentLayer);
+                break;
+        }
     }
     // Attempts to log in the user
     private int userLogin(String email, String password) {
@@ -227,7 +241,7 @@ public class AuthScreen {
         selectRegister.buttonRect().setFill(Color.BLACK);
         selectLogin.buttonRect().setFill(Color.GREY);
         // Set up button to switch content when clicked
-        selectLogin.button().setOnMouseClicked(event -> {
+        selectLogin.button().setOnMouseClicked(_ -> {
                 buildLoginContent(contentLayer, selectRegister, selectLogin);
                 selectRegister.buttonRect().setFill(Color.GREY);
                 selectLogin.buttonRect().setFill(Color.BLACK);
@@ -243,9 +257,16 @@ public class AuthScreen {
         attachValidator(registrationPassword.password(), this::isValidPassword, "error", registrationPassword.copyPw());
         attachValidator(confirmRegistrationPassword.password(), this::isValidPassword, "error", confirmRegistrationPassword.copyPw());
         attachValidator(emailInput.tf(), this::isValidEmail,  "error");
+
         // Create a question mark icon for displaying input requirements
         ImageView question = ui.createBRImageView("question");
 
+        // Enter to submit for convenience
+        emailInput.tf().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
+        registrationPassword.password().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
+        registrationPassword.copyPw().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
+        confirmRegistrationPassword.password().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
+        confirmRegistrationPassword.copyPw().setOnAction(e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
         // Group inputs fields and icons
         Group inputs = new Group(emailInput.group(), registrationPassword.passwordGroup(), confirmRegistrationPassword.passwordGroup());
         Group icons = new Group(emailInput.icon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
@@ -258,33 +279,35 @@ public class AuthScreen {
             CustomAlert.info(alertWindow, (emailReq + "\n" + passwordReq + "\n" + rwReq));
         });
         // Handle registration button click
-        register.button().setOnMouseClicked(event ->{
-            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            // Check if inputs are valid
-            boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(registrationPassword.password().getText()) && isValidPassword(confirmRegistrationPassword.password().getText());
-            if(!validInputs) {
-                CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
-            }else if(!registrationPassword.password().getText().equals(confirmRegistrationPassword.password().getText())) {
-                CustomAlert.error(alertWindow, "Passwords do not match");
-            }else{
-                try {
-                    // Check if email already exists
-                    if (ac.doesEmailExist(emailInput.tf().getText())) {
-                        CustomAlert.error(alertWindow, "Email already exists.");
-                    } else {
-                        // Proceed to Recovery word setup
-                        buildRecoveryWordEntrance(contentLayer, emailInput.tf().getText(), registrationPassword.password().getText());
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        register.button().setOnMouseClicked(event -> registerSubmit(event, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
         // Create "Already have an account" button
         RectangleButtonBundle alreadyHaveAccount = ui.buildRectangularButtonBundle(700,60, "Already have an account", "smallerButtonText", 600, 805);
-        alreadyHaveAccount.button().setOnMouseClicked(event -> buildLoginContent(contentLayer, selectRegister, selectLogin));
+        alreadyHaveAccount.button().setOnMouseClicked(_ -> buildLoginContent(contentLayer, selectRegister, selectLogin));
         // Replace content with registration form
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, register.button(), icons, alreadyHaveAccount.button());
+    }
+    // Enter or Click Register logic
+    public void registerSubmit(Event event, TextBundle emailInput, PasswordBundle registrationPassword, PasswordBundle confirmRegistrationPassword, Group contentLayer){
+        Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
+        // Check if inputs are valid
+        boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(registrationPassword.password().getText()) && isValidPassword(confirmRegistrationPassword.password().getText());
+        if(!validInputs) {
+            CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
+        }else if(!registrationPassword.password().getText().equals(confirmRegistrationPassword.password().getText())) {
+            CustomAlert.error(alertWindow, "Passwords do not match");
+        }else{
+            try {
+                // Check if email already exists
+                if (ac.doesEmailExist(emailInput.tf().getText())) {
+                    CustomAlert.error(alertWindow, "Email already exists.");
+                } else {
+                    // Proceed to Recovery word setup
+                    buildRecoveryWordEntrance(contentLayer, emailInput.tf().getText(), registrationPassword.password().getText());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     // Builds recovery word input screen when all inputs are valid
     private void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
@@ -298,6 +321,7 @@ public class AuthScreen {
         // Create recovery word input field
         TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 ,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
         attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
+        recoveryWord.tf().setOnAction(e -> rwSubmit(e, recoveryWord, email, password));
         // Create enter button (as an icon)
         ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/enter.png")).toExternalForm());
         enter.setFitHeight(90);
@@ -306,35 +330,37 @@ public class AuthScreen {
         enter.setLayoutY(463);
         enter.setCursor(Cursor.HAND);
         // Handle registration submission
-        enter.setOnMouseClicked(event -> {
-            Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
-            int option;
-            if(!isValidRecoveryW(recoveryWord.tf().getText())) {
-                option = 0; // Empty recovery word
-            }else {
-                option = userRegistration(email, password, recoveryWord.tf().getText());
-            }
-            // Display appropriate alert based on outcome
-            switch(option){
-                case 0:
-                    CustomAlert.error(alertWindow, "Cannot be empty and must be greater than 3 characters");
-                    break;
-                case 1:
-                    CustomAlert.success(alertWindow, "Account successfully registered");
-                    ScreenManager.switchScene(new MainMenuScreen().create());
-                    break;
-                case 2:
-                    CustomAlert.error(alertWindow, "Possible problem with files.");
-                    break;
-            }
-        });
+        enter.setOnMouseClicked(event -> rwSubmit(event, recoveryWord, email, password));
         // Group recovery word input and entry button
         Group input = new Group(recoveryWord.group(), recoveryWord.icon(), enter);
         // Create back button if user wants to cancel
         ImageView back  = ui.createBRImageView("back");
-        back.setOnMouseClicked(event -> {nav.goBack(contentLayer);});
+        back.setOnMouseClicked(_ -> nav.goBack(contentLayer));
         // replace content with recovery word entry screen
         nav.switchContent(contentLayer, input, infoText, back);
+    }
+    // Enter / onClick, submitting recovery word
+    public void rwSubmit(Event event, TextBundle recoveryWord, String email, String password){
+        Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
+        int option;
+        if(!isValidRecoveryW(recoveryWord.tf().getText())) {
+            option = 0; // Empty recovery word
+        }else {
+            option = userRegistration(email, password, recoveryWord.tf().getText());
+        }
+        // Display appropriate alert based on outcome
+        switch(option){
+            case 0:
+                CustomAlert.error(alertWindow, "Cannot be empty and must be greater than 3 characters");
+                break;
+            case 1:
+                CustomAlert.success(alertWindow, "Account successfully registered");
+                ScreenManager.switchScene(new MainMenuScreen().create());
+                break;
+            case 2:
+                CustomAlert.error(alertWindow, "Possible problem with files.");
+                break;
+        }
     }
     // Attempts to register the user
     public int userRegistration(String email, String password, String recoveryWord){
@@ -350,7 +376,6 @@ public class AuthScreen {
             return 2; // Registration failed
         }
     }
-
 
     // Adds a real-time validator to input fields and error styling validation fields.
     private void attachValidator(TextInputControl field, Predicate<String> rule, String errorClass, TextInputControl... linkedField) {

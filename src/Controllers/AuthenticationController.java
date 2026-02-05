@@ -1,12 +1,12 @@
 package Controllers;
 
+import Components.ScreenManager;
 import Models.User;
+import Screens.AuthScreen;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
-public class  AuthenticationController {
+public class  AuthenticationController extends Controller {
     // Stores most recently generated salt
     private byte[] salt;
-    // Holds the application's current user
-    private User currentUser;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
     private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
     // Registers a user
@@ -40,7 +38,7 @@ public class  AuthenticationController {
                 bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin() + "," + recoveryWord);
                 bw.newLine();
             }
-            currentUser = user;
+            setCurrentUser(user);
             return true;
         }else{
             // Email already in CSV
@@ -57,7 +55,7 @@ public class  AuthenticationController {
             // Objects.requireNonNull(temp) prevents a NullPointerException without explanation, (if null, it throws immediately)
             boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
             if(loggedIn){
-                currentUser = temp;
+                setCurrentUser(temp);
                 return true;
             }
         }
@@ -67,7 +65,7 @@ public class  AuthenticationController {
     // Reads users.csv and converts each row into a user object
     public ArrayList<User> convertCSVtoArrayList() throws IOException {
         // Ensure folders and CSV exist before reading
-        ensureCSVExists();
+        ensureCSVExists(csvPath);
         ArrayList<User> users = new ArrayList<>();
         // Read CSV line by line
         try(BufferedReader br = new BufferedReader(new FileReader(csvPath.toString()))) {
@@ -83,7 +81,7 @@ public class  AuthenticationController {
                 users.add(newUser);
             }
         } catch (Exception e) {
-            quarantineCorruptedCSV(e);
+            quarantineCorruptedCSV(e, csvPath);
             // Act as if there are no users if corrupted.
             return new ArrayList<>();
         }
@@ -165,36 +163,18 @@ public class  AuthenticationController {
         }
         return true;
     }
-    // Ensures parent folder and CSV exists
-    private void ensureCSVExists() throws IOException {
-        // Create a parent directory if it doesn't exist
-        if(!Files.exists(csvPath.getParent())){
-            Files.createDirectories(csvPath.getParent());
+    // System Logout
+    public void logout(){
+        if (getCurrentUser() != null){
+            getCurrentUser().setLastLogin(getDate());
         }
-        // Create CSV file if it doesn't exist
-        if(!Files.exists(csvPath)){
-            Files.createFile(csvPath);
-        }
-    }
-    // Quarantining Corrupted files, creating a replacement
-    private void quarantineCorruptedCSV(Exception cause) throws IOException {
-        // Ensure parent folder exists (do NOT recreate the file before moving it)
-        if (!Files.exists(csvPath.getParent())) {
-            Files.createDirectories(csvPath.getParent());
-        }
-        // Only quarantine if the corrupted file actually exists
-        if(Files.exists(csvPath)){
-            // Generate a timestamp so each corrupted back-up has a unique filename
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
-            // Create a new path in same directory
-            // Keep the corrupted file for recovery or debugging
-            Path backup = csvPath.resolveSibling("user_corrupted" + timestamp + ".csv");
-            // Move corrupted file to back up location
-            // REPLACE_EXISTING ensures there is no conflict
-            Files.move(csvPath, backup, StandardCopyOption.REPLACE_EXISTING);
-        }
-        // Create an empty users.csv so the system can continue
-        Files.createFile(csvPath);
+        // add a save data method
+        // System has no current user, so data cannot be accessed
+        setCurrentUser(null);
+        // User cannot find a way to go back into Main Menu after logging out
+        ScreenManager.clearHistory();
+        // Switch to Log in/Registration Screen
+        ScreenManager.switchScene(new AuthScreen().create());
     }
     public void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)
@@ -206,17 +186,9 @@ public class  AuthenticationController {
         this.salt = salt;
     }
     //Setters
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
-
     // Getters for attributes
     public byte[] getSalt(){
         return this.salt;
-    }
-    public User getCurrentUser(){
-        return this.currentUser;
     }
     public String getDate(){
         LocalDateTime time = LocalDateTime.now();

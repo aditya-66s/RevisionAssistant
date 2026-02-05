@@ -24,7 +24,7 @@ public class CustomAlert {
     }
     // displays a confirmational dialog with OK and Cancel buttons
     public static boolean confirm(Window alertWindow, String title, String message){
-        Alert a = build(alertWindow, title, message, Alert.AlertType.CONFIRMATION, ButtonType.CANCEL, ButtonType.OK);
+        Alert a = build(alertWindow, title, message, Alert.AlertType.INFORMATION, ButtonType.CANCEL, ButtonType.OK);
         // showAndWait() pauses code until user responds
         // filter checks if OK was clicked
         // isPresent() returns true if OK was chosen

@@ -16,7 +16,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -78,7 +77,7 @@ public class AuthScreen {
         });
 
         // Create input field with user icon
-        String iconURL = "/images/user.png";
+        String iconURL = "/images/AuthScreen/user.png";
         TextBundle emailInput = ui.buildTextFieldInput(695, 372, 530, 790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
         emailInput.tf().getStyleClass().add("loginTextField");
         // Create password input field with show and hide functionality
@@ -132,10 +131,10 @@ public class AuthScreen {
     // Displays forgotPassword form, when option is selected
     private void forgotPassword(Group contentLayer) {
         // Create email input field
-        String userURL = "/images/user.png";
+        String userURL = "/images/AuthScreen/user.png";
         TextBundle emailInput = ui.buildTextFieldInput(531, 248, 815, 633, 258, "Enter Email", userURL, 531, 251, 95, 90);
         // Create recovery word input field
-        String recoveryURL = "/images/recover.png";
+        String recoveryURL = "/images/AuthScreen/recover.png";
         TextBundle recoveryWord = ui.buildTextFieldInput(531, 370, 815 ,633, 380, "Enter Recovery Word", recoveryURL, 534, 373 ,95, 90);
         // Create password input fields
         PasswordBundle resetPassword = ui.buildPasswordInput(531, 489, 815, 633, 499, "Enter Password", 531, 495 ,1280, 515);
@@ -248,7 +247,7 @@ public class AuthScreen {
         });
 
         // Create input field
-        String iconURL = "/images/user.png";
+        String iconURL = "/images/AuthScreen/user.png";
         TextBundle emailInput = ui.buildTextFieldInput(531, 345, 815, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
         // Create password input fields
         PasswordBundle registrationPassword = ui.buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
@@ -317,13 +316,13 @@ public class AuthScreen {
         infoText.setTextAlignment(TextAlignment.CENTER);
         infoText.setLayoutX(430);
         infoText.setLayoutY(300);
-        String iconURL = "/images/recover.png";
+        String iconURL = "/images/AuthScreen/recover.png";
         // Create recovery word input field
         TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 ,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
         attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
         recoveryWord.tf().setOnAction(e -> rwSubmit(e, recoveryWord, email, password));
         // Create enter button (as an icon)
-        ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/enter.png")).toExternalForm());
+        ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/enter.png")).toExternalForm());
         enter.setFitHeight(90);
         enter.setFitWidth(95);
         enter.setLayoutX(1245);

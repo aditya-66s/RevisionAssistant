@@ -2,7 +2,6 @@ package Screens;
 
 import Components.CustomAlert;
 import Components.ScreenManager;
-import Components.UIComponents;
 import RecordClasses.RectangleButtonBundle;
 import javafx.event.Event;
 import javafx.scene.Group;
@@ -12,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
-import java.util.EventObject;
 import java.util.Objects;
 
 public class MainMenuScreen extends SystemScreens {
@@ -25,19 +23,19 @@ public class MainMenuScreen extends SystemScreens {
         // Creating buttons bundles for all
         RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", 310, 250);
         revisionSystem.button().setOnMouseClicked(event -> revisionSystemMouseClick());
-        ImageView rsIcon = createIcon(310, 245, "/images/books.png");
+        ImageView rsIcon = createIcon(310, 245, "/images/MainMenuScreen/books.png");
 
         RectangleButtonBundle userManagement = ui.buildRectangularButtonBundle(rectW, rectH, "User Management", "buttonText", 310,  420);
         userManagement.button().setOnMouseClicked(event -> userManagementMouseClick());
-        ImageView umIcon = createIcon(310, 415, "/images/userbook.png");
+        ImageView umIcon = createIcon(310, 415, "/images/MainMenuScreen/userbook.png");
 
         RectangleButtonBundle settings = ui.buildRectangularButtonBundle(rectW, rectH, "Settings", "buttonText", 310, 591);
         settings.button().setOnMouseClicked(event -> settingsMouseClick());
-        ImageView sIcon = createIcon(310, 586, "/images/settings.png");
+        ImageView sIcon = createIcon(310, 586, "/images/MainMenuScreen/settings.png");
 
         RectangleButtonBundle logout = ui.buildRectangularButtonBundle(rectW, rectH, "Logout", "buttonText", 310, 762);
         logout.button().setOnMouseClicked(this::logout);
-        ImageView lIcon = createIcon(310, 757, "/images/door.png");
+        ImageView lIcon = createIcon(310, 757, "/images/MainMenuScreen/door.png");
 
         Group buttons = new Group(revisionSystem.button(), userManagement.button(), settings.button(), logout.button());
         Group icons = new Group(rsIcon, umIcon, sIcon, lIcon);

@@ -37,7 +37,7 @@ public class SplashScreen {
         topText.setLayoutY(100);
 
         // Create the rotating loading indicator
-        Image loading = new Image(Objects.requireNonNull(getClass().getResource("/images/loading.png")).toExternalForm());
+        Image loading = new Image(Objects.requireNonNull(getClass().getResource("/images/SplashScreen/loading.png")).toExternalForm());
         ImageView loadingView = new ImageView(loading);
         loadingView.setFitWidth(100);
         loadingView.setFitHeight(100);

@@ -3,7 +3,6 @@ package Components;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
@@ -11,7 +10,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -36,7 +34,7 @@ public class UIComponents {
         copyPw.setVisible(false);
         copyPw.setManaged(false);
         // Create lock icon
-        ImageView lock = new ImageView(Objects.requireNonNull(getClass().getResource("/images/lock.png")).toExternalForm());
+        ImageView lock = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/lock.png")).toExternalForm());
         lock.setLayoutX(lIconX);
         lock.setLayoutY(lIconY);
         lock.setFitHeight(88);
@@ -44,8 +42,8 @@ public class UIComponents {
         // Bind text fields together so they stay synchronized
         copyPw.textProperty().bindBidirectional(password.textProperty());
         // Create show/hide password icons
-        ImageView passwordShow = new ImageView(Objects.requireNonNull(getClass().getResource("/images/passwordShow.png")).toExternalForm());
-        ImageView passwordHide = new ImageView(Objects.requireNonNull(getClass().getResource("/images/passwordHide.png")).toExternalForm());
+        ImageView passwordShow = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/passwordShow.png")).toExternalForm());
+        ImageView passwordHide = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/passwordHide.png")).toExternalForm());
 
         passwordShow.setLayoutX(rIconX);
         passwordShow.setLayoutY(rIconY);
@@ -99,7 +97,7 @@ public class UIComponents {
 
     // Creates logo image view for easy reuse
     public ImageView createLogoView() {
-        ImageView logoView = new ImageView(Objects.requireNonNull(getClass().getResource("/images/logo.png")).toExternalForm());
+        ImageView logoView = new ImageView(Objects.requireNonNull(getClass().getResource("/images/Constant/logo.png")).toExternalForm());
         logoView.getStyleClass().add("constantImages");
         logoView.setLayoutX(0);
         logoView.setLayoutY(0);

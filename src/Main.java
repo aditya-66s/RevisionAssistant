@@ -4,11 +4,9 @@ import Screens.MainMenuScreen;
 import Screens.SplashScreen;
 import javafx.application.Application;
 import javafx.scene.*;
-import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -16,10 +14,10 @@ public class Main extends Application {
     public Font Xirod = Font.loadFont(getClass().getResourceAsStream("/fonts/Xirod.otf"), 30);
     public Font Vipnagorgialla = Font.loadFont(getClass().getResourceAsStream("/fonts/Vipnagorgialla.otf"), 30);
     public static void main(String[] args) {
-        // conversion();
+        conversion();
         launch(args);
     }
-    public void conversion(){
+    public static void conversion(){
         Scanner sc = new Scanner(System.in);
         boolean yes = true;
         do{
@@ -36,7 +34,7 @@ public class Main extends Application {
         }while (yes);
     }
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         // Set stage reference for scene management
         ScreenManager.setStage(primaryStage);
         // Creates and configures the splash screen, linking the stylesheet to it.

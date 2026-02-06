@@ -5,16 +5,14 @@ import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class UIComponents {
     // Creates a password bundle with show/hide functionality
@@ -55,8 +53,8 @@ public class UIComponents {
         passwordHide.setVisible(false);
         passwordHide.getStyleClass().add("passwordImage");
         // Set up click handlers to toggle password visibility
-        passwordShow.setOnMouseClicked(e -> showPassword(passwordHide, passwordShow, copyPw, password));
-        passwordHide.setOnMouseClicked(e -> hidePassword(passwordHide, passwordShow, copyPw, password));
+        passwordShow.setOnMouseClicked(_ -> showPassword(passwordHide, passwordShow, copyPw, password));
+        passwordHide.setOnMouseClicked(_ -> hidePassword(passwordHide, passwordShow, copyPw, password));
 
         Group inputs = new Group(passwordInpRect, password, copyPw);
 
@@ -80,8 +78,8 @@ public class UIComponents {
         icon.setLayoutY(iconY);
         icon.setFitHeight(iconH);
         icon.setFitWidth(iconW);
-        Group tfInps = new Group(inputRect, tf);
-        return new TextBundle(tfInps, tf, icon);
+        Group tfInputs = new Group(inputRect, tf);
+        return new TextBundle(tfInputs, tf, icon);
     }
 
     // Creates a rectangular button with text
@@ -134,17 +132,51 @@ public class UIComponents {
     }
     private ContextMenu createContextMenu(TextField tf){
         MenuItem cut = new MenuItem("Cut");
-        cut.setOnAction(e -> tf.cut());
+        cut.setOnAction(_ -> tf.cut());
 
         MenuItem copy = new MenuItem("Copy");
-        copy.setOnAction(e -> tf.copy());
+        copy.setOnAction(_ -> tf.copy());
 
         MenuItem paste = new MenuItem("Paste");
-        paste.setOnAction(e -> tf.paste());
+        paste.setOnAction(_ -> tf.paste());
 
         ContextMenu cm = new ContextMenu(cut, copy, paste);
         cm.getStyleClass().add("context-menu");
 
         return cm;
+    }
+
+    // Adds a real-time validator to input fields and error styling validation fields.
+    public static void attachValidator(TextInputControl field, Predicate<String> rule, String errorClass, TextInputControl... linkedField) {
+        field.textProperty().addListener((obs, oldText, newText) -> {
+            boolean invalid = !rule.test(newText);
+            updateStyle(field, errorClass, invalid);
+            // Apply same styling to linked fields (such as visible copy of password field)
+            for(TextInputControl f : linkedField){
+                updateStyle(f, errorClass, invalid);
+            }
+        });
+    }
+    // Updates CSS styling of field depending on validation state
+    public static void updateStyle(TextInputControl field, String errorClass, boolean invalid) {
+        field.getStyleClass().remove(errorClass);
+        if (invalid && !field.getText().isEmpty()) {
+            field.getStyleClass().add(errorClass);
+        }
+    }
+
+    // Validates email format via regex
+    public static boolean isValidEmail(String email){
+        if (email == null) return false;
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
+    // Validates strength of password
+    public static boolean isValidPassword(String pw){
+        if(pw == null) return false;
+        return pw.length()>=6 && pw.matches(".*[^a-zA-Z0-9].*");
+    }
+    // Makes sure recovery is something rememberable
+    public static boolean isValidRecoveryW(String recoveryWord){
+        return recoveryWord != null && recoveryWord.length() >= 3;
     }
 }

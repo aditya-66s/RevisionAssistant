@@ -22,15 +22,15 @@ public class MainMenuScreen extends SystemScreens {
         getTitle().setLayoutX(450);
         // Creating buttons bundles for all
         RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", 310, 250);
-        revisionSystem.button().setOnMouseClicked(event -> revisionSystemMouseClick());
+        revisionSystem.button().setOnMouseClicked(_ -> revisionSystemMouseClick());
         ImageView rsIcon = createIcon(310, 245, "/images/MainMenuScreen/books.png");
 
         RectangleButtonBundle userManagement = ui.buildRectangularButtonBundle(rectW, rectH, "User Management", "buttonText", 310,  420);
-        userManagement.button().setOnMouseClicked(event -> userManagementMouseClick());
+        userManagement.button().setOnMouseClicked(_ -> userManagementMouseClick());
         ImageView umIcon = createIcon(310, 415, "/images/MainMenuScreen/userbook.png");
 
         RectangleButtonBundle settings = ui.buildRectangularButtonBundle(rectW, rectH, "Settings", "buttonText", 310, 591);
-        settings.button().setOnMouseClicked(event -> settingsMouseClick());
+        settings.button().setOnMouseClicked(_ -> settingsMouseClick());
         ImageView sIcon = createIcon(310, 586, "/images/MainMenuScreen/settings.png");
 
         RectangleButtonBundle logout = ui.buildRectangularButtonBundle(rectW, rectH, "Logout", "buttonText", 310, 762);

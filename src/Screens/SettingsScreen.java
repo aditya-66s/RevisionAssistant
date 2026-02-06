@@ -11,6 +11,8 @@ import java.util.Objects;
 
 public class SettingsScreen extends SystemScreens{
     private final Group background = createBackground("System Settings");
+//    private final ImageView back = ui.createBRImageView("back");
+
     public Scene create() {
         Pane root = new Pane();
         root.getStyleClass().add("screens");
@@ -33,7 +35,6 @@ public class SettingsScreen extends SystemScreens{
         ImageView oIcon = createIcon(310, 755, "/images/SettingsScreen/others.png");
         others.button().setOnMouseClicked(_ -> buildOthersContent(contentLayer));
 
-
         Group menuLayer = new Group(stylesheetOptions.button(), accessibility.button(), audioControl.button(), others.button(), sOIcon, aIcon, aCIcon, oIcon);
         contentLayer.getChildren().add(menuLayer);
         root.getChildren().addAll(background, back, contentLayer);
@@ -43,6 +44,20 @@ public class SettingsScreen extends SystemScreens{
     }
 
     private void buildOthersContent(Group contentLayer) {
-        nav.switchContent(contentLayer);
+        RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 315);
+        ImageView emailIcon = createIcon(293, 310, "/images/SettingsScreen/whiteUser.png");
+
+        RectangleButtonBundle changeRw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Word", "buttonText", 293, 485);
+        ImageView recoveryIcon = createIcon(293, 480, "/images/SettingsScreen/whiteRecovery.png");
+
+        RectangleButtonBundle changePw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Password", "buttonText", 293, 656);
+        ImageView pwIcon = createIcon(293, 651, "/images/SettingsScreen/whiteLock.png");
+
+        Group otherOptionsLayer = new Group(changeEmail.button(), changePw.button(), changeRw.button(), emailIcon, recoveryIcon, pwIcon);
+        ImageView back = ui.createBRImageView("back");
+        back.setOnMouseClicked(_ -> nav.goBack(contentLayer));
+
+        nav.switchContent(contentLayer, otherOptionsLayer, back);
     }
+
 }

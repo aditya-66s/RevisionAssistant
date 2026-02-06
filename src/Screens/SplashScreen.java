@@ -75,8 +75,8 @@ public class SplashScreen {
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
 
         // Event Handlers, will execute the code that was passed in, when user interacts with splash screen
-        scene.setOnKeyPressed(e -> onContinue.run());
-        scene.setOnMouseClicked(e -> onContinue.run());
+        scene.setOnKeyPressed(_ -> onContinue.run());
+        scene.setOnMouseClicked(_ -> onContinue.run());
         return scene;
     }
 }

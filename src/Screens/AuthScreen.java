@@ -18,7 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -30,7 +29,6 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class AuthScreen {
     // Authentication Controller for account-related operations
@@ -145,10 +143,10 @@ public class AuthScreen {
         PasswordBundle confirmResetPassword = ui.buildPasswordInput(531, 609, 815, 633, 619, "Confirm password", 531, 615, 1280, 635);
         // Attach real time validators to tell user when input is valid
         // :: method reference, allowing it's specified method to be passed as a function
-        attachValidator(emailInput.tf(), this::isValidEmail, "error");
-        attachValidator(resetPassword.password(), this::isValidPassword, "error", resetPassword.copyPw());
-        attachValidator(confirmResetPassword.password(), this::isValidPassword, "error", confirmResetPassword.copyPw());
-        attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
+        UIComponents.attachValidator(emailInput.tf(), UIComponents::isValidEmail, "error");
+        UIComponents.attachValidator(resetPassword.password(), UIComponents::isValidPassword, "error", resetPassword.copyPw());
+        UIComponents.attachValidator(confirmResetPassword.password(), UIComponents::isValidPassword, "error", confirmResetPassword.copyPw());
+        UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
         // Can be reset on enter for convenience
         EventHandler<ActionEvent> resetHandler = e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer);
         bindEnter(resetHandler, emailInput.tf(), resetPassword.password(), resetPassword.copyPw(), confirmResetPassword.password(), confirmResetPassword.copyPw(), recoveryWord.tf());
@@ -166,7 +164,7 @@ public class AuthScreen {
     private void resetSubmit(Event event, TextBundle recoveryWord, TextBundle emailInput, PasswordBundle resetPassword, PasswordBundle confirmResetPassword, Group contentLayer) {
         int option = -1;
         // Validate input
-        boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(resetPassword.password().getText()) && isValidPassword(confirmResetPassword.password().getText()) && isValidRecoveryW(recoveryWord.tf().getText());
+        boolean validInputs = UIComponents.isValidEmail(emailInput.tf().getText()) && UIComponents.isValidPassword(resetPassword.password().getText()) && UIComponents.isValidPassword(confirmResetPassword.password().getText()) && UIComponents.isValidRecoveryW(recoveryWord.tf().getText());
         if (!validInputs) {
             option = 0; // invalid input
         } else {
@@ -253,9 +251,9 @@ public class AuthScreen {
         PasswordBundle registrationPassword = ui.buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
         PasswordBundle confirmRegistrationPassword = ui.buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 531, 576, 1280, 598);
         // attach real-time validators to input fields
-        attachValidator(registrationPassword.password(), this::isValidPassword, "error", registrationPassword.copyPw());
-        attachValidator(confirmRegistrationPassword.password(), this::isValidPassword, "error", confirmRegistrationPassword.copyPw());
-        attachValidator(emailInput.tf(), this::isValidEmail,  "error");
+        UIComponents.attachValidator(registrationPassword.password(), UIComponents::isValidPassword, "error", registrationPassword.copyPw());
+        UIComponents.attachValidator(confirmRegistrationPassword.password(), UIComponents::isValidPassword, "error", confirmRegistrationPassword.copyPw());
+        UIComponents.attachValidator(emailInput.tf(), UIComponents::isValidEmail,  "error");
 
         // Create a question mark icon for displaying input requirements
         ImageView question = ui.createBRImageView("question");
@@ -286,7 +284,7 @@ public class AuthScreen {
     public void registerSubmit(Event event, TextBundle emailInput, PasswordBundle registrationPassword, PasswordBundle confirmRegistrationPassword, Group contentLayer){
         Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
         // Check if inputs are valid
-        boolean validInputs = isValidEmail(emailInput.tf().getText()) && isValidPassword(registrationPassword.password().getText()) && isValidPassword(confirmRegistrationPassword.password().getText());
+        boolean validInputs = UIComponents.isValidEmail(emailInput.tf().getText()) && UIComponents.isValidPassword(registrationPassword.password().getText()) && UIComponents.isValidPassword(confirmRegistrationPassword.password().getText());
         if(!validInputs) {
             CustomAlert.error(alertWindow, "No field can be empty or \n" + emailReq + "\n" + passwordReq + "\n" + rwReq);
         }else if(!registrationPassword.password().getText().equals(confirmRegistrationPassword.password().getText())) {
@@ -316,7 +314,7 @@ public class AuthScreen {
         String iconURL = "/images/AuthScreen/recover.png";
         // Create recovery word input field
         TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 ,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
-        attachValidator(recoveryWord.tf(), this::isValidRecoveryW, "error");
+        UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
         recoveryWord.tf().setOnAction(e -> rwSubmit(e, recoveryWord, email, password));
         // Create enter button (as an icon)
         ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/enter.png")).toExternalForm());
@@ -339,7 +337,7 @@ public class AuthScreen {
     public void rwSubmit(Event event, TextBundle recoveryWord, String email, String password){
         Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
         int option;
-        if(!isValidRecoveryW(recoveryWord.tf().getText())) {
+        if(!UIComponents.isValidRecoveryW(recoveryWord.tf().getText())) {
             option = 0; // Empty recovery word
         }else {
             option = userRegistration(email, password, recoveryWord.tf().getText());
@@ -371,40 +369,6 @@ public class AuthScreen {
         }else{
             return 2; // Registration failed
         }
-    }
-
-    // Adds a real-time validator to input fields and error styling validation fields.
-    private void attachValidator(TextInputControl field, Predicate<String> rule, String errorClass, TextInputControl... linkedField) {
-        field.textProperty().addListener((obs, oldText, newText) -> {
-            boolean invalid = !rule.test(newText);
-            updateStyle(field, errorClass, invalid);
-            // Apply same styling to linked fields (such as visible copy of password field)
-            for(TextInputControl f : linkedField){
-                updateStyle(f, errorClass, invalid);
-            }
-        });
-    }
-    // Updates CSS styling of field depending on validation state
-    private void updateStyle(TextInputControl field, String errorClass, boolean invalid) {
-        field.getStyleClass().remove(errorClass);
-        if (invalid && !field.getText().isEmpty()) {
-            field.getStyleClass().add(errorClass);
-        }
-    }
-
-    // Validates email format via regex
-    private boolean isValidEmail(String email){
-        if (email == null) return false;
-        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    }
-    // Validates strength of password
-    private boolean isValidPassword(String pw){
-        if(pw == null) return false;
-        return pw.length()>=6 && pw.matches(".*[^a-zA-Z0-9].*");
-    }
-    // Makes sure recovery is something rememberable
-    private boolean isValidRecoveryW(String recoveryWord){
-        return recoveryWord != null && recoveryWord.length() >= 3;
     }
 
     // Bind Enter Button to submit in Text Fields

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class ContentNavigator {
-    private Stack<List<Node>> history = new Stack<>();
+    private final Stack<List<Node>> history = new Stack<>();
 
     // Switches content of a layer to new nodes, saving current state to history for backtracking
     public void switchContent(Group contentLayer, Node... newContent){

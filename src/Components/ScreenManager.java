@@ -9,7 +9,7 @@ public class ScreenManager {
     // Primary stage of application, allows access from anywhere in application
     private static Stage stage;
     // Stack to maintain navigation of history opf scenes.
-    private static final Stack<Scene> history = new Stack<Scene>();
+    private static final Stack<Scene> history = new Stack<>();
     //  sets the primary stage reference for application, called only at startup
     public static void setStage(Stage primaryStage){
         stage = primaryStage;

@@ -4,7 +4,6 @@ import Components.ContentNavigator;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;

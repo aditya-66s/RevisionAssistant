@@ -2,6 +2,7 @@ package Screens;
 
 import Components.CustomAlert;
 import Components.ScreenManager;
+import Controllers.AuthenticationController;
 import RecordClasses.RectangleButtonBundle;
 import javafx.event.Event;
 import javafx.scene.Group;
@@ -14,6 +15,12 @@ import javafx.stage.Window;
 import java.util.Objects;
 
 public class MainMenuScreen extends SystemScreens {
+    private final AuthenticationController ac;
+
+    public MainMenuScreen(AuthenticationController ac) {
+        this.ac = ac;
+    }
+
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
@@ -53,7 +60,7 @@ public class MainMenuScreen extends SystemScreens {
     }
 
     private void settingsMouseClick() {
-        ScreenManager.switchScene(new SettingsScreen().create());
+        ScreenManager.switchScene(new SettingsScreen(ac).create());
     }
 
     private void userManagementMouseClick() {

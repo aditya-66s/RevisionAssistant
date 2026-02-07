@@ -3,8 +3,11 @@ package Components;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -178,5 +181,16 @@ public class UIComponents {
     // Makes sure recovery is something rememberable
     public static boolean isValidRecoveryW(String recoveryWord){
         return recoveryWord != null && recoveryWord.length() >= 3;
+    }
+
+    // Bind Enter Button to submit in Text Fields
+    public void bindEnter(EventHandler<ActionEvent> handler, Node... fields) {
+        for (Node node : fields) {
+            if(node instanceof TextField tf){
+                tf.setOnAction(handler);
+            }else if(node instanceof PasswordField pf){
+                pf.setOnAction(handler);
+            }
+        }
     }
 }

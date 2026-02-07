@@ -15,7 +15,6 @@ import static javafx.scene.text.TextAlignment.CENTER;
 
 public abstract class SystemScreens {
     public final UIComponents ui = new UIComponents();
-    public final AuthenticationController ac = new AuthenticationController();
     public final ContentNavigator nav = new  ContentNavigator();
     // Constant rectangular button dimensions set
     public final int rectW = 1300;
@@ -39,6 +38,13 @@ public abstract class SystemScreens {
         iconView.setLayoutY(iconY);
         return iconView;
     }
+
+    public ImageView getBackView(Group contentLayer) {
+        ImageView back = ui.createBRImageView("back");
+        back.setOnMouseClicked(_ -> nav.goBack(contentLayer));
+        return back;
+    }
+
     public void setTitle(String titleText) {
         this.title = new Text(titleText);
     }

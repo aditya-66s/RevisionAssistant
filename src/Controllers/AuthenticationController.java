@@ -1,6 +1,7 @@
 package Controllers;
 
 import Components.ScreenManager;
+import Models.Settings;
 import Models.User;
 import Screens.AuthScreen;
 
@@ -39,6 +40,7 @@ public class  AuthenticationController extends Controller {
                 bw.newLine();
             }
             setCurrentUser(user);
+            new SettingsController().createDefaultSettings(email);
             return true;
         }else{
             // Email already in CSV
@@ -56,6 +58,8 @@ public class  AuthenticationController extends Controller {
             boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
             if(loggedIn){
                 setCurrentUser(temp);
+                SettingsController sc = new SettingsController();
+                Settings userSettings = sc.loadSettings(email);
                 return true;
             }
         }
@@ -149,6 +153,41 @@ public class  AuthenticationController extends Controller {
                 break;
             }
         }
+        rewriteUsersCSV(users);
+        return true;
+    }
+    // Change a user's email
+    public boolean changeEmail(User temp, String newEmail) throws IOException {
+        ArrayList<User> users = convertCSVtoArrayList();
+        // Load all users and update the matching one
+        for(User u : users){
+            if(u.getEmail().equals(temp.getEmail())){
+                u.setEmail(newEmail);
+                break;
+            }
+        }
+        rewriteUsersCSV(users);
+        return true;
+    }
+    // Change a user's recovery word
+    public boolean changeRecoveryWord(User temp, String newRecoveryWord) throws NoSuchAlgorithmException, IOException {
+        ArrayList<User> users = convertCSVtoArrayList();
+        for(User u : users){
+            // u.getRecoveryWord().equals(temp.getRecoveryWord())
+            if(u.getEmail().equals(temp.getEmail())){
+//                System.out.println(u.getEmail());
+//                System.out.println(u.getRecoveryWord());
+                u.setRecoveryWord(newRecoveryWord);
+//                System.out.println(u.getEmail());
+//                System.out.println(u.getRecoveryWord());
+                break;
+            }
+        }
+        rewriteUsersCSV(users);
+        return true;
+    }
+    // Will be used to update CSV when user makers changes
+    private void rewriteUsersCSV(ArrayList<User> users) throws IOException {
         // Rewrite the entire file, so updates persist
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
             for (User u : users) {
@@ -161,22 +200,21 @@ public class  AuthenticationController extends Controller {
                 bw.newLine();
             }
         }
-        return true;
     }
     // System Logout
     public void logout(){
         if (getCurrentUser() != null){
             getCurrentUser().setLastLogin(getDate());
         }
-        // add a save data method
+        // add a save data method, will be added when more data as been added to system
         // System has no current user, so data cannot be accessed
         setCurrentUser(null);
         // User cannot find a way to go back into Main Menu after logging out
         ScreenManager.clearHistory();
         // Switch to Log in/Registration Screen
-        ScreenManager.switchScene(new AuthScreen().create());
+        ScreenManager.switchScene(new AuthScreen(new AuthenticationController()).create());
     }
-    public void generateSalt(){
+    private void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)
         SecureRandom random = new SecureRandom();
         // 16 byte salt to ensure each password hash is unique

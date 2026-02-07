@@ -1,0 +1,100 @@
+package Controllers;
+
+import Models.Settings;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+public class SettingsController extends Controller {
+    private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "settings.csv");
+
+    // Write default settings into settings.csv on user registration
+    public void createDefaultSettings(String email) throws IOException {
+        ensureCSVExists(csvPath);
+        if (!doesSettingsExist(email)) {
+            Settings defaultSettings = new Settings();
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString(), true))) {
+                bw.write(toCSVRow(email, defaultSettings));
+                bw.newLine();
+            }
+        }
+    }
+
+    // Load settings for a user
+    public Settings loadSettings(String email) throws IOException {
+        ensureCSVExists(csvPath);
+        ArrayList<Settings> settings = convertCSVtoArrayList();
+        for(Settings s : settings) {
+            if(s.getEmail().equals(email)) {
+                return s;
+            }
+        }
+        Settings defaultSettings = new Settings();
+        defaultSettings.setEmail(email);
+        return defaultSettings;
+    }
+
+    // Checks if a user has settings already
+    private boolean doesSettingsExist(String email) throws IOException {
+        ArrayList<Settings> settingsList = convertCSVtoArrayList();
+        for (Settings settings : settingsList) {
+            if (settings.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // Reads settings.csv and converts each row into a user object
+    private ArrayList<Settings> convertCSVtoArrayList() throws IOException {
+        // Ensure folders and CSV exist before reading
+        ensureCSVExists(csvPath);
+        ArrayList<Settings> settingsList = new ArrayList<>();
+        // Read CSV line by line
+        try (BufferedReader br = new BufferedReader(new FileReader(csvPath.toString()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] temp = line.split(",");
+                // Validate row lengths to avoid ArrayIndexOutOfBoundsException, throw an exception
+                if (temp.length < 9){
+                    throw new IllegalArgumentException("Corrupted Row: " + line);
+                }
+                // Create a settings object
+                Settings settings = new Settings(temp[0], temp[1], Double.parseDouble(temp[2]), Double.parseDouble(temp[3]),
+                        Double.parseDouble(temp[4]), Double.parseDouble(temp[5]), Double.parseDouble(temp[6]),
+                        Boolean.parseBoolean(temp[7]), Boolean.parseBoolean(temp[8]));
+                // Add object to ArrayList
+                settingsList.add(settings);
+            }
+        }catch (Exception e){
+            quarantineCorruptedCSV(e, csvPath);
+            // Return an empty arraylist, no settings saved
+            return new ArrayList<>();
+        }
+        return settingsList;
+    }
+
+    // Will be used to update CSV when user makers changes
+    private void rewriteCSV(ArrayList<Settings> settingsList) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
+            for (Settings settings : settingsList) {
+                bw.write(toCSVRow(settings.getEmail(), settings));
+                bw.newLine();
+            }
+        }
+    }
+
+    // Convert the settings object into a CSV Row
+    private String toCSVRow(String email, Settings s) {
+        return email + "," +
+                s.getTheme() + "," +
+                s.getFontSize() + "," +
+                s.getUIScale() + "," +
+                s.getBrightness() + "," +
+                s.getTTSVolume() + "," +
+                s.getSFXVolume() + "," +
+                s.isMuted() + "," +
+                s.isTTSEnabled();
+    }
+}

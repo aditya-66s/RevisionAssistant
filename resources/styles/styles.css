@@ -43,6 +43,9 @@ Rectangle{
 .loginTextField{
     -fx-pref-width: 370px;
 }
+.resetTextField{
+    -fx-pref-width: 1140px;
+}
 .context-menu {
     -fx-font-size: 12px;
     -fx-padding: 2px;

@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class AuthScreen {
     // Authentication Controller for account-related operations
-    private final AuthenticationController ac = new AuthenticationController();
+    private final AuthenticationController ac;
     private final UIComponents ui = new UIComponents();
     private final ContentNavigator nav = new ContentNavigator();
 
@@ -41,11 +41,14 @@ public class AuthScreen {
     private final String passwordReq = "Password should have a minimum of 6 characters, including a special character";
     private final String rwReq = "Recovery Word must be a minimum of 3 characters";
 
+    public AuthScreen(AuthenticationController ac) {
+        this.ac = ac;
+    }
+
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
         ImageView logo = ui.createLogoView();
-
         // Create consistent background rectangle for content
         Rectangle background = new Rectangle(357, 187, 1206,683);
         background.getStyleClass().add("backgroundRect");
@@ -88,7 +91,7 @@ public class AuthScreen {
         loginPasswordInput.password().getStyleClass().add("loginTextField");
         // Add enter to submit
         EventHandler<ActionEvent> loginHandler = event -> loginSubmit(event, emailInput, loginPasswordInput);
-        bindEnter(loginHandler, emailInput.tf(), loginPasswordInput.password(), loginPasswordInput.copyPw());
+        ui.bindEnter(loginHandler, emailInput.tf(), loginPasswordInput.password(), loginPasswordInput.copyPw());
         // Groups inputs together
         Group inputs = new Group(emailInput.group(), loginPasswordInput.passwordGroup());
         // Group icons together
@@ -123,7 +126,7 @@ public class AuthScreen {
                 break;
             case 1:
                 CustomAlert.success(alertWindow, "Logged in successfully");
-                ScreenManager.switchScene(new MainMenuScreen().create());
+                ScreenManager.switchScene(new MainMenuScreen(ac).create());
                 break;
             case 2:
                 CustomAlert.error(alertWindow, "Invalid email or password, or possible problems with files.");
@@ -149,7 +152,7 @@ public class AuthScreen {
         UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
         // Can be reset on enter for convenience
         EventHandler<ActionEvent> resetHandler = e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer);
-        bindEnter(resetHandler, emailInput.tf(), resetPassword.password(), resetPassword.copyPw(), confirmResetPassword.password(), confirmResetPassword.copyPw(), recoveryWord.tf());
+        ui.bindEnter(resetHandler, emailInput.tf(), resetPassword.password(), resetPassword.copyPw(), confirmResetPassword.password(), confirmResetPassword.copyPw(), recoveryWord.tf());
         // Create password reset button
         RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
         resetPasswordRectangle.button().setOnMouseClicked(event -> resetSubmit(event, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
@@ -260,7 +263,7 @@ public class AuthScreen {
 
         // Enter to submit for convenience
         EventHandler<ActionEvent> registerHandler = e -> registerSubmit(e, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer);
-        bindEnter(registerHandler, emailInput.tf(), registrationPassword.password(), registrationPassword.copyPw(), confirmRegistrationPassword.password(), confirmRegistrationPassword.copyPw());
+        ui.bindEnter(registerHandler, emailInput.tf(), registrationPassword.password(), registrationPassword.copyPw(), confirmRegistrationPassword.password(), confirmRegistrationPassword.copyPw());
         // Group inputs fields and icons
         Group inputs = new Group(emailInput.group(), registrationPassword.passwordGroup(), confirmRegistrationPassword.passwordGroup());
         Group icons = new Group(emailInput.icon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
@@ -349,7 +352,7 @@ public class AuthScreen {
                 break;
             case 1:
                 CustomAlert.success(alertWindow, "Account successfully registered");
-                ScreenManager.switchScene(new MainMenuScreen().create());
+                ScreenManager.switchScene(new MainMenuScreen(ac).create());
                 break;
             case 2:
                 CustomAlert.error(alertWindow, "Possible problem with files.");
@@ -371,14 +374,4 @@ public class AuthScreen {
         }
     }
 
-    // Bind Enter Button to submit in Text Fields
-    private void bindEnter(EventHandler<ActionEvent> handler, Node... fields) {
-        for (Node node : fields) {
-            if(node instanceof TextField tf){
-                tf.setOnAction(handler);
-            }else if(node instanceof PasswordField pf){
-                pf.setOnAction(handler);
-            }
-        }
-    }
 }

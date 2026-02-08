@@ -5,6 +5,7 @@ import Components.CustomAlert;
 import Components.ScreenManager;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
+import Controllers.SettingsController;
 import Models.User;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
@@ -35,14 +36,16 @@ public class AuthScreen {
     private final AuthenticationController ac;
     private final UIComponents ui = new UIComponents();
     private final ContentNavigator nav = new ContentNavigator();
+    private final SettingsController sc;
 
     // Validation Requirements used across multiple subroutines
     private final String emailReq = "Email should follow the standard format";
     private final String passwordReq = "Password should have a minimum of 6 characters, including a special character";
     private final String rwReq = "Recovery Word must be a minimum of 3 characters";
 
-    public AuthScreen(AuthenticationController ac) {
+    public AuthScreen(AuthenticationController ac, SettingsController sc) {
         this.ac = ac;
+        this.sc = sc;
     }
 
     public Scene create(){
@@ -64,21 +67,21 @@ public class AuthScreen {
         root.getChildren().addAll(logo, background, contentLayer);
         
         Scene scene = new Scene(root, 1920, 1057);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
+//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
         return scene;
     }
 
     // Displays log in content when login is selected
     private void buildLoginContent(Group contentLayer, RectangleButtonBundle selectLogin, RectangleButtonBundle selectRegister) {
         // Style the tab buttons to indicate which one is selected
-        selectRegister.buttonRect().setFill(Color.GREY);
-        selectLogin.buttonRect().setFill(Color.BLACK);
+        selectRegister.buttonRect().setStyle("-fx-fill: grey");
+        selectLogin.buttonRect().setStyle("-fx-fill: black");
 
         // Set up button to switch content when clicked
         selectRegister.button().setOnMouseClicked(_ -> {
             buildRegistrationContent(contentLayer, selectRegister, selectLogin);
-            selectRegister.buttonRect().setFill(Color.BLACK);
-            selectLogin.buttonRect().setFill(Color.GREY);
+            selectRegister.buttonRect().setStyle("-fx-fill: black");
+            selectLogin.buttonRect().setStyle("-fx-fill: grey");
         });
 
         // Create input field with user icon
@@ -90,7 +93,13 @@ public class AuthScreen {
         loginPasswordInput.copyPw().getStyleClass().add("loginTextField");
         loginPasswordInput.password().getStyleClass().add("loginTextField");
         // Add enter to submit
-        EventHandler<ActionEvent> loginHandler = event -> loginSubmit(event, emailInput, loginPasswordInput);
+        EventHandler<ActionEvent> loginHandler = event -> {
+            try {
+                loginSubmit(event, emailInput, loginPasswordInput);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        };
         ui.bindEnter(loginHandler, emailInput.tf(), loginPasswordInput.password(), loginPasswordInput.copyPw());
         // Groups inputs together
         Group inputs = new Group(emailInput.group(), loginPasswordInput.passwordGroup());
@@ -99,7 +108,13 @@ public class AuthScreen {
 
         // Create a login button
         RectangleButtonBundle login = ui.buildRectangularButtonBundle(1083, 98, "Login", "buttonText", 430, 684);
-        login.button().setOnMouseClicked(event -> loginSubmit(event, emailInput, loginPasswordInput));
+        login.button().setOnMouseClicked(event -> {
+            try {
+                loginSubmit(event, emailInput, loginPasswordInput);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         // Create a "Forgot Password" button
         RectangleButtonBundle forgotPassword = ui.buildRectangularButtonBundle(700, 60, "Forgot Password", "smallerButtonText", 600, 790);
@@ -112,7 +127,7 @@ public class AuthScreen {
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, login.button(), icons, forgotPassword.button());
     }
     // Displays correct Alert depending on scenario, on enter or login click.
-    private void loginSubmit(Event event, TextBundle emailInput, PasswordBundle loginPasswordInput){
+    private void loginSubmit(Event event, TextBundle emailInput, PasswordBundle loginPasswordInput) throws IOException {
         Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
         int option = 0;
         // Validate that fields are not empty before attempting to login
@@ -126,7 +141,7 @@ public class AuthScreen {
                 break;
             case 1:
                 CustomAlert.success(alertWindow, "Logged in successfully");
-                ScreenManager.switchScene(new MainMenuScreen(ac).create());
+                ScreenManager.switchScene(new MainMenuScreen(ac, sc).create(), emailInput.tf().getText());
                 break;
             case 2:
                 CustomAlert.error(alertWindow, "Invalid email or password, or possible problems with files.");
@@ -224,7 +239,7 @@ public class AuthScreen {
     private int userLogin(String email, String password) {
         boolean valid;
         try{
-            valid = ac.loginUser(email, password);
+            valid = ac.loginUser(email, password, sc);
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -238,13 +253,13 @@ public class AuthScreen {
     // Displays registration content when register is selected
     private void buildRegistrationContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
         // Style the tab buttons to indicate which one is selected
-        selectRegister.buttonRect().setFill(Color.BLACK);
-        selectLogin.buttonRect().setFill(Color.GREY);
+        selectRegister.buttonRect().setStyle("-fx-fill: black");
+        selectLogin.buttonRect().setStyle("-fx-fill: grey");
         // Set up button to switch content when clicked
         selectLogin.button().setOnMouseClicked(_ -> {
                 buildLoginContent(contentLayer, selectRegister, selectLogin);
-                selectRegister.buttonRect().setFill(Color.GREY);
-                selectLogin.buttonRect().setFill(Color.BLACK);
+                selectRegister.buttonRect().setStyle("-fx-fill: grey");
+                selectLogin.buttonRect().setStyle("-fx-fill: black");
         });
 
         // Create input field
@@ -307,18 +322,24 @@ public class AuthScreen {
         }
     }
     // Builds recovery word input screen when all inputs are valid
-    private void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
+    public void buildRecoveryWordEntrance(Group contentLayer, String email, String password){
         // Create informational text
         Text infoText = new Text("Enter a recovery word to use \n when resetting password \n Minimum 3 Characters");
         infoText.getStyleClass().add("infoText");
         infoText.setTextAlignment(TextAlignment.CENTER);
-        infoText.setLayoutX(430);
+        infoText.setLayoutX(530);
         infoText.setLayoutY(300);
         String iconURL = "/images/AuthScreen/recover.png";
         // Create recovery word input field
         TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 ,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
         UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
-        recoveryWord.tf().setOnAction(e -> rwSubmit(e, recoveryWord, email, password));
+        recoveryWord.tf().setOnAction(e -> {
+            try {
+                rwSubmit(e, recoveryWord, email, password);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         // Create enter button (as an icon)
         ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/enter.png")).toExternalForm());
         enter.setFitHeight(90);
@@ -327,7 +348,13 @@ public class AuthScreen {
         enter.setLayoutY(463);
         enter.setCursor(Cursor.HAND);
         // Handle registration submission
-        enter.setOnMouseClicked(event -> rwSubmit(event, recoveryWord, email, password));
+        enter.setOnMouseClicked(event -> {
+            try {
+                rwSubmit(event, recoveryWord, email, password);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         // Group recovery word input and entry button
         Group input = new Group(recoveryWord.group(), recoveryWord.icon(), enter);
         // Create back button if user wants to cancel
@@ -337,7 +364,7 @@ public class AuthScreen {
         nav.switchContent(contentLayer, input, infoText, back);
     }
     // Enter / onClick, submitting recovery word
-    public void rwSubmit(Event event, TextBundle recoveryWord, String email, String password){
+    public void rwSubmit(Event event, TextBundle recoveryWord, String email, String password) throws IOException {
         Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
         int option;
         if(!UIComponents.isValidRecoveryW(recoveryWord.tf().getText())) {
@@ -352,7 +379,7 @@ public class AuthScreen {
                 break;
             case 1:
                 CustomAlert.success(alertWindow, "Account successfully registered");
-                ScreenManager.switchScene(new MainMenuScreen(ac).create());
+                ScreenManager.switchScene(new MainMenuScreen(ac, sc).create(), email);
                 break;
             case 2:
                 CustomAlert.error(alertWindow, "Possible problem with files.");
@@ -363,7 +390,7 @@ public class AuthScreen {
     public int userRegistration(String email, String password, String recoveryWord){
         boolean added;
         try {
-            added = ac.registerUser(email, password, recoveryWord);
+            added = ac.registerUser(email, password, recoveryWord, sc);
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }

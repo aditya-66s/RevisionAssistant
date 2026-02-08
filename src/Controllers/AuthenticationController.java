@@ -4,6 +4,7 @@ import Components.ScreenManager;
 import Models.Settings;
 import Models.User;
 import Screens.AuthScreen;
+import Screens.SettingsScreen;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -23,7 +24,7 @@ public class  AuthenticationController extends Controller {
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
     private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
     // Registers a user
-    public boolean registerUser(String email, String inpPassword, String recoveryWord) throws NoSuchAlgorithmException, IOException {
+    public boolean registerUser(String email, String inpPassword, String recoveryWord, SettingsController sc) throws NoSuchAlgorithmException, IOException {
         // Check if email does not already exist within the CSV
         if (!doesEmailExist(email)) {
             // Create a new random salt, preventing identical hashes for same password
@@ -40,7 +41,8 @@ public class  AuthenticationController extends Controller {
                 bw.newLine();
             }
             setCurrentUser(user);
-            new SettingsController().createDefaultSettings(email);
+            sc.createDefaultSettings(email);
+            setCurrentSettings(sc.loadSettings(email));
             return true;
         }else{
             // Email already in CSV
@@ -48,7 +50,7 @@ public class  AuthenticationController extends Controller {
         }
     }
     // Logs in a user
-    public boolean loginUser(String email, String inpPassword) throws NoSuchAlgorithmException, IOException {
+    public boolean loginUser(String email, String inpPassword, SettingsController sc) throws NoSuchAlgorithmException, IOException {
         // Only attempt if email is found
         if (doesEmailExist(email)) {
             // temp will hold the user we find by email
@@ -58,8 +60,8 @@ public class  AuthenticationController extends Controller {
             boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
             if(loggedIn){
                 setCurrentUser(temp);
-                SettingsController sc = new SettingsController();
                 Settings userSettings = sc.loadSettings(email);
+                setCurrentSettings(userSettings);
                 return true;
             }
         }
@@ -212,7 +214,7 @@ public class  AuthenticationController extends Controller {
         // User cannot find a way to go back into Main Menu after logging out
         ScreenManager.clearHistory();
         // Switch to Log in/Registration Screen
-        ScreenManager.switchScene(new AuthScreen(new AuthenticationController()).create());
+        ScreenManager.switchScene(new AuthScreen(new AuthenticationController(), new SettingsController()).create());
     }
     private void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)

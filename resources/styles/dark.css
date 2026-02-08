@@ -1,0 +1,33 @@
+.screens{
+    -fx-background-color: black;
+}
+.title{
+    -fx-fill: white;
+}
+.postAuthTitle{
+    -fx-fill: white;
+}
+.screens .text{
+    -fx-fill: white;
+}
+.backgroundRect{
+    -fx-fill: white;
+}
+Rectangle{
+    -fx-fill: black;
+}
+.context-menu .text,
+.context-menu .label {
+    -fx-font-size: 12px;
+    -fx-text-fill: black;
+    -fx-fill: black;
+}
+.buttonText{
+    -fx-fill: white;
+}
+.smallButtonText{
+    -fx-fill: white;
+}
+.smallerButtonText{
+    -fx-fill: white;
+}

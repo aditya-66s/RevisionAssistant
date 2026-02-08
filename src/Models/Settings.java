@@ -47,6 +47,20 @@ public class Settings {
         this.muted = muted;
         this.ttsEnabled = ttsEnabled;
     }
+    // Making a copy of settings for drafts
+    public Settings copy(){
+        Settings s = new Settings();
+        s.setEmail(this.email);
+        s.setTheme(this.theme);
+        s.setFontSize(this.fontSize);
+        s.setUIScale(this.uiScale);
+        s.setBrightness(this.brightness);
+        s.setTTSVolume(this.ttsVolume);
+        s.setSFXVolume(this.sfxVolume);
+        s.setMuted(this.muted);
+        s.setTTSEnabled(this.ttsEnabled);
+        return s;
+    }
 
 
     // Will set the value to the minimum or maximum value if outside the range
@@ -98,5 +112,5 @@ public class Settings {
     public void setMuted(boolean muted) { this.muted = muted; }
 
     public boolean isTTSEnabled() { return ttsEnabled; }
-    public void setTtsEnabled(boolean ttsEnabled) { this.ttsEnabled = ttsEnabled; }
+    public void setTTSEnabled(boolean ttsEnabled) { this.ttsEnabled = ttsEnabled; }
 }

@@ -1,5 +1,6 @@
 package Controllers;
 
+import Models.Settings;
 import Models.User;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public abstract class Controller {
     // Holds the application's current user
     private User currentUser;
+    private Settings currentSettings;
 
     // Ensures parent folder and CSV exists
     public void ensureCSVExists(Path csvPath) throws IOException {
@@ -49,9 +51,15 @@ public abstract class Controller {
     public User getCurrentUser(){
         return currentUser;
     }
+    public Settings getCurrentSettings(){
+        return currentSettings;
+    }
 
     // Setters
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+    public void setCurrentSettings(Settings currentSettings) {
+        this.currentSettings = currentSettings;
     }
 }

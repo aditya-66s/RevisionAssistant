@@ -73,7 +73,7 @@ public class SplashScreen {
         root.getChildren().addAll(logo, loadingView, texts);
         Scene scene = new Scene(root, 1920, 1057);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
-
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/dark.css")).toExternalForm());
         // Event Handlers, will execute the code that was passed in, when user interacts with splash screen
         scene.setOnKeyPressed(_ -> onContinue.run());
         scene.setOnMouseClicked(_ -> onContinue.run());

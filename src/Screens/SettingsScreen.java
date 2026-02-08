@@ -5,6 +5,8 @@ import Components.CustomAlert;
 import Components.ScreenManager;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
+import Controllers.SettingsController;
+import Models.Settings;
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextBundle;
@@ -13,9 +15,15 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 
 import java.io.IOException;
@@ -25,22 +33,41 @@ import java.util.Objects;
 public class SettingsScreen extends SystemScreens{
     private final Group background = createBackground("System Settings");
     private final AuthenticationController ac;
-
-    public SettingsScreen(AuthenticationController ac) {
+    private final SettingsController sC;
+    public SettingsScreen(AuthenticationController ac, SettingsController sC) {
         this.ac = ac;
+        this.sC = sC;
+        // Load settings if not already loaded
+        if (sC.getCurrentSettings() == null) {
+            try {
+                Settings userSettings = sC.loadSettings(ac.getCurrentUser().getEmail());
+                sC.setCurrentSettings(userSettings);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Could set default settings here as fallback
+            }
+        }
     }
     // Function returning the scene displays all options in settings
     public Scene create() {
         Pane root = new Pane();
         root.getStyleClass().add("screens");
-        getTitle().setLayoutX(130);
+        Scene scene = new Scene(root, 1920, 1057);
+        getTitle().setLayoutX(290);
         ImageView back = ui.createBRImageView("back");
-        back.setOnMouseClicked(_ -> ScreenManager.goBack());
+        back.setOnMouseClicked(_ -> {
+            try {
+                ScreenManager.goBack(ac.getCurrentUser().getEmail());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Group contentLayer = new Group();
         // Creating Buttons for Settings
         RectangleButtonBundle stylesheetOptions = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", 310, 241);
         ImageView sOIcon = createIcon(310, 239, "/images/SettingsScreen/stylesheets.png");
+        stylesheetOptions.button().setOnMouseClicked(_-> buildStylesheetOptionsContent(contentLayer, scene));
 
         RectangleButtonBundle accessibility = ui.buildRectangularButtonBundle(rectW, rectH, "Accessibility", "buttonText", 310, 412);
         ImageView aIcon = createIcon(310, 412, "/images/SettingsScreen/accessibility.png");
@@ -55,9 +82,65 @@ public class SettingsScreen extends SystemScreens{
         Group menuLayer = new Group(stylesheetOptions.button(), accessibility.button(), audioControl.button(), others.button(), sOIcon, aIcon, aCIcon, oIcon);
         contentLayer.getChildren().add(menuLayer);
         root.getChildren().addAll(background, back, contentLayer);
-        Scene scene = new Scene(root, 1920, 1057);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
+//        Scene scene = new Scene(root, 1920, 1057);
+//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
         return scene;
+    }
+
+    // Procedure creating the UI for user to pick between stylesheet options
+    private void buildStylesheetOptionsContent(Group contentLayer, Scene scene) {
+        Settings currentSettings = sC.getCurrentSettings();
+        Settings draftSettings = currentSettings.copy();
+
+        Text instructionText = new Text(180, 270, "Pick your stylesheet option:");
+        instructionText.getStyleClass().add("instructionText");
+        MenuItem darkMode = new MenuItem("Dark Mode");
+        MenuItem lightMode = new MenuItem("Light Mode");
+        MenuItem highContrast = new MenuItem("High Contrast");
+        ImageView graphic = createIcon(310, 270, "/images/SettingsScreen/stylesheets.png");
+        SplitMenuButton options = new SplitMenuButton("Stylesheet Options", graphic, darkMode, lightMode, highContrast);
+        darkMode.setOnAction(_ -> {
+            draftSettings.setTheme("dark");
+            options.setText("Dark Mode");
+            previewTheme(scene, draftSettings.getTheme());
+        });
+        lightMode.setOnAction(_ -> {
+            draftSettings.setTheme("light");
+            options.setText("Light Mode");
+            previewTheme(scene, draftSettings.getTheme());
+        });
+        highContrast.setOnAction(_ -> {
+            draftSettings.setTheme("highContrast");
+            options.setText("High Contrast Mode");
+            previewTheme(scene, draftSettings.getTheme());
+        });
+        options.setLayoutX(340);
+        options.setLayoutY(340);
+
+        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
+        save.button().setOnMouseClicked(_ -> {
+            try {
+                sC.saveSettings(draftSettings);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        nav.switchContent(contentLayer, instructionText, options, save.button(), getBackView(contentLayer));
+    }
+    // ERROR: I APPLIED IT TO THE FRICKING PANE INSTEAD OF THE SCENE, TOOK ME 2 HOURS TO REALISE
+    // Theme selected with be applied to their screen to give the user a preview
+    private void previewTheme(Scene root, String theme){
+        // Removing any style sheet applied currently to avoid theme conflict/stacking
+        root.getStylesheets().clear();
+        // styles.css contains shared layout, fonts and component styling
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
+        String themePath;
+        switch (theme){
+            case "light" -> themePath = "/styles/light.css";
+            case "highContrast" -> themePath = "/styles/highContrast.css";
+            default -> themePath = "/styles/dark.css";
+        }
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(themePath)).toExternalForm());
     }
 
     // Procedure to create and display all buttons when Other Options is selected

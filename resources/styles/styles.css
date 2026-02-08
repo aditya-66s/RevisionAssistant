@@ -1,6 +1,6 @@
-.screens{
-    -fx-background-color: black;
-}
+/*.screens{*/
+/*    -fx-background-color: black;*/
+/*}*/
 .constantImages{
     -fx-fit-height: 100px;
     -fx-fit-width: 100px;
@@ -12,13 +12,17 @@
 .title{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 120px;
-    -fx-fill: white;
+    /*-fx-fill: white;*/
 }
-
+.postAuthTitle{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 120px;
+    /*-fx-fill: white;*/
+}
 .screens .text{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 80px;
-    -fx-fill: white;
+    /*-fx-fill: white;*/
 }
 
 Rectangle{
@@ -28,7 +32,7 @@ Rectangle{
 .backgroundRect{
     -fx-arc-height: 100px;
     -fx-arc-width: 100px;
-    -fx-fill: #ffffff;
+    /*-fx-fill: #ffffff;*/
 }
 .inputRect{
     -fx-fill: #ffffff;
@@ -66,16 +70,20 @@ Rectangle{
 .buttonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 60px;
-    -fx-fill: white;
+    /*-fx-fill: white;*/
 }
 .smallButtonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 40px;
-    -fx-fill: white;
+    /*-fx-fill: white;*/
 }
 .infoText{
-    -fx-font-family: "Xirod-Regular";
+    -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 40px;
+}
+.instructionText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 80px;
 }
 StackPane{
     -fx-cursor: hand;
@@ -83,7 +91,7 @@ StackPane{
 .smallerButtonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 20px;
-    -fx-fill: white;
+    /*-fx-fill: white;*/
 }
 .error{
     -fx-text-fill: red;

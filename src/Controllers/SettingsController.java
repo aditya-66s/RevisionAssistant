@@ -26,6 +26,7 @@ public class SettingsController extends Controller {
     public Settings loadSettings(String email) throws IOException {
         ensureCSVExists(csvPath);
         ArrayList<Settings> settings = convertCSVtoArrayList();
+        // Linear search for user
         for(Settings s : settings) {
             if(s.getEmail().equals(email)) {
                 return s;
@@ -34,6 +35,26 @@ public class SettingsController extends Controller {
         Settings defaultSettings = new Settings();
         defaultSettings.setEmail(email);
         return defaultSettings;
+    }
+
+    // Save settings.csv for a user if changed
+    public boolean saveSettings(Settings updatedSettings) throws IOException {
+        ArrayList<Settings> settings = convertCSVtoArrayList();
+        boolean found = false;
+        for(Settings s : settings) {
+            if(s.getEmail().equals(updatedSettings.getEmail())) {
+                copySettings(updatedSettings, s);
+                found = true;
+                break;
+            }
+        }
+        // if not found add to array list
+        if(!found) {
+            Settings s = updatedSettings.copy();
+            settings.add(s);
+        }
+        rewriteCSV(settings);
+        return true;
     }
 
     // Checks if a user has settings already
@@ -96,5 +117,16 @@ public class SettingsController extends Controller {
                 s.getSFXVolume() + "," +
                 s.isMuted() + "," +
                 s.isTTSEnabled();
+    }
+    // Update a user's setting object
+    private void copySettings(Settings oldSettings, Settings newSettings) {
+        newSettings.setTheme(oldSettings.getTheme());
+        newSettings.setFontSize(oldSettings.getFontSize());
+        newSettings.setUIScale(oldSettings.getUIScale());
+        newSettings.setBrightness(oldSettings.getBrightness());
+        newSettings.setTTSVolume(oldSettings.getTTSVolume());
+        newSettings.setSFXVolume(oldSettings.getSFXVolume());
+        newSettings.setMuted(oldSettings.isMuted());
+        newSettings.setTTSEnabled(oldSettings.isTTSEnabled());
     }
 }

@@ -1,0 +1,35 @@
+.screens{
+    -fx-background-color: grey;
+}
+
+.title{
+    -fx-fill: black;
+}
+
+.postAuthTitle{
+    -fx-fill: black;
+}
+
+.screens .text{
+    -fx-fill: black;
+}
+
+.backgroundRect{
+    -fx-fill: white;
+}
+
+Rectangle{
+    -fx-fill: grey;
+}
+
+.buttonText{
+    -fx-fill: white;
+}
+
+.smallButtonText{
+    -fx-fill: white;
+}
+
+.smallerButtonText{
+    -fx-fill: white;
+}

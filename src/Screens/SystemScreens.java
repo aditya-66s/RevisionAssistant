@@ -24,7 +24,7 @@ public abstract class SystemScreens {
     public Group createBackground(String titleText){
         title = new Text(titleText);
         title.setTextAlignment(CENTER);
-        title.getStyleClass().add("title");
+        title.getStyleClass().add("postAuthTitle");
         title.setLayoutY(160);
         Rectangle background = new Rectangle(108, 194, 1704,745);
         background.getStyleClass().add("backgroundRect");

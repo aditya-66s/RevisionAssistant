@@ -1,7 +1,12 @@
 package Components;
 
+import Controllers.SettingsController;
+import Models.Settings;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Stack;
 
 // Utility class for managing scene navigation
@@ -11,6 +16,7 @@ public class ScreenManager {
     // Stack to maintain navigation of history opf scenes.
     private static final Stack<Scene> history = new Stack<>();
     //  sets the primary stage reference for application, called only at startup
+    private static final SettingsController sC = new SettingsController();
     public static void setStage(Stage primaryStage){
         stage = primaryStage;
     }
@@ -21,6 +27,22 @@ public class ScreenManager {
             // Save current scene to stack before switching
             history.push(stage.getScene());
         }
+        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
+        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/dark.css")).toExternalForm());
+        // Switch scene to new scene
+        stage.setScene(root);
+    }
+    public static void switchScene(Scene root, String email) throws IOException {
+        // Check if there's currently a scene being displayed
+        if(stage.getScene() != null){
+            // Save current scene to stack before switching
+            history.push(stage.getScene());
+        }
+//        Settings userSettings = sC.loadSettings(email);
+//        root.getStylesheets().clear();
+//        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
+//        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
+        changeStyleSheet(root, email);
         // Switch scene to new scene
         stage.setScene(root);
     }
@@ -32,8 +54,24 @@ public class ScreenManager {
             stage.setScene(history.pop());
         }
     }
+    public static void goBack(String email) throws IOException {
+        // Check if there's any scene to go back to
+        if(!history.isEmpty()){
+            // Remove and fetch most recent scene from history, setting it as the current scene.
+            Scene nextScene = history.pop();
+            changeStyleSheet(nextScene, email);
+            stage.setScene(nextScene);
+        }
+    }
     // Clears all navigation history (You can't navigate back post logout).
     public static void clearHistory(){
         history.clear();
+    }
+    // Procedure for applying user settings to each screen (stylesheet specific as of) 08/02/2025
+    private static void changeStyleSheet(Scene root, String email) throws IOException {
+        Settings userSettings = sC.loadSettings(email);
+        root.getStylesheets().clear();
+        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
+        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
     }
 }

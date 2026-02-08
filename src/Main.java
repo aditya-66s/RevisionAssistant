@@ -18,6 +18,7 @@ public class Main extends Application {
     public Font Xirod = Font.loadFont(getClass().getResourceAsStream("/fonts/Xirod.otf"), 30);
     public Font Vipnagorgialla = Font.loadFont(getClass().getResourceAsStream("/fonts/Vipnagorgialla.otf"), 30);
     private final AuthenticationController universalAuth = new AuthenticationController();
+    private final SettingsController universalSettings = new SettingsController();
     public static void main(String[] args){
 //        conversion();
         launch(args);
@@ -44,7 +45,7 @@ public class Main extends Application {
         ScreenManager.setStage(primaryStage);
         // Creates and configures the splash screen, linking the stylesheet to it.
         SplashScreen splashScreen = new SplashScreen();
-        AuthScreen auth = new AuthScreen(universalAuth);
+        AuthScreen auth = new AuthScreen(universalAuth, universalSettings);
         Scene splashScene = splashScreen.create(() -> ScreenManager.switchScene(auth.create()));
         primaryStage.setTitle("Revision Assistant");
         primaryStage.setScene(splashScene);

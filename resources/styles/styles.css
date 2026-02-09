@@ -98,18 +98,35 @@ StackPane{
 }
 .menu-item.options {
     -fx-background-color: black;
-    -fx-padding: 20 80;   /* top/bottom | left/right */
+    -fx-padding: 20 80;
     -fx-pref-height: 98px;
+    -fx-alignment: center;
     -fx-pref-width: 1300px;
-    -fx-arc-width: 50px;
-    -fx-arc-height: 50px;
 }
+.menu-item.options{
+    -fx-text-alignment: center;
 
-.menu-item.options > .label {
-    -fx-text-fill: white;
-    -fx-font-size: 30pt;
 }
-
 .menu-item.options:hover {
     -fx-background-color: #222;
+}
+
+Slider{
+    -fx-pref-width: 1300px;
+}
+Slider .track{
+    -fx-background-color: #444;
+    -fx-background-radius: 6px;
+    -fx-pref-height: 6px;
+}
+Slider .thumb {
+    -fx-background-color:
+            black,          /* inner fill */
+            white;          /* outer ring */
+    -fx-background-insets:
+            0,
+            2;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
 }

@@ -18,13 +18,11 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
@@ -73,6 +71,7 @@ public class SettingsScreen extends SystemScreens{
 
         RectangleButtonBundle accessibility = ui.buildRectangularButtonBundle(rectW, rectH, "Accessibility", "buttonText", 310, 412);
         ImageView aIcon = createIcon(310, 412, "/images/SettingsScreen/accessibility.png");
+        accessibility.button().setOnMouseClicked(_-> {buildAccessibilityOptionsContent(contentLayer, scene);});
 
         RectangleButtonBundle audioControl = ui.buildRectangularButtonBundle(rectW, rectH, "Audio Control", "buttonText", 310, 583);
         ImageView aCIcon = createIcon(310, 583, "/images/SettingsScreen/audio.png");
@@ -84,8 +83,6 @@ public class SettingsScreen extends SystemScreens{
         Group menuLayer = new Group(stylesheetOptions.button(), accessibility.button(), audioControl.button(), others.button(), sOIcon, aIcon, aCIcon, oIcon);
         contentLayer.getChildren().add(menuLayer);
         root.getChildren().addAll(background, back, contentLayer);
-//        Scene scene = new Scene(root, 1920, 1057);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
         return scene;
     }
 
@@ -107,6 +104,7 @@ public class SettingsScreen extends SystemScreens{
 
         RectangleButtonBundle styles = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", 310, 300);
         ContextMenu menu = new ContextMenu(darkMode, lightMode, highContrast);
+        menu.getStyleClass().add("options-menu");
         styles.button().setOnMouseClicked(_-> menu.show(styles.button(), Side.BOTTOM, 0, 0));
 
         String infoMessage = "This is only a preview. \n The change will persist until you exist settings. \n Press save to ensure changes persist";
@@ -156,10 +154,25 @@ public class SettingsScreen extends SystemScreens{
         }
         root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(themePath)).toExternalForm());
     }
+    // Displaying information alert windows to user
     private void createInfoAlert(Scene scene, String message){
         Window alertWindow = scene.getWindow();
         CustomAlert.info(alertWindow, message);
     }
+
+    private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene){
+        Rectangle brightnessOverlay = new Rectangle(1920, 1057);
+        brightnessOverlay.setOpacity(0);
+        Slider brightnessSlider = new Slider(0, 0.8, 0);
+
+        brightnessSlider.setLayoutX(310);
+        brightnessSlider.setLayoutY(310);
+        brightnessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            brightnessOverlay.setOpacity(newVal.doubleValue());
+        });
+        nav.switchContent(contentLayer, brightnessOverlay, brightnessSlider, getBackView(contentLayer));
+    }
+
     // Procedure to create and display all buttons when Other Options is selected
     private void buildOthersContent(Group contentLayer) {
         RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 315);

@@ -96,3 +96,20 @@ StackPane{
 .error{
     -fx-text-fill: red;
 }
+.menu-item.options {
+    -fx-background-color: black;
+    -fx-padding: 20 80;   /* top/bottom | left/right */
+    -fx-pref-height: 98px;
+    -fx-pref-width: 1300px;
+    -fx-arc-width: 50px;
+    -fx-arc-height: 50px;
+}
+
+.menu-item.options > .label {
+    -fx-text-fill: white;
+    -fx-font-size: 30pt;
+}
+
+.menu-item.options:hover {
+    -fx-background-color: #222;
+}

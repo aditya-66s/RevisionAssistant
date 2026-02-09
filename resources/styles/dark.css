@@ -16,11 +16,13 @@
 Rectangle{
     -fx-fill: black;
 }
+.menu-item.options > .label {
+    -fx-text-fill: white;
+}
 .context-menu .text,
 .context-menu .label {
+    -fx-background-color: black;
     -fx-font-size: 12px;
-    -fx-text-fill: black;
-    -fx-fill: black;
 }
 .buttonText{
     -fx-fill: white;

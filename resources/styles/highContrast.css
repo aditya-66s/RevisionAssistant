@@ -35,3 +35,8 @@ Rectangle{
 .smallerButtonText{
     -fx-fill: violet;
 }
+.context-menu .text,
+.context-menu .label {
+    -fx-background-color: black;
+    -fx-font-size: 12px;
+}

@@ -13,10 +13,12 @@ import RecordClasses.TextBundle;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
@@ -94,38 +96,50 @@ public class SettingsScreen extends SystemScreens{
 
         Text instructionText = new Text(180, 270, "Pick your stylesheet option:");
         instructionText.getStyleClass().add("instructionText");
+
         MenuItem darkMode = new MenuItem("Dark Mode");
         MenuItem lightMode = new MenuItem("Light Mode");
         MenuItem highContrast = new MenuItem("High Contrast");
-        ImageView graphic = createIcon(310, 270, "/images/SettingsScreen/stylesheets.png");
-        SplitMenuButton options = new SplitMenuButton("Stylesheet Options", graphic, darkMode, lightMode, highContrast);
+
+        darkMode.getStyleClass().add("options");
+        lightMode.getStyleClass().add("options");
+        highContrast.getStyleClass().add("options");
+
+        RectangleButtonBundle styles = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", 310, 300);
+        ContextMenu menu = new ContextMenu(darkMode, lightMode, highContrast);
+        styles.button().setOnMouseClicked(_-> menu.show(styles.button(), Side.BOTTOM, 0, 0));
+
+        String infoMessage = "This is only a preview. \n The change will persist until you exist settings. \n Press save to ensure changes persist";
         darkMode.setOnAction(_ -> {
             draftSettings.setTheme("dark");
-            options.setText("Dark Mode");
+            styles.buttonText().setText("Dark Mode");
             previewTheme(scene, draftSettings.getTheme());
+            createInfoAlert(scene, infoMessage);
         });
         lightMode.setOnAction(_ -> {
             draftSettings.setTheme("light");
-            options.setText("Light Mode");
+            styles.buttonText().setText("Light Mode");
             previewTheme(scene, draftSettings.getTheme());
+            createInfoAlert(scene, infoMessage);
         });
         highContrast.setOnAction(_ -> {
             draftSettings.setTheme("highContrast");
-            options.setText("High Contrast Mode");
+            styles.buttonText().setText("High Contrast Mode");
             previewTheme(scene, draftSettings.getTheme());
+            createInfoAlert(scene, infoMessage);
         });
-        options.setLayoutX(340);
-        options.setLayoutY(340);
+
 
         RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
         save.button().setOnMouseClicked(_ -> {
             try {
                 sC.saveSettings(draftSettings);
+                CustomAlert.success(scene.getWindow(), "Success, changes saved.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-        nav.switchContent(contentLayer, instructionText, options, save.button(), getBackView(contentLayer));
+        nav.switchContent(contentLayer, instructionText, styles.button(), save.button(), getBackView(contentLayer));
     }
     // ERROR: I APPLIED IT TO THE FRICKING PANE INSTEAD OF THE SCENE, TOOK ME 2 HOURS TO REALISE
     // Theme selected with be applied to their screen to give the user a preview
@@ -142,7 +156,10 @@ public class SettingsScreen extends SystemScreens{
         }
         root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(themePath)).toExternalForm());
     }
-
+    private void createInfoAlert(Scene scene, String message){
+        Window alertWindow = scene.getWindow();
+        CustomAlert.info(alertWindow, message);
+    }
     // Procedure to create and display all buttons when Other Options is selected
     private void buildOthersContent(Group contentLayer) {
         RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 315);

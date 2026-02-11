@@ -91,6 +91,7 @@ public class UIComponents {
         Text buttonText = new Text(text);
         buttonText.getStyleClass().add(typeOfText);
         StackPane button = new StackPane(buttonRect, buttonText);
+        button.getStyleClass().add("StackPane-Button");
         button.setLayoutX(StackPaneX);
         button.setLayoutY(StackPaneY);
         return new RectangleButtonBundle(buttonRect, buttonText, button);

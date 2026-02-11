@@ -112,7 +112,7 @@ public class SettingsController extends Controller {
                 s.getTheme() + "," +
                 s.getFontSize() + "," +
                 s.getUIScale() + "," +
-                s.getBrightness() + "," +
+                s.getDarkness() + "," +
                 s.getTTSVolume() + "," +
                 s.getSFXVolume() + "," +
                 s.isMuted() + "," +
@@ -123,7 +123,7 @@ public class SettingsController extends Controller {
         newSettings.setTheme(oldSettings.getTheme());
         newSettings.setFontSize(oldSettings.getFontSize());
         newSettings.setUIScale(oldSettings.getUIScale());
-        newSettings.setBrightness(oldSettings.getBrightness());
+        newSettings.setDarkness(oldSettings.getDarkness());
         newSettings.setTTSVolume(oldSettings.getTTSVolume());
         newSettings.setSFXVolume(oldSettings.getSFXVolume());
         newSettings.setMuted(oldSettings.isMuted());

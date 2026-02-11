@@ -85,7 +85,7 @@ Rectangle{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 80px;
 }
-StackPane{
+.StackPane-Button{
     -fx-cursor: hand;
 }
 .smallerButtonText{

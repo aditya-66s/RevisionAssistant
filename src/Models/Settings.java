@@ -8,7 +8,7 @@ public class Settings {
     // Accessibility
     private double fontSize;
     private double uiScale;
-    private double brightness; // use a stack pane overlay rectangle and change opacity
+    private double darkness; // use a stack pane overlay rectangle and change opacity
     // Audio
     private double ttsVolume;
     private double sfxVolume;
@@ -23,7 +23,7 @@ public class Settings {
         // Accessibility
         this.fontSize = 16;
         this.uiScale = 1.0;
-        this.brightness = 0.0;
+        this.darkness = 0.0;
 
         // Audio
         this.ttsVolume = 0.8;
@@ -39,7 +39,7 @@ public class Settings {
         // Accessibility
         this.fontSize = fontSize;
         this.uiScale = uiScale;
-        this.brightness = brightness;
+        this.darkness = brightness;
 
         // Audio
         this.ttsVolume = ttsVolume;
@@ -54,7 +54,7 @@ public class Settings {
         s.setTheme(this.theme);
         s.setFontSize(this.fontSize);
         s.setUIScale(this.uiScale);
-        s.setBrightness(this.brightness);
+        s.setDarkness(this.darkness);
         s.setTTSVolume(this.ttsVolume);
         s.setSFXVolume(this.sfxVolume);
         s.setMuted(this.muted);
@@ -92,9 +92,9 @@ public class Settings {
         this.uiScale = clamp(uiScale, 0.8, 1.5);
     }
 
-    public double getBrightness() { return brightness; }
-    public void setBrightness(double brightness) {
-        this.brightness = clamp(brightness, 0.0, 0.6);
+    public double getDarkness() { return darkness; }
+    public void setDarkness(double darkness) {
+        this.darkness = clamp(darkness, 0.0, 0.6);
     }
 
     // Audio

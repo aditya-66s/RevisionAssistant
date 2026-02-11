@@ -1,6 +1,5 @@
 package Screens;
 
-import Components.ContentNavigator;
 import Components.CustomAlert;
 import Components.ScreenManager;
 import Components.UIComponents;
@@ -19,9 +18,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
@@ -34,6 +33,8 @@ public class SettingsScreen extends SystemScreens{
     private final Group background = createBackground("System Settings");
     private final AuthenticationController ac;
     private final SettingsController sC;
+    private final Settings currentSettings;
+    private Settings draftSettings;
     public SettingsScreen(AuthenticationController ac, SettingsController sC) {
         this.ac = ac;
         this.sC = sC;
@@ -46,6 +47,14 @@ public class SettingsScreen extends SystemScreens{
                 e.printStackTrace();
                 // Could set default settings here as fallback
             }
+        }
+        this.currentSettings = sC.getCurrentSettings();
+        // Use existing draft if available, otherwise create new one
+        if (sC.getDraftSettings() == null) {
+            this.draftSettings = currentSettings.copy();
+            sC.setDraftSettings(this.draftSettings);
+        } else {
+            this.draftSettings = sC.getDraftSettings();
         }
     }
     // Function returning the scene displays all options in settings
@@ -86,10 +95,26 @@ public class SettingsScreen extends SystemScreens{
         return scene;
     }
 
+    // Re-usable save button
+    private RectangleButtonBundle saveRect(Scene scene){
+        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
+        save.button().setOnMouseClicked(_ -> {
+            try {
+                sC.saveSettings(draftSettings);
+                sC.setCurrentSettings(draftSettings);
+                sC.setDraftSettings(draftSettings.copy());
+                CustomAlert.success(scene.getWindow(), "Success, changes saved.");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return save;
+    }
+
     // Procedure creating the UI for user to pick between stylesheet options
     private void buildStylesheetOptionsContent(Group contentLayer, Scene scene) {
-        Settings currentSettings = sC.getCurrentSettings();
-        Settings draftSettings = currentSettings.copy();
+//        Settings currentSettings = sC.getCurrentSettings();
+//        Settings draftSettings = currentSettings.copy();
 
         Text instructionText = new Text(180, 270, "Pick your stylesheet option:");
         instructionText.getStyleClass().add("instructionText");
@@ -127,18 +152,19 @@ public class SettingsScreen extends SystemScreens{
             createInfoAlert(scene, infoMessage);
         });
 
-
-        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
-        save.button().setOnMouseClicked(_ -> {
-            try {
-                sC.saveSettings(draftSettings);
-                CustomAlert.success(scene.getWindow(), "Success, changes saved.");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        RectangleButtonBundle save = saveRect(scene);
+//        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
+//        save.button().setOnMouseClicked(_ -> {
+//            try {
+//                sC.saveSettings(draftSettings);
+//                CustomAlert.success(scene.getWindow(), "Success, changes saved.");
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
         nav.switchContent(contentLayer, instructionText, styles.button(), save.button(), getBackView(contentLayer));
     }
+
     // ERROR: I APPLIED IT TO THE FRICKING PANE INSTEAD OF THE SCENE, TOOK ME 2 HOURS TO REALISE
     // Theme selected with be applied to their screen to give the user a preview
     private void previewTheme(Scene root, String theme){
@@ -162,15 +188,22 @@ public class SettingsScreen extends SystemScreens{
 
     private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene){
         Rectangle brightnessOverlay = new Rectangle(1920, 1057);
-        brightnessOverlay.setOpacity(0);
-        Slider brightnessSlider = new Slider(0, 0.8, 0);
-
-        brightnessSlider.setLayoutX(310);
-        brightnessSlider.setLayoutY(310);
-        brightnessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            brightnessOverlay.setOpacity(newVal.doubleValue());
+        System.out.println("Loading darkness value: " + draftSettings.getDarkness()); // DEBUG
+        brightnessOverlay.setOpacity(draftSettings.getDarkness());
+        Slider darknessSlider = new Slider(0, 0.8, draftSettings.getDarkness());
+        darknessSlider.setLayoutX(310);
+        darknessSlider.setLayoutY(310);
+        darknessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double darkness = newVal.doubleValue();
+            draftSettings.setDarkness(darkness);
+            brightnessOverlay.setOpacity(darkness);
+            System.out.println("Set darkness to: " + darkness); // DEBUG
         });
-        nav.switchContent(contentLayer, brightnessOverlay, brightnessSlider, getBackView(contentLayer));
+        RectangleButtonBundle save = saveRect(scene);
+
+        darknessSlider.setOnMouseReleased(_ -> CustomAlert.info(scene.getWindow(), "Changes to brightness will only persist after save button is pressed"));
+
+        nav.switchContent(contentLayer, brightnessOverlay, darknessSlider, save.button(), getBackView(contentLayer));
     }
 
     // Procedure to create and display all buttons when Other Options is selected

@@ -2,7 +2,12 @@ package Components;
 
 import Controllers.SettingsController;
 import Models.Settings;
+import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -43,8 +48,13 @@ public class ScreenManager {
 //        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
 //        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
         changeStyleSheet(root, email);
+//        Parent originalRoot = root.getRoot();
+//        StackPane wrapper = new StackPane(originalRoot);
+//        wrapper.getChildren().add(addBrightnessOverlay(email));
+//        root.setRoot(wrapper);
+//        root = sceneWithOverlay(root, email);
         // Switch scene to new scene
-        stage.setScene(root);
+        stage.setScene(sceneWithOverlay(root, email));
     }
     // Navigate back to previous scene in history stack
     public static void goBack(){
@@ -60,18 +70,35 @@ public class ScreenManager {
             // Remove and fetch most recent scene from history, setting it as the current scene.
             Scene nextScene = history.pop();
             changeStyleSheet(nextScene, email);
-            stage.setScene(nextScene);
+            stage.setScene(sceneWithOverlay(nextScene, email));
         }
     }
     // Clears all navigation history (You can't navigate back post logout).
     public static void clearHistory(){
         history.clear();
     }
+    private static Settings getUserSettings(String email) throws IOException {
+        return sC.loadSettings(email);
+    }
     // Procedure for applying user settings to each screen (stylesheet specific as of) 08/02/2025
     private static void changeStyleSheet(Scene root, String email) throws IOException {
-        Settings userSettings = sC.loadSettings(email);
+        Settings userSettings = getUserSettings(email);
         root.getStylesheets().clear();
         root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
         root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
+    }
+    private static Scene sceneWithOverlay(Scene scene, String email) throws IOException {
+        Parent originalRoot = scene.getRoot();
+        StackPane wrapper = new StackPane(originalRoot);
+        wrapper.getChildren().add(addBrightnessOverlay(email));
+        scene.setRoot(wrapper);
+        return scene;
+    }
+    private static Rectangle addBrightnessOverlay(String email) throws IOException {
+        Settings userSettings = getUserSettings(email);
+        Rectangle brightnessOverlay = new Rectangle(1920, 1057);
+        brightnessOverlay.setOpacity(userSettings.getDarkness());
+        brightnessOverlay.setMouseTransparent(true);
+        return brightnessOverlay;
     }
 }

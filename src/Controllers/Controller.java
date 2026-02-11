@@ -14,6 +14,7 @@ public abstract class Controller {
     // Holds the application's current user
     private User currentUser;
     private Settings currentSettings;
+    private  Settings draftSettings;
 
     // Ensures parent folder and CSV exists
     public void ensureCSVExists(Path csvPath) throws IOException {
@@ -38,7 +39,7 @@ public abstract class Controller {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
             // Create a new path in same directory
             // Keep the corrupted file for recovery or debugging
-            Path backup = csvPath.resolveSibling("user_corrupted" + timestamp + ".csv");
+            Path backup = csvPath.resolveSibling("corrupted" + timestamp + ".csv");
             // Move corrupted file to back up location
             // REPLACE_EXISTING ensures there is no conflict
             Files.move(csvPath, backup, StandardCopyOption.REPLACE_EXISTING);
@@ -61,5 +62,12 @@ public abstract class Controller {
     }
     public void setCurrentSettings(Settings currentSettings) {
         this.currentSettings = currentSettings;
+    }
+    public Settings getDraftSettings() {
+        return draftSettings;
+    }
+
+    public void setDraftSettings(Settings settings) {
+        this.draftSettings = settings;
     }
 }

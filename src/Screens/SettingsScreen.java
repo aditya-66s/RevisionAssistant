@@ -80,7 +80,13 @@ public class SettingsScreen extends SystemScreens{
 
         RectangleButtonBundle accessibility = ui.buildRectangularButtonBundle(rectW, rectH, "Accessibility", "buttonText", 310, 412);
         ImageView aIcon = createIcon(310, 412, "/images/SettingsScreen/accessibility.png");
-        accessibility.button().setOnMouseClicked(_-> {buildAccessibilityOptionsContent(contentLayer, scene);});
+        accessibility.button().setOnMouseClicked(_-> {
+            try {
+                buildAccessibilityOptionsContent(contentLayer, scene);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         RectangleButtonBundle audioControl = ui.buildRectangularButtonBundle(rectW, rectH, "Audio Control", "buttonText", 310, 583);
         ImageView aCIcon = createIcon(310, 583, "/images/SettingsScreen/audio.png");
@@ -186,13 +192,17 @@ public class SettingsScreen extends SystemScreens{
         CustomAlert.info(alertWindow, message);
     }
 
-    private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene){
-        Rectangle brightnessOverlay = new Rectangle(1920, 1057);
+    private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene) throws IOException {
+        Rectangle brightnessOverlay = getBrightnessOverlay(scene);
+
         System.out.println("Loading darkness value: " + draftSettings.getDarkness()); // DEBUG
         brightnessOverlay.setOpacity(draftSettings.getDarkness());
         Slider darknessSlider = new Slider(0, 0.8, draftSettings.getDarkness());
         darknessSlider.setLayoutX(310);
         darknessSlider.setLayoutY(310);
+        darknessSlider.setShowTickMarks(true);
+        darknessSlider.setShowTickLabels(true);
+        darknessSlider.setMajorTickUnit(0.1);
         darknessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double darkness = newVal.doubleValue();
             draftSettings.setDarkness(darkness);
@@ -203,7 +213,23 @@ public class SettingsScreen extends SystemScreens{
 
         darknessSlider.setOnMouseReleased(_ -> CustomAlert.info(scene.getWindow(), "Changes to brightness will only persist after save button is pressed"));
 
-        nav.switchContent(contentLayer, brightnessOverlay, darknessSlider, save.button(), getBackView(contentLayer));
+        nav.switchContent(contentLayer, darknessSlider, save.button(), getBackView(contentLayer));
+    }
+    // Function to get the scene's original brightnessOverlay
+    private Rectangle getBrightnessOverlay(Scene scene) throws IOException {
+        Rectangle brightnessOverlay = null;
+        if(scene.getRoot() instanceof StackPane wrapper){
+            for(var node : wrapper.getChildren()){
+                if(node instanceof Rectangle rect && rect.getWidth() == 1920 && rect.getHeight() == 1057){
+                    brightnessOverlay = rect;
+                    break;
+                }
+            }
+        }
+        if(brightnessOverlay == null){
+            brightnessOverlay = ScreenManager.getBrightnessOverlay(ac.getCurrentUser().getEmail());
+        }
+        return brightnessOverlay;
     }
 
     // Procedure to create and display all buttons when Other Options is selected

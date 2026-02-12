@@ -4,7 +4,6 @@ import Components.ScreenManager;
 import Models.Settings;
 import Models.User;
 import Screens.AuthScreen;
-import Screens.SettingsScreen;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -43,6 +42,7 @@ public class  AuthenticationController extends Controller {
             setCurrentUser(user);
             sc.createDefaultSettings(email);
             setCurrentSettings(sc.loadSettings(email));
+            setSettingsControllertoSM(sc);
             return true;
         }else{
             // Email already in CSV
@@ -62,6 +62,7 @@ public class  AuthenticationController extends Controller {
                 setCurrentUser(temp);
                 Settings userSettings = sc.loadSettings(email);
                 setCurrentSettings(userSettings);
+                setSettingsControllertoSM(sc);
                 return true;
             }
         }
@@ -214,7 +215,9 @@ public class  AuthenticationController extends Controller {
         // User cannot find a way to go back into Main Menu after logging out
         ScreenManager.clearHistory();
         // Switch to Log in/Registration Screen
-        ScreenManager.switchScene(new AuthScreen(new AuthenticationController(), new SettingsController()).create());
+        SettingsController sc = new SettingsController();
+        setSettingsControllertoSM(sc);
+        ScreenManager.switchScene(new AuthScreen(new AuthenticationController(), sc).create());
     }
     private void generateSalt(){
         // Cryptographic secure random number gen (better than java.util.random)
@@ -234,5 +237,8 @@ public class  AuthenticationController extends Controller {
         LocalDateTime time = LocalDateTime.now();
         DateTimeFormatter expectedFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return time.format(expectedFormat);
+    }
+    private void setSettingsControllertoSM(SettingsController sc){
+        ScreenManager.setSC(sc);
     }
 }

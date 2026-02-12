@@ -24,7 +24,10 @@
     -fx-font-size: 80px;
     /*-fx-fill: white;*/
 }
-
+.brightnessOverlay{
+    -fx-arc-height: 0px;
+    -fx-arc-width: 0px;
+}
 Rectangle{
     -fx-arc-height: 50px;
     -fx-arc-width: 50px;
@@ -129,4 +132,5 @@ Slider .thumb {
     -fx-background-radius: 50%;
     -fx-pref-width: 16px;
     -fx-pref-height: 16px;
+    -fx-cursor: hand;
 }

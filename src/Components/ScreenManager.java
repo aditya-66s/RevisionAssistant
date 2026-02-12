@@ -2,10 +2,8 @@ package Components;
 
 import Controllers.SettingsController;
 import Models.Settings;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -21,7 +19,12 @@ public class ScreenManager {
     // Stack to maintain navigation of history opf scenes.
     private static final Stack<Scene> history = new Stack<>();
     //  sets the primary stage reference for application, called only at startup
-    private static final SettingsController sC = new SettingsController();
+    private static SettingsController sC;
+
+    public static void setSC(SettingsController sC) {
+        ScreenManager.sC = sC;
+    }
+
     public static void setStage(Stage primaryStage){
         stage = primaryStage;
     }
@@ -70,7 +73,16 @@ public class ScreenManager {
             // Remove and fetch most recent scene from history, setting it as the current scene.
             Scene nextScene = history.pop();
             changeStyleSheet(nextScene, email);
-            stage.setScene(sceneWithOverlay(nextScene, email));
+            if(nextScene.getRoot() instanceof StackPane wrapper){
+                for(var node : wrapper.getChildren()){
+                    if(node instanceof Rectangle rect && rect.getWidth() == 1920 && rect.getHeight() == 1057){
+                        Settings cS = getUserSettings(email);
+                        rect.setOpacity(cS.getDarkness());
+                        break;
+                    }
+                }
+            }
+            stage.setScene(nextScene);
         }
     }
     // Clears all navigation history (You can't navigate back post logout).
@@ -78,6 +90,9 @@ public class ScreenManager {
         history.clear();
     }
     private static Settings getUserSettings(String email) throws IOException {
+        if (sC != null && sC.getCurrentSettings() != null && sC.getCurrentSettings().getEmail().equals(email)) {
+            return sC.getCurrentSettings();
+        }
         return sC.loadSettings(email);
     }
     // Procedure for applying user settings to each screen (stylesheet specific as of) 08/02/2025
@@ -90,13 +105,15 @@ public class ScreenManager {
     private static Scene sceneWithOverlay(Scene scene, String email) throws IOException {
         Parent originalRoot = scene.getRoot();
         StackPane wrapper = new StackPane(originalRoot);
-        wrapper.getChildren().add(addBrightnessOverlay(email));
+        wrapper.getChildren().add(getBrightnessOverlay(email));
         scene.setRoot(wrapper);
         return scene;
     }
-    private static Rectangle addBrightnessOverlay(String email) throws IOException {
+
+    public static Rectangle getBrightnessOverlay(String email) throws IOException {
         Settings userSettings = getUserSettings(email);
         Rectangle brightnessOverlay = new Rectangle(1920, 1057);
+        brightnessOverlay.getStyleClass().add("brightnessOverlay");
         brightnessOverlay.setOpacity(userSettings.getDarkness());
         brightnessOverlay.setMouseTransparent(true);
         return brightnessOverlay;

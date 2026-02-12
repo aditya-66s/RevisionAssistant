@@ -16,6 +16,7 @@ public abstract class Controller {
     private Settings currentSettings;
     private  Settings draftSettings;
 
+
     // Ensures parent folder and CSV exists
     public void ensureCSVExists(Path csvPath) throws IOException {
         // Create a parent directory if it doesn't exist

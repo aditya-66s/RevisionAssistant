@@ -200,8 +200,6 @@ public class SettingsScreen extends SystemScreens{
         Slider darknessSlider = new Slider(0, 0.8, draftSettings.getDarkness());
         darknessSlider.setLayoutX(310);
         darknessSlider.setLayoutY(310);
-        darknessSlider.setShowTickMarks(true);
-        darknessSlider.setShowTickLabels(true);
         darknessSlider.setMajorTickUnit(0.1);
         darknessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double darkness = newVal.doubleValue();
@@ -209,11 +207,22 @@ public class SettingsScreen extends SystemScreens{
             brightnessOverlay.setOpacity(darkness);
             System.out.println("Set darkness to: " + darkness); // DEBUG
         });
+        Slider uiScaleSlider = new Slider(0.8, 1.2, draftSettings.getUIScale());
+        uiScaleSlider.setLayoutX(310);
+        uiScaleSlider.setLayoutY(500);
+        uiScaleSlider.setMajorTickUnit(0.1);
+        uiScaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            draftSettings.setUIScale(newVal.doubleValue());
+            scene.getRoot().setScaleX(draftSettings.getUIScale());
+            scene.getRoot().setScaleY(draftSettings.getUIScale());
+            scene.getRoot().setTranslateX(0);
+            scene.getRoot().setTranslateY(0);
+        });
         RectangleButtonBundle save = saveRect(scene);
 
         darknessSlider.setOnMouseReleased(_ -> CustomAlert.info(scene.getWindow(), "Changes to brightness will only persist after save button is pressed"));
 
-        nav.switchContent(contentLayer, darknessSlider, save.button(), getBackView(contentLayer));
+        nav.switchContent(contentLayer, darknessSlider, uiScaleSlider, save.button(), getBackView(contentLayer));
     }
     // Function to get the scene's original brightnessOverlay
     private Rectangle getBrightnessOverlay(Scene scene) throws IOException {

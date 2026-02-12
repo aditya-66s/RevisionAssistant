@@ -89,12 +89,12 @@ public class Settings {
 
     public double getUIScale() { return uiScale; }
     public void setUIScale(double uiScale) {
-        this.uiScale = clamp(uiScale, 0.8, 1.5);
+        this.uiScale = clamp(uiScale, 0.8, 1.25);
     }
 
     public double getDarkness() { return darkness; }
     public void setDarkness(double darkness) {
-        this.darkness = clamp(darkness, 0.0, 0.6);
+        this.darkness = clamp(darkness, 0.0, 0.8);
     }
 
     // Audio

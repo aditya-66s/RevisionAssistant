@@ -57,6 +57,7 @@ public class ScreenManager {
 //        root.setRoot(wrapper);
 //        root = sceneWithOverlay(root, email);
         // Switch scene to new scene
+
         stage.setScene(sceneWithOverlay(root, email));
     }
     // Navigate back to previous scene in history stack

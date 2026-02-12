@@ -27,6 +27,7 @@
 .brightnessOverlay{
     -fx-arc-height: 0px;
     -fx-arc-width: 0px;
+    -fx-stroke: transparent;
 }
 Rectangle{
     -fx-arc-height: 50px;
@@ -116,11 +117,15 @@ Rectangle{
 
 Slider{
     -fx-pref-width: 1300px;
+    -fx-show-tick-labels: true;
+    -fx-show-tick-marks: true;
 }
 Slider .track{
     -fx-background-color: #444;
     -fx-background-radius: 6px;
     -fx-pref-height: 6px;
+    -fx-show-tick-labels: true;
+    -fx-show-tick-marks: true;
 }
 Slider .thumb {
     -fx-background-color:

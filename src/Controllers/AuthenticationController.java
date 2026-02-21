@@ -39,6 +39,8 @@ public class  AuthenticationController extends Controller {
                 bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin() + "," + recoveryWord);
                 bw.newLine();
             }
+            // On register the system's current user will be set to the temp user
+            // Settings will be loaded and the SettingsController set into the ScreenManager class
             setCurrentUser(user);
             sc.createDefaultSettings(email);
             setCurrentSettings(sc.loadSettings(email));
@@ -59,6 +61,8 @@ public class  AuthenticationController extends Controller {
             // Objects.requireNonNull(temp) prevents a NullPointerException without explanation, (if null, it throws immediately)
             boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());
             if(loggedIn){
+                // On login the system's current user will be set to the temp user
+                // Settings will be loaded and the SettingsController set into the ScreenManager class
                 setCurrentUser(temp);
                 Settings userSettings = sc.loadSettings(email);
                 setCurrentSettings(userSettings);
@@ -156,6 +160,7 @@ public class  AuthenticationController extends Controller {
                 break;
             }
         }
+        // Write into file
         rewriteUsersCSV(users);
         return true;
     }
@@ -169,23 +174,20 @@ public class  AuthenticationController extends Controller {
                 break;
             }
         }
+        // Write into file
         rewriteUsersCSV(users);
         return true;
     }
     // Change a user's recovery word
-    public boolean changeRecoveryWord(User temp, String newRecoveryWord) throws NoSuchAlgorithmException, IOException {
+    public boolean changeRecoveryWord(User temp, String newRecoveryWord) throws IOException {
         ArrayList<User> users = convertCSVtoArrayList();
         for(User u : users){
-            // u.getRecoveryWord().equals(temp.getRecoveryWord())
             if(u.getEmail().equals(temp.getEmail())){
-//                System.out.println(u.getEmail());
-//                System.out.println(u.getRecoveryWord());
                 u.setRecoveryWord(newRecoveryWord);
-//                System.out.println(u.getEmail());
-//                System.out.println(u.getRecoveryWord());
                 break;
             }
         }
+        // Write into file
         rewriteUsersCSV(users);
         return true;
     }
@@ -194,10 +196,6 @@ public class  AuthenticationController extends Controller {
         // Rewrite the entire file, so updates persist
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
             for (User u : users) {
-                //DEBUGGED VIA
-//                String line = u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord();
-//                bw.write(line);
-//                System.out.println(line);
                 // writes row back into file
                 bw.write(u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord());
                 bw.newLine();

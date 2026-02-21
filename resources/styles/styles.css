@@ -115,6 +115,11 @@ Rectangle{
     -fx-background-color: #222;
 }
 
+.sliderInputAlt{
+    -fx-pref-width: 90px;
+    -fx-pref-height: 50px;
+}
+
 Slider{
     -fx-pref-width: 1300px;
     -fx-show-tick-labels: true;
@@ -138,4 +143,17 @@ Slider .thumb {
     -fx-pref-width: 16px;
     -fx-pref-height: 16px;
     -fx-cursor: hand;
+}
+.toggles {
+    -fx-font-size: 28px;
+    -fx-text-fill: black;
+}
+.toggles .text {
+    -fx-fill: black;
+}
+.toggles .box {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
 }

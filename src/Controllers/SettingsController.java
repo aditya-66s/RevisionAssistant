@@ -24,6 +24,7 @@ public class SettingsController extends Controller {
 
     // Load settings for a user
     public Settings loadSettings(String email) throws IOException {
+        // Method from Controller superclass
         ensureCSVExists(csvPath);
         ArrayList<Settings> settings = convertCSVtoArrayList();
         // Linear search for user
@@ -32,6 +33,7 @@ public class SettingsController extends Controller {
                 return s;
             }
         }
+        // If not found
         Settings defaultSettings = new Settings();
         defaultSettings.setEmail(email);
         return defaultSettings;
@@ -78,13 +80,12 @@ public class SettingsController extends Controller {
             while ((line = br.readLine()) != null) {
                 String[] temp = line.split(",");
                 // Validate row lengths to avoid ArrayIndexOutOfBoundsException, throw an exception
-                if (temp.length < 9){
+                if (temp.length < 6){
                     throw new IllegalArgumentException("Corrupted Row: " + line);
                 }
                 // Create a settings object
                 Settings settings = new Settings(temp[0], temp[1], Double.parseDouble(temp[2]), Double.parseDouble(temp[3]),
-                        Double.parseDouble(temp[4]), Double.parseDouble(temp[5]), Double.parseDouble(temp[6]),
-                        Boolean.parseBoolean(temp[7]), Boolean.parseBoolean(temp[8]));
+                        Double.parseDouble(temp[4]), Boolean.parseBoolean(temp[5]), Boolean.parseBoolean(temp[6]));
                 // Add object to ArrayList
                 settingsList.add(settings);
             }
@@ -110,8 +111,6 @@ public class SettingsController extends Controller {
     private String toCSVRow(String email, Settings s) {
         return email + "," +
                 s.getTheme() + "," +
-                s.getFontSize() + "," +
-                s.getUIScale() + "," +
                 s.getDarkness() + "," +
                 s.getTTSVolume() + "," +
                 s.getSFXVolume() + "," +
@@ -121,8 +120,6 @@ public class SettingsController extends Controller {
     // Update a user's setting object
     private void copySettings(Settings oldSettings, Settings newSettings) {
         newSettings.setTheme(oldSettings.getTheme());
-        newSettings.setFontSize(oldSettings.getFontSize());
-        newSettings.setUIScale(oldSettings.getUIScale());
         newSettings.setDarkness(oldSettings.getDarkness());
         newSettings.setTTSVolume(oldSettings.getTTSVolume());
         newSettings.setSFXVolume(oldSettings.getSFXVolume());

@@ -15,12 +15,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
@@ -44,8 +45,9 @@ public class SettingsScreen extends SystemScreens{
                 Settings userSettings = sC.loadSettings(ac.getCurrentUser().getEmail());
                 sC.setCurrentSettings(userSettings);
             } catch (IOException e) {
-                e.printStackTrace();
-                // Could set default settings here as fallback
+                // Default Setting set as a fallback
+                Settings userSettings = new Settings();
+                sC.setCurrentSettings(userSettings);
             }
         }
         this.currentSettings = sC.getCurrentSettings();
@@ -90,6 +92,7 @@ public class SettingsScreen extends SystemScreens{
 
         RectangleButtonBundle audioControl = ui.buildRectangularButtonBundle(rectW, rectH, "Audio Control", "buttonText", 310, 583);
         ImageView aCIcon = createIcon(310, 583, "/images/SettingsScreen/audio.png");
+        audioControl.button().setOnMouseClicked(_-> buildAudioControlContent(contentLayer, scene));
 
         RectangleButtonBundle others = ui.buildRectangularButtonBundle(rectW, rectH, "Others", "buttonText", 310, 755);
         ImageView oIcon = createIcon(310, 755, "/images/SettingsScreen/others.png");
@@ -159,18 +162,8 @@ public class SettingsScreen extends SystemScreens{
         });
 
         RectangleButtonBundle save = saveRect(scene);
-//        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
-//        save.button().setOnMouseClicked(_ -> {
-//            try {
-//                sC.saveSettings(draftSettings);
-//                CustomAlert.success(scene.getWindow(), "Success, changes saved.");
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
         nav.switchContent(contentLayer, instructionText, styles.button(), save.button(), getBackView(contentLayer));
     }
-
     // ERROR: I APPLIED IT TO THE FRICKING PANE INSTEAD OF THE SCENE, TOOK ME 2 HOURS TO REALISE
     // Theme selected with be applied to their screen to give the user a preview
     private void previewTheme(Scene root, String theme){
@@ -192,42 +185,76 @@ public class SettingsScreen extends SystemScreens{
         CustomAlert.info(alertWindow, message);
     }
 
+    // Procedure to build accessibility settings content
     private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene) throws IOException {
         Rectangle brightnessOverlay = getBrightnessOverlay(scene);
-
         System.out.println("Loading darkness value: " + draftSettings.getDarkness()); // DEBUG
         brightnessOverlay.setOpacity(draftSettings.getDarkness());
+        Text darknessText = new Text("Darkness Overlay:");
+        darknessText.getStyleClass().add("instructionText");
+        darknessText.setLayoutX(150);
+        darknessText.setLayoutY(300);
+
+        Text darknessValue = new Text(String.format("%.0f%%", draftSettings.getDarkness() * 100));
+        darknessValue.getStyleClass().add("instructionText");
+        darknessValue.setLayoutX(1500);
+        darknessValue.setLayoutY(300);
+
+        TextField darknessInput = new TextField();
+        darknessInput.getStyleClass().add("sliderInputAlt");
+        darknessInput.setLayoutX(1600);
+        darknessInput.setLayoutY(490);
+
+        darknessInput.setText(String.format("%.0f%%", draftSettings.getDarkness() * 100));
+
         Slider darknessSlider = new Slider(0, 0.8, draftSettings.getDarkness());
-        darknessSlider.setLayoutX(310);
-        darknessSlider.setLayoutY(310);
+        // Darkness/Brightness Control
+        darknessSlider.setLayoutX(250);
+        darknessSlider.setLayoutY(500);
         darknessSlider.setMajorTickUnit(0.1);
         darknessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double darkness = newVal.doubleValue();
             draftSettings.setDarkness(darkness);
             brightnessOverlay.setOpacity(darkness);
             System.out.println("Set darkness to: " + darkness); // DEBUG
+            darknessValue.setText(String.format("%.0f%%", darkness * 100));
+            darknessInput.setText(String.format("%.0f%%", darkness * 100));
         });
-        Slider uiScaleSlider = new Slider(0.8, 1.2, draftSettings.getUIScale());
-        uiScaleSlider.setLayoutX(310);
-        uiScaleSlider.setLayoutY(500);
-        uiScaleSlider.setMajorTickUnit(0.1);
-        uiScaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            draftSettings.setUIScale(newVal.doubleValue());
-            scene.getRoot().setScaleX(draftSettings.getUIScale());
-            scene.getRoot().setScaleY(draftSettings.getUIScale());
-            scene.getRoot().setTranslateX(0);
-            scene.getRoot().setTranslateY(0);
+
+        String infoMessage = "Changes to brightness will only persist after save button is pressed";
+
+        // Can be changed via user input too
+        darknessInput.setOnAction(_ -> {
+            try{
+                double inputValue = Double.parseDouble(darknessInput.getText());
+                // Clamp between 0-80
+                inputValue = Math.max(0, Math.min(80, inputValue));
+                double darkness = inputValue / 100.0;
+                draftSettings.setDarkness(darkness);
+                brightnessOverlay.setOpacity(darkness);
+                darknessSlider.setValue(darkness);
+                darknessValue.setText(String.format("%.0f%%", darkness * 100));
+                darknessInput.setText(String.format("%.0f", inputValue));
+            } catch (NumberFormatException e) {
+                // Reset to current value if invalid input
+                darknessInput.setText(String.format("%.0f", draftSettings.getDarkness() * 100));
+            }
         });
         RectangleButtonBundle save = saveRect(scene);
-
-        darknessSlider.setOnMouseReleased(_ -> CustomAlert.info(scene.getWindow(), "Changes to brightness will only persist after save button is pressed"));
-
-        nav.switchContent(contentLayer, darknessSlider, uiScaleSlider, save.button(), getBackView(contentLayer));
+        ImageView backView = getBackView(contentLayer);
+        backView.setOnMouseClicked(_ -> {
+            boolean isConfirmed = CustomAlert.confirm(scene.getWindow(), "Confirmation of Save", infoMessage);
+            if(isConfirmed){
+                nav.goBack(contentLayer);
+            }
+        });
+        nav.switchContent(contentLayer, darknessText, darknessValue, darknessSlider, darknessInput, save.button(), backView);
     }
     // Function to get the scene's original brightnessOverlay
     private Rectangle getBrightnessOverlay(Scene scene) throws IOException {
         Rectangle brightnessOverlay = null;
         if(scene.getRoot() instanceof StackPane wrapper){
+            // Check every node in the StackPane to get the brightness overlay and set it to the new one
             for(var node : wrapper.getChildren()){
                 if(node instanceof Rectangle rect && rect.getWidth() == 1920 && rect.getHeight() == 1057){
                     brightnessOverlay = rect;
@@ -239,6 +266,172 @@ public class SettingsScreen extends SystemScreens{
             brightnessOverlay = ScreenManager.getBrightnessOverlay(ac.getCurrentUser().getEmail());
         }
         return brightnessOverlay;
+    }
+
+    // Procedure to build audio settings content, with sliders and check boxes for
+    private void buildAudioControlContent(Group contentLayer, Scene scene){
+        Text sfxText = new Text("Sound Effects Volume: ");
+        sfxText.getStyleClass().add("instructionText");
+        sfxText.setLayoutX(150);
+        sfxText.setLayoutY(270);
+
+        Text sfxValue = new Text(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
+        sfxValue.getStyleClass().add("instructionText");
+        sfxValue.setLayoutX(1500);
+        sfxValue.setLayoutY(270);
+
+        TextField sfxInput = new TextField(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
+        sfxInput.getStyleClass().add("sliderInputAlt");
+        sfxInput.setLayoutX(1600);
+        sfxInput.setLayoutY(290);
+
+        Slider sfxSlider = new Slider(0, 1.0, draftSettings.getSFXVolume());
+        sfxSlider.setLayoutX(250);
+        sfxSlider.setLayoutY(300);
+        sfxSlider.setMajorTickUnit(0.1);
+        sfxSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double volume = newVal.doubleValue();
+            draftSettings.setSFXVolume(volume);
+            sfxInput.setText(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
+            sfxValue.setText(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
+            sfxSlider.setOnMouseReleased(_-> playTestSound(volume));
+        });
+
+        sfxInput.setOnAction(_ -> {
+            try{
+                double inputValue = Double.parseDouble(sfxInput.getText());
+                // Clamp between 0-100
+                inputValue = Math.max(0, Math.min(100 , inputValue));
+                double sfxVol = inputValue / 100.0;
+                draftSettings.setSFXVolume(sfxVol);
+                playTestSound(sfxVol);
+                sfxSlider.setValue(sfxVol);
+                sfxValue.setText(String.format("%.0f%%", sfxVol * 100));
+                sfxInput.setText(String.format("%.0f", inputValue));
+            } catch (NumberFormatException e) {
+                // Reset to current value if invalid input
+                sfxInput.setText(String.format("%.0f", draftSettings.getSFXVolume() * 100));
+            }
+        });
+
+        Text  ttsText = new Text("Text-To-Speech Volume: ");
+        ttsText.getStyleClass().add("instructionText");
+        ttsText.setLayoutX(150);
+        ttsText.setLayoutY(470);
+
+        Text ttsValue = new Text(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
+        ttsValue.getStyleClass().add("instructionText");
+        ttsValue.setLayoutX(1500);
+        ttsValue.setLayoutY(470);
+
+        TextField ttsInput = new TextField(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
+        ttsInput.getStyleClass().add("sliderInputAlt");
+        ttsInput.setLayoutX(1600);
+        ttsInput.setLayoutY(490);
+
+        Slider ttsSlider = new Slider(0, 1.0, draftSettings.getTTSVolume());
+        ttsSlider.setLayoutX(250);
+        ttsSlider.setLayoutY(500);
+        ttsSlider.setMajorTickUnit(0.1);
+        ttsSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double volume = newVal.doubleValue();
+            draftSettings.setTTSVolume(volume);
+            ttsInput.setText(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
+            ttsValue.setText(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
+            ttsSlider.setOnMouseReleased(_-> playTestSound(volume));
+        });
+
+        ttsInput.setOnAction(_ -> {
+            try{
+                double inputValue = Double.parseDouble(ttsInput.getText());
+                // Clamp between 0-100
+                inputValue = Math.max(0, Math.min(100 , inputValue));
+                double ttsVol = inputValue / 100.0;
+                draftSettings.setTTSVolume(ttsVol);
+                playTestSound(ttsVol);
+                ttsSlider.setValue(ttsVol);
+                ttsValue.setText(String.format("%.0f%%", ttsVol * 100));
+                ttsInput.setText(String.format("%.0f", inputValue));
+            } catch (NumberFormatException e) {
+                // Reset to current value if invalid input
+                sfxInput.setText(String.format("%.0f", draftSettings.getTTSVolume() * 100));
+            }
+        });
+
+        Text toggleMuteText = new Text("Toggle Mute: ");
+        toggleMuteText.getStyleClass().add("instructionText");
+        toggleMuteText.setLayoutX(150);
+        toggleMuteText.setLayoutY(630);
+
+        CheckBox toggleMute = new CheckBox();
+        toggleMute.setSelected(draftSettings.isMuted());
+        toggleMute.getStyleClass().add("toggles");
+        toggleMute.setLayoutX(1200);
+        toggleMute.setLayoutY(560);
+        toggleMute.setOnAction(_ -> {
+            draftSettings.setMuted(toggleMute.isSelected());
+            onToggle(toggleMute, sfxInput, sfxValue, sfxSlider, false);
+        });
+
+        Text toggleTTSText = new Text("Toggle TTS: ");
+        toggleTTSText.getStyleClass().add("instructionText");
+        toggleTTSText.setLayoutX(150);
+        toggleTTSText.setLayoutY(730);
+
+        CheckBox toggleTTS = new CheckBox();
+        toggleTTS.setSelected(draftSettings.isTTSEnabled());
+        toggleTTS.getStyleClass().add("toggles");
+        toggleTTS.setLayoutX(1200);
+        toggleTTS.setLayoutY(660);
+        toggleTTS.setOnAction(_ -> {
+            draftSettings.setTTSEnabled(toggleTTS.isSelected());
+            onToggle(toggleTTS, ttsInput, ttsValue, ttsSlider, true);
+        });
+
+        RectangleButtonBundle save = saveRect(scene);
+        Group texts = new Group(sfxText, sfxValue, sfxInput, ttsText, ttsValue, ttsInput, toggleMuteText, toggleTTSText);
+        nav.switchContent(contentLayer, sfxSlider, ttsSlider, toggleMute, toggleTTS, texts, save.button(), getBackView(contentLayer));
+    }
+    // Procedure which changes screen info on check boxes
+    private void onToggle(CheckBox checkBox, TextField inputField, Text value, Slider slider, boolean isTTS) {
+        double volume;
+        if (checkBox.isSelected()) {
+            if (isTTS) {
+                // get and set the default value for tts volume (80%)
+                volume = new Settings().getTTSVolume();
+                draftSettings.setTTSVolume(volume);
+            } else {
+                // Muted value
+                volume = 0.0;
+                draftSettings.setSFXVolume(volume);
+            }
+            // Change info on screen
+            inputField.setText(String.format("%.0f%%", volume * 100));
+            value.setText(String.format("%.0f%%", volume * 100));
+            slider.setValue(volume);
+        } else {
+            if (isTTS) {
+                volume = 0.0;
+                draftSettings.setTTSVolume(volume);
+            } else {
+                // get and set default value for sfx (60%)
+                volume = new Settings().getSFXVolume();
+                draftSettings.setSFXVolume(volume);
+            }
+            // Change info on screen
+            inputField.setText("0%");
+            value.setText("0%");
+            slider.setValue(volume);
+        }
+        // Play test sound
+        playTestSound(volume);
+    }
+    // procedure which will play the test sound when volume is altered
+    private void playTestSound(double volume){
+        Media testSound = new  Media(Objects.requireNonNull(getClass().getResource("/sounds/testSound.wav")).toExternalForm());
+        MediaPlayer player = new MediaPlayer(testSound);
+        player.setVolume(volume);
+        player.play();
     }
 
     // Procedure to create and display all buttons when Other Options is selected

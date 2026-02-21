@@ -19,28 +19,20 @@ public class Settings {
     public Settings() {
         // Stylesheet default
         this.theme = "dark";
-
         // Accessibility
-        this.fontSize = 16;
-        this.uiScale = 1.0;
         this.darkness = 0.0;
-
         // Audio
         this.ttsVolume = 0.8;
         this.sfxVolume = 0.6;
         this.muted = false;
         this.ttsEnabled = true;
     }
-    public Settings(String email, String theme, double fontSize, double uiScale, double brightness, double ttsVolume, double sfxVolume, boolean muted, boolean ttsEnabled) {
+    public Settings(String email, String theme, double darkness, double ttsVolume, double sfxVolume, boolean muted, boolean ttsEnabled) {
         this.email = email;
         // Stylesheet default
         this.theme = theme;
-
         // Accessibility
-        this.fontSize = fontSize;
-        this.uiScale = uiScale;
-        this.darkness = brightness;
-
+        this.darkness = darkness;
         // Audio
         this.ttsVolume = ttsVolume;
         this.sfxVolume = sfxVolume;
@@ -52,8 +44,6 @@ public class Settings {
         Settings s = new Settings();
         s.setEmail(this.email);
         s.setTheme(this.theme);
-        s.setFontSize(this.fontSize);
-        s.setUIScale(this.uiScale);
         s.setDarkness(this.darkness);
         s.setTTSVolume(this.ttsVolume);
         s.setSFXVolume(this.sfxVolume);
@@ -77,21 +67,11 @@ public class Settings {
     //  Stylesheet
     public String getTheme() { return theme; }
     public void setTheme(String theme) {
-        if (theme == null || theme.isBlank()) return;
+        if (theme == null || theme.isBlank()) {this.theme = "dark";}
         this.theme = theme;
     }
 
     // Accessibility
-    public double getFontSize() { return fontSize; }
-    public void setFontSize(double fontSize) {
-        this.fontSize = clamp(fontSize, 12, 28);
-    }
-
-    public double getUIScale() { return uiScale; }
-    public void setUIScale(double uiScale) {
-        this.uiScale = clamp(uiScale, 0.8, 1.25);
-    }
-
     public double getDarkness() { return darkness; }
     public void setDarkness(double darkness) {
         this.darkness = clamp(darkness, 0.0, 0.8);

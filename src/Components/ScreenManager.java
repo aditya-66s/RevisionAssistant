@@ -46,19 +46,10 @@ public class ScreenManager {
             // Save current scene to stack before switching
             history.push(stage.getScene());
         }
-//        Settings userSettings = sC.loadSettings(email);
-//        root.getStylesheets().clear();
-//        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
-//        root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
         changeStyleSheet(root, email);
-//        Parent originalRoot = root.getRoot();
-//        StackPane wrapper = new StackPane(originalRoot);
-//        wrapper.getChildren().add(addBrightnessOverlay(email));
-//        root.setRoot(wrapper);
-//        root = sceneWithOverlay(root, email);
         // Switch scene to new scene
-
-        stage.setScene(sceneWithOverlay(root, email));
+        Scene finalScene = sceneWithOverlay(root, email);
+        stage.setScene(finalScene);
     }
     // Navigate back to previous scene in history stack
     public static void goBack(){
@@ -103,6 +94,7 @@ public class ScreenManager {
         root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/styles.css")).toExternalForm());
         root.getStylesheets().add(Objects.requireNonNull(ScreenManager.class.getResource("/styles/" + userSettings.getTheme() + ".css")).toExternalForm());
     }
+    // Returns a scene with its content put inside a stack pane alongside the brightness overlay
     private static Scene sceneWithOverlay(Scene scene, String email) throws IOException {
         Parent originalRoot = scene.getRoot();
         StackPane wrapper = new StackPane(originalRoot);
@@ -110,7 +102,7 @@ public class ScreenManager {
         scene.setRoot(wrapper);
         return scene;
     }
-
+    // Returns a rectangle to act as a brightness overlay
     public static Rectangle getBrightnessOverlay(String email) throws IOException {
         Settings userSettings = getUserSettings(email);
         Rectangle brightnessOverlay = new Rectangle(1920, 1057);
@@ -119,4 +111,5 @@ public class ScreenManager {
         brightnessOverlay.setMouseTransparent(true);
         return brightnessOverlay;
     }
+
 }

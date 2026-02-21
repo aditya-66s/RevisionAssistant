@@ -33,7 +33,13 @@ public class MainMenuScreen extends SystemScreens {
         getTitle().setLayoutX(510);
         // Creating buttons bundles for all
         RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", 310, 250);
-        revisionSystem.button().setOnMouseClicked(_ -> revisionSystemMouseClick());
+        revisionSystem.button().setOnMouseClicked(_ -> {
+            try {
+                revisionSystemMouseClick();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         ImageView rsIcon = createIcon(310, 245, "/images/MainMenuScreen/books.png");
 
         RectangleButtonBundle userManagement = ui.buildRectangularButtonBundle(rectW, rectH, "User Management", "buttonText", 310,  420);
@@ -76,6 +82,7 @@ public class MainMenuScreen extends SystemScreens {
     private void userManagementMouseClick() {
     }
 
-    private void revisionSystemMouseClick() {
+    private void revisionSystemMouseClick() throws IOException {
+        ScreenManager.switchScene(new RevisionSystemScreen(ac, sc).create(), ac.getCurrentUser().getEmail());
     }
 }

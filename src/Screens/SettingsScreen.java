@@ -65,14 +65,7 @@ public class SettingsScreen extends SystemScreens{
         root.getStyleClass().add("screens");
         Scene scene = new Scene(root, 1920, 1057);
         getTitle().setLayoutX(290);
-        ImageView back = ui.createBRImageView("back");
-        back.setOnMouseClicked(_ -> {
-            try {
-                ScreenManager.goBack(ac.getCurrentUser().getEmail());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        ImageView back = getSwitchScreenBackView(ac);
 
         Group contentLayer = new Group();
         // Creating Buttons for Settings

@@ -1,14 +1,17 @@
 package Screens;
 
 import Components.ContentNavigator;
+import Components.ScreenManager;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
+import Controllers.SettingsController;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static javafx.scene.text.TextAlignment.CENTER;
@@ -45,6 +48,17 @@ public abstract class SystemScreens {
         return back;
     }
 
+    public ImageView getSwitchScreenBackView(AuthenticationController ac) {
+        ImageView back = ui.createBRImageView("back");
+        back.setOnMouseClicked(_ -> {
+            try {
+                ScreenManager.goBack(ac.getCurrentUser().getEmail());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return back;
+    }
     public void setTitle(String titleText) {
         this.title = new Text(titleText);
     }

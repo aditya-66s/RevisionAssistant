@@ -57,6 +57,9 @@ public class  AuthenticationController extends Controller {
         if (doesEmailExist(email)) {
             // temp will hold the user we find by email
             User temp = findUserByEmail(email);
+            if (temp == null) {
+                return false;
+            }
             // Check if password matches,
             // Objects.requireNonNull(temp) prevents a NullPointerException without explanation, (if null, it throws immediately)
             boolean loggedIn = verifyPassword(inpPassword, Objects.requireNonNull(temp).getHashedPassword(), temp.getSaltBase64());

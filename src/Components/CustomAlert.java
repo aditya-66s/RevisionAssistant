@@ -1,10 +1,12 @@
 package Components;
 
+import RecordClasses.TextBundle;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 import java.util.Objects;
+import java.util.Optional;
 
 // Utility class for creating and displaying custom alerts, proving convenient static methods for common alert types
 public class CustomAlert {
@@ -29,6 +31,21 @@ public class CustomAlert {
         // filter checks if OK was clicked
         // isPresent() returns true if OK was chosen
         return a.showAndWait().filter(b -> b == ButtonType.OK).isPresent();
+    }
+    // Displaying an alert which requires an input
+    public static Optional<String> input(Window alertWindow, String title, String message, String promptText){
+        Alert a = build(alertWindow, title, message, Alert.AlertType.CONFIRMATION, ButtonType.CANCEL, ButtonType.OK);
+        UIComponents ui = new UIComponents();
+        TextBundle input = ui.buildTextFieldInput(0, 0, 350, 40, 10, 10, promptText, "/images/Constant/logo.png", 0, 0, 0, 0);
+        Button okButton = (Button) a.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setDisable(true);
+        input.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+            okButton.setDisable(newValue.trim().isEmpty());
+        });
+        Label messageText = new Label(message);
+        VBox content = new VBox(15, messageText, input.group());
+        a.getDialogPane().setContent(content);
+        return a.showAndWait().filter(b -> b == ButtonType.OK).map(b -> input.tf().getText().trim());
     }
     // builds custom styled alert dialog
     private static Alert build(Window alertWindow, String title, String message, Alert.AlertType alertType, ButtonType... buttons) {

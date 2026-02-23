@@ -2,16 +2,16 @@ package Screens;
 
 import Components.CustomAlert;
 import Controllers.AuthenticationController;
+import Controllers.FlashcardController;
 import Controllers.SettingsController;
 import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
+import RecordClasses.TextAreaBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -19,15 +19,22 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+import java.util.Optional;
+
 public class FlashcardManagementScreen extends SystemScreens{
     private final AuthenticationController ac;
     private final SettingsController sc;
+    private final FlashcardController fc;
     private Scene scene;
-    private ObservableList<Flashcard> cardList = FXCollections.observableArrayList();
+    private final ObservableList<Flashcard> cardList = FXCollections.observableArrayList();
+    private TextAreaBundle questionArea;
+    private TextAreaBundle answerArea;
 
     public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC) {
         this.ac = ac;
         this.sc = sC;
+        this.fc = new FlashcardController(ac.getCurrentUser().getEmail());
     }
     public Scene create(){
         Pane root = new Pane();
@@ -57,47 +64,92 @@ public class FlashcardManagementScreen extends SystemScreens{
     private void buildCreationContent(Group contentLayer) {
         VBox inputBox = new VBox(10);
         inputBox.getStyleClass().add("flashcardContent");
-
-        TextArea questionArea = new TextArea();
-        questionArea.setPromptText("Front of card...");
-        questionArea.getStyleClass().add("textArea");
-        TextArea answerArea = new TextArea();
-        answerArea.setPromptText("Back of card...");
-        answerArea.getStyleClass().add("textArea");
+        questionArea = ui.createTextArea("Front of card...", 300, 10);
+        answerArea = ui.createTextArea("Back of card...", 600, 1);
 
         TableView<Flashcard> cardTable = buildTable();
         cardTable.getStyleClass().add("cardTable");
         VBox.setVgrow(cardTable, Priority.ALWAYS);
-        RectangleButtonBundle saveFc = ui.buildRectangularButtonBundle(600, rectH, "Save", "buttonText", 0, 0);
+        RectangleButtonBundle addFC = ui.buildRectangularButtonBundle(600, rectH, "Add", "buttonText", 0, 0);
 
         inputBox.getChildren().addAll(
-                questionArea, answerArea, saveFc.button()
+                questionArea.textArea(), questionArea.characterCounter(),
+                answerArea.textArea(),  answerArea.characterCounter(),
+                addFC.button()
         );
+        RectangleButtonBundle save = ui.buildRectangularButtonBundle(1000, rectH, "Save", "buttonText", 293, 755);
+        save.button().setOnMouseClicked(_->{
+            if(!cardList.isEmpty() && cardList.size() <= 50) {
+                String deckNameReq = "Enter an appropriate deck name, suitable to be a file name: ";
+                Optional<String> deckName = CustomAlert.input(scene.getWindow(), "Save Flashcards", deckNameReq, "Name the deck");
+                fc.setFlashcardDeckName(deckName.get());
+                try {
+                    boolean saved = fc.saveFlashcardDeck(cardList);
+                    if(saved) {
+                        cardList.clear();
+                        cardTable.refresh();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        VBox fcContent = new VBox(10, cardTable, save.button());
 
-        HBox display = new HBox(20, inputBox, cardTable);
+        HBox display = new HBox(20, inputBox, fcContent);
         display.setLayoutX(140);
         display.setLayoutY(210);
         display.setPrefWidth(1704);
         display.setPrefHeight(745);
-
-//        RectangleButtonBundle save = ui.buildRectangularButtonBundle(600, rectH, "Save", "buttonText", 293, 755);
-        saveFc.button().setOnMouseClicked(_->saveFlashcard(questionArea,answerArea));
+        addFC.button().setOnMouseClicked(_->addFlashcard(questionArea.textArea(), answerArea.textArea()));
         nav.switchContent(contentLayer, display);
     }
 
     private TableView<Flashcard> buildTable(){
         TableView<Flashcard> table = new TableView<>(cardList);
-        TableColumn<Flashcard, String> frontCol = new TableColumn<>("Front");
-        frontCol.setCellValueFactory(new PropertyValueFactory<>("front"));
+        TableColumn<Flashcard, String> frontColumn = new TableColumn<>("Front");
+        frontColumn.setCellValueFactory(new PropertyValueFactory<>("front"));
+        TableColumn<Flashcard, String> backColumn = new TableColumn<>("Back");
+        backColumn.setCellValueFactory(new PropertyValueFactory<>("back"));
 
-        TableColumn<Flashcard, String> backCol = new TableColumn<>("Back");
-        backCol.setCellValueFactory(new PropertyValueFactory<>("back"));
+        TableColumn<Flashcard, Void> actionsColumn = new TableColumn<>("Actions");
+        actionsColumn.setMaxWidth(250);
+        actionsColumn.setCellFactory(col -> new TableCell<>() {
+            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
+            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
+            final VBox actions = new VBox(5, edit.button(), delete.button());
+            {
+                // Delete - removed the card at this row from the list
+                delete.button().setOnMouseClicked(_->{
+                    Flashcard card = getTableView().getItems().get(getIndex());
+                    if(CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to delete?")){
+                        cardList.remove(card);
+                    }
+                });
+                // Edit - changes current text field and removes from list so it can be resaved
+                edit.button().setOnMouseClicked(_->{
+                    Flashcard card = getTableView().getItems().get(getIndex());
+                    if(CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to edit?")){
+                        questionArea.textArea().setText(card.getQuestion());
+                        answerArea.textArea().setText(card.getAnswer());
+                        cardList.remove(card);
+                    }
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                // Only show options on the rows which have data
+                setGraphic(empty ? null : actions);
+            }
+        });
         table.setStyle("-fx-wrap-text: true");
-        table.getColumns().addAll(frontCol, backCol);
+        table.getColumns().addAll(frontColumn, backColumn, actionsColumn);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setPlaceholder(new Label("No cards yet"));
         return table;
     }
-    private void saveFlashcard(TextArea q, TextArea a){
+    private void addFlashcard(TextArea q, TextArea a){
         String qReq = "Questions can be 10-300 characters";
         String aReq = "Answers can be 1-300 characters";
 
@@ -108,7 +160,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         if(q.getLength() >= 10 && q.getLength() <= 300){
             validQ = true;
         }
-        if(a.getLength() >= 1 && a.getLength() <= 300){
+        if(a.getLength() >= 1 && a.getLength() <= 550){
             validA = true;
         }
         if(validQ && validA){

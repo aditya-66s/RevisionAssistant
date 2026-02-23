@@ -460,9 +460,9 @@ public class SettingsScreen extends SystemScreens{
     private void buildChangeEmail(Group contentLayer) {
         PasswordBundle passwordInput = originalPasswordInput();
         String userIcon =  "/images/AuthScreen/user.png";
-        TextBundle newEmailInput = ui.buildTextFieldInput(293, 412, rectW, 388, 422, "Enter Email", userIcon, 292,  416, 95, 90);
+        TextBundle newEmailInput = ui.buildTextFieldInput(293, 412, rectW, 98, 388, 422, "Enter Email", userIcon, 292,  416, 95, 90);
         newEmailInput.tf().getStyleClass().add("resetTextField");
-        TextBundle confirmNewEmailInput = ui.buildTextFieldInput(293, 583, rectW, 388, 593, "Confirm Email", userIcon, 292,  587, 95, 90);
+        TextBundle confirmNewEmailInput = ui.buildTextFieldInput(293, 583, rectW, 98, 388, 593, "Confirm Email", userIcon, 292,  587, 95, 90);
         confirmNewEmailInput.tf().getStyleClass().add("resetTextField");
         RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 755);
 
@@ -522,9 +522,9 @@ public class SettingsScreen extends SystemScreens{
     private void buildChangeRW(Group contentLayer) {
         PasswordBundle passwordInput = originalPasswordInput();
         String recoveryIcon = "/images/AuthScreen/recover.png";
-        TextBundle newRecovery = ui.buildTextFieldInput(293, 412, rectW, 388, 422, "Enter Recovery Word", recoveryIcon, 292,  416, 95, 90);
+        TextBundle newRecovery = ui.buildTextFieldInput(293, 412, rectW, 98, 388, 422, "Enter Recovery Word", recoveryIcon, 292,  416, 95, 90);
         newRecovery.tf().getStyleClass().add("resetTextField");
-        TextBundle confirmNewRecovery = ui.buildTextFieldInput(293, 583, rectW, 388, 593, "Confirm Recovery Word", recoveryIcon, 292,  587, 95, 90);
+        TextBundle confirmNewRecovery = ui.buildTextFieldInput(293, 583, rectW, 98, 388, 593, "Confirm Recovery Word", recoveryIcon, 292,  587, 95, 90);
         confirmNewRecovery.tf().getStyleClass().add("resetTextField");
         RectangleButtonBundle changeRecoveryWord = ui.buildRectangularButtonBundle(rectW, rectH, "Change Recovery Word", "buttonText", 293, 755);
 

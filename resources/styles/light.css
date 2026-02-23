@@ -29,7 +29,9 @@ Rectangle{
 .smallButtonText{
     -fx-fill: white;
 }
-
+.tableText{
+    -fx-fill: white;
+}
 .smallerButtonText{
     -fx-fill: white;
 }

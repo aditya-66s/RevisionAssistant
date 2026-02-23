@@ -33,6 +33,9 @@ Rectangle{
 .smallerButtonText{
     -fx-fill: white;
 }
+.tableText{
+    -fx-fill: white;
+}
 .cardTable{
     -fx-fill: black;
 }

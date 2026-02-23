@@ -1,0 +1,7 @@
+"What is an arduino?","Small microcontroller that runs a program we upload to it. When powered on, it starts executing instructions stored in its flash memory sequentially. It is a bridge between code and hardware, which let us automate tasks efficiently."
+"You mentioned troubleshooting hardware and network and network issues - can you walk us through a specific problem and how you diagnosed it?","At my dad's restaurant, the POS would randomly disconnect from the local network, hence orders could not be sent through.
+First, I identified whether the issue was in the physical hardware, software or on a network level.
+1. Cables --> Router --> Fine
+2. Network settings --> conflicting IP addresses --> changed to static and reset.
+Troubleshooting hardware is similar to debugging code:
+- Form hypotheses, test systematically and reduce the problem space."

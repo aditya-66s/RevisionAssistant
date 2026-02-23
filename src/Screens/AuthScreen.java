@@ -86,7 +86,7 @@ public class AuthScreen {
 
         // Create input field with user icon
         String iconURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(695, 372, 530, 790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(695, 372, 530, 98,790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
         emailInput.tf().getStyleClass().add("loginTextField");
         // Create password input field with show and hide functionality
         PasswordBundle loginPasswordInput = ui.buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 694, 513,1166, 534);
@@ -152,10 +152,10 @@ public class AuthScreen {
     private void forgotPassword(Group contentLayer) {
         // Create email input field
         String userURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(531, 248, 815, 633, 258, "Enter Email", userURL, 531, 251, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(531, 248, 815, 98, 633, 258, "Enter Email", userURL, 531, 251, 95, 90);
         // Create recovery word input field
         String recoveryURL = "/images/AuthScreen/recover.png";
-        TextBundle recoveryWord = ui.buildTextFieldInput(531, 370, 815 ,633, 380, "Enter Recovery Word", recoveryURL, 534, 373 ,95, 90);
+        TextBundle recoveryWord = ui.buildTextFieldInput(531, 370, 815 , 98,633, 380, "Enter Recovery Word", recoveryURL, 534, 373 ,95, 90);
         // Create password input fields
         PasswordBundle resetPassword = ui.buildPasswordInput(531, 489, 815, 633, 499, "Enter Password", 531, 495 ,1280, 515);
         PasswordBundle confirmResetPassword = ui.buildPasswordInput(531, 609, 815, 633, 619, "Confirm password", 531, 615, 1280, 635);
@@ -264,7 +264,7 @@ public class AuthScreen {
 
         // Create input field
         String iconURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(531, 345, 815, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(531, 345, 815, 98, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
         // Create password input fields
         PasswordBundle registrationPassword = ui.buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
         PasswordBundle confirmRegistrationPassword = ui.buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 531, 576, 1280, 598);
@@ -331,7 +331,7 @@ public class AuthScreen {
         infoText.setLayoutY(300);
         String iconURL = "/images/AuthScreen/recover.png";
         // Create recovery word input field
-        TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 ,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
+        TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 , 98,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
         UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
         recoveryWord.tf().setOnAction(e -> {
             try {

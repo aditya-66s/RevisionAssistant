@@ -27,7 +27,9 @@ Rectangle{
 .buttonText{
     -fx-fill: violet;
 }
-
+.tableText{
+    -fx-fill: violet;
+}
 .smallButtonText{
     -fx-fill: violet;
 }

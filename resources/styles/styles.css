@@ -97,6 +97,10 @@ Rectangle{
     -fx-font-size: 20px;
     /*-fx-fill: white;*/
 }
+.tableText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 12px;
+}
 .error{
     -fx-text-fill: red;
 }
@@ -204,4 +208,8 @@ Slider .thumb {
     -fx-fill: black;
     -fx-font-weight: bold;
     -fx-wrap-text: true;
+}
+
+.characterCounter .text{
+    -fx-font-size: 13px !important;
 }

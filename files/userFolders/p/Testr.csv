@@ -1,0 +1,2 @@
+"If you to ever rebuild the system today, how would you do it?","With the Arduino, it is only a single embedded device, so I would replace it with a distributed system where a Raspberry Pi can handle the logic while other devices get updates in real time. Raspberry Pis are easier to secure, update, maintain and can also run web services and an OS.
+I would also store orders in a small data base, introducing a tolerance to potential failures. With this, security and scalability improves."

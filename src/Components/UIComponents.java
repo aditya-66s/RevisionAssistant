@@ -2,6 +2,7 @@ package Components;
 
 import RecordClasses.PasswordBundle;
 import RecordClasses.RectangleButtonBundle;
+import RecordClasses.TextAreaBundle;
 import RecordClasses.TextBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -65,9 +66,9 @@ public class UIComponents {
     }
 
     // Creates a text bundle with an icon
-    public TextBundle buildTextFieldInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText, String iconURL, int iconX, int iconY, int iconW, int iconH){
+    public TextBundle buildTextFieldInput(int rectX, int rectY, int rectW, int rectH, int fieldX, int fieldY, String promptText, String iconURL, int iconX, int iconY, int iconW, int iconH){
         // Create background rectangle for text input
-        Rectangle inputRect = new Rectangle(rectX, rectY, rectW, 98);
+        Rectangle inputRect = new Rectangle(rectX, rectY, rectW, rectH);
         inputRect.getStyleClass().add("inputRect");
         // Create text field
         TextField tf = new TextField();
@@ -95,6 +96,25 @@ public class UIComponents {
         button.setLayoutX(StackPaneX);
         button.setLayoutY(StackPaneY);
         return new RectangleButtonBundle(buttonRect, buttonText, button);
+    }
+
+    // Creates a text area with prompt text and a character counter
+    public TextAreaBundle createTextArea(String promptText, int charLimit, int lowerLimit) {
+        TextArea textArea = new TextArea();
+        textArea.getStyleClass().add("textArea");
+        textArea.setPromptText(promptText);
+        Label characterCounter = new Label("0 / " + charLimit);
+        characterCounter.setStyle("-fx-text-fill: red;");
+        characterCounter.getStyleClass().add("characterCounter");
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            characterCounter.setText(newValue.length() + " / " + charLimit);
+            if (newValue.length() < lowerLimit || newValue.length() > charLimit) {
+                characterCounter.setStyle("-fx-text-fill: red;");
+            }else{
+                characterCounter.setStyle("-fx-text-fill: green;");
+            }
+        });
+        return new TextAreaBundle(textArea, characterCounter, charLimit, lowerLimit);
     }
 
     // Creates logo image view for easy reuse

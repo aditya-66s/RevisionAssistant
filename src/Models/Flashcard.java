@@ -1,24 +1,32 @@
 package Models;
 
-public class Flashcard {
-    private String question;
-    private String answer;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
-    public Flashcard(String question, String answer) {
-        this.question = question;
-        this.answer = answer;
+public class Flashcard {
+    private SimpleStringProperty question;
+    private SimpleStringProperty answer;
+
+    public Flashcard(String question, String answer){
+        this.question = new SimpleStringProperty(question);
+        this.answer = new SimpleStringProperty(answer);
+    }
+    public StringProperty frontProperty() { return question; }
+    public StringProperty backProperty() { return answer; }
+
+    public void setAnswer(String answer) {
+        this.answer = new SimpleStringProperty(answer);
+    }
+
+    public void setQuestion(String question) {
+        this.question = new SimpleStringProperty(question);
     }
 
     public String getQuestion() {
-        return question;
+        return question.get();
     }
+
     public String getAnswer() {
-        return answer;
-    }
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-    public void setAnswer(String answer) {
-        this.answer = answer;
+        return answer.get();
     }
 }

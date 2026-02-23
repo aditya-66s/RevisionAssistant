@@ -26,7 +26,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
@@ -420,11 +424,18 @@ public class SettingsScreen extends SystemScreens{
         playTestSound(volume);
     }
     // procedure which will play the test sound when volume is altered
-    private void playTestSound(double volume){
-        Media testSound = new  Media(Objects.requireNonNull(getClass().getResource("/sounds/testSound.wav")).toExternalForm());
-        MediaPlayer player = new MediaPlayer(testSound);
-        player.setVolume(volume);
-        player.play();
+    private void playTestSound(double volume) {
+        try {
+            InputStream is = getClass().getResourceAsStream("/sounds/testSound.wav");
+            File tempFile = File.createTempFile("testSound", ".wav");
+            tempFile.deleteOnExit();
+            Files.copy(Objects.requireNonNull(is), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            Media testSound = new Media(tempFile.toURI().toString());
+            MediaPlayer player = new MediaPlayer(testSound);
+            player.setVolume(volume);
+            player.play();
+        } catch (Exception _){}
     }
 
     // Procedure to create and display all buttons when Other Options is selected

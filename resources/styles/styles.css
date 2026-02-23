@@ -157,3 +157,51 @@ Slider .thumb {
     -fx-border-radius: 3px;
     -fx-background-radius: 3px;
 }
+
+.textArea{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 20px;
+    -fx-max-width: 600px;
+    -fx-pref-height: 250px;
+    -fx-pref-rows: 4;
+    -fx-arc-height: 10px;
+    -fx-arc-width: 10px;
+    -fx-wrap-text: true;
+}
+
+.flashcardContent{
+    -fx-max-width: 600px;
+}
+.cardTable {
+    -fx-pref-width: 1000px;
+    -fx-max-height: 510px;
+    -fx-wrap-text: true;
+}
+
+.cardTable .column-header .label {
+    -fx-font-weight: bold;
+}
+
+.cardTable .table-cell {
+    -fx-padding: 6px 10px;
+}
+
+.cardTable .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.cardTable .table-cell .text {
+    -fx-font-family: "Vipnagorgialla" !important;
+    -fx-font-size: 12px !important;
+    -fx-wrap-text: true !important;
+    -fx-font-weight: bold;
+    -fx-fill: black;
+}
+
+.cardTable .column-header .label .text {
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 13px !important;
+    -fx-fill: black;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}

@@ -38,3 +38,6 @@ Rectangle{
     -fx-background-color: black;
     -fx-font-size: 12px;
 }
+.cardTable{
+    -fx-fill: grey;
+}

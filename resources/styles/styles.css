@@ -213,3 +213,22 @@ Slider .thumb {
 .counter .text{
     -fx-font-size: 13px !important;
 }
+.display{
+    -fx-pref-width: 1704px;
+    -fx-pref-height: 745px;
+}
+.folderTreeView{
+    -fx-background-color: black;
+    -fx-border-color: grey;
+    -fx-max-width: 1000px;
+    -fx-max-height: 700px;
+}
+.folderTreeView .tree-cell .text{
+    -fx-font-size: 12px !important;
+    -fx-wrap-text: true !important;
+    -fx-fill: black;
+}
+.folderTreeView .tree-cell:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 6px;
+}

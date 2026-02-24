@@ -2,6 +2,7 @@ package Components;
 
 import Controllers.SettingsController;
 import Models.Settings;
+import Models.Stack;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -10,7 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Stack;
+
 
 // Utility class for managing scene navigation
 public class ScreenManager {

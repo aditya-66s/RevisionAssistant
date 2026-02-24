@@ -1,11 +1,12 @@
 package Components;
 
+import Models.Stack;
 import javafx.scene.Group;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
+
 
 public class ContentNavigator {
     private final Stack<List<Node>> history = new Stack<>();

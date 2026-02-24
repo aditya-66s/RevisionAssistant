@@ -7,6 +7,7 @@ import Controllers.SettingsController;
 import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextAreaBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -104,7 +105,6 @@ public class FlashcardManagementScreen extends SystemScreens{
         addFC.button().setOnMouseClicked(_->addFlashcard(questionArea.textArea(), answerArea.textArea()));
         nav.switchContent(contentLayer, display);
     }
-
     private TableView<Flashcard> buildTable(){
         TableView<Flashcard> table = new TableView<>(cardList);
         TableColumn<Flashcard, String> frontColumn = new TableColumn<>("Front");
@@ -171,5 +171,24 @@ public class FlashcardManagementScreen extends SystemScreens{
             CustomAlert.error(scene.getWindow(), qReq + "\n" + aReq);
         }
 
+    }
+
+    private void buildModifyContent(Group contentLayer){
+        VBox decks = new VBox(10);
+
+        TableView<String> decksTable = new TableView<>();
+        decksTable.getStyleClass().add("cardTable");
+
+        TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
+        deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
+
+        TableColumn<String, Void> actionsColumn = new TableColumn<>("Actions");
+        actionsColumn.setCellFactory(column -> new TableCell<>(){
+            final RectangleButtonBundle rename = ui.buildRectangularButtonBundle(80, 25, "Rename", "tableText", 0, 0);
+            final RectangleButtonBundle add = ui.buildRectangularButtonBundle(80, 25, "Add", "tableText", 0, 0);
+            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
+            final VBox buttons = new VBox(5, rename.button(), add.button(), delete.button());
+
+        });
     }
 }

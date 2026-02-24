@@ -35,17 +35,18 @@ public class CustomAlert {
     // Displaying an alert which requires an input
     public static Optional<String> input(Window alertWindow, String title, String message, String promptText){
         Alert a = build(alertWindow, title, message, Alert.AlertType.CONFIRMATION, ButtonType.CANCEL, ButtonType.OK);
-        UIComponents ui = new UIComponents();
-        TextBundle input = ui.buildTextFieldInput(0, 0, 350, 40, 10, 10, promptText, "/images/Constant/logo.png", 0, 0, 0, 0);
+        TextField input = new TextField();
+        input.getStyleClass().add("inputAlert");
+        input.setPromptText(promptText);
         Button okButton = (Button) a.getDialogPane().lookupButton(ButtonType.OK);
         okButton.setDisable(true);
-        input.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+        input.textProperty().addListener((observable, oldValue, newValue) -> {
             okButton.setDisable(newValue.trim().isEmpty());
         });
         Label messageText = new Label(message);
-        VBox content = new VBox(15, messageText, input.group());
+        VBox content = new VBox(15, messageText, input);
         a.getDialogPane().setContent(content);
-        return a.showAndWait().filter(b -> b == ButtonType.OK).map(b -> input.tf().getText().trim());
+        return a.showAndWait().filter(b -> b == ButtonType.OK).map(b -> input.getText().trim());
     }
     // builds custom styled alert dialog
     private static Alert build(Window alertWindow, String title, String message, Alert.AlertType alertType, ButtonType... buttons) {

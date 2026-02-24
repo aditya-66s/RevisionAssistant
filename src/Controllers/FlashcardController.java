@@ -32,19 +32,21 @@ public class FlashcardController extends Controller {
         return  userFolderPath + "/" + flashcardDeckName + ".csv";
     }
 
-    private void ensureFileExists() throws IOException {
+    private void ensureFileExists(boolean adding) throws IOException {
         // Create a Folder if not already there
         Files.createDirectories(Paths.get(userFolderPath));
-        if(!Files.exists(Paths.get(getFCDeckPath()))){
-            Files.createFile(Paths.get(getFCDeckPath()));
-        }else{
-            int random = (int) (Math.random() * 100);
-            flashcardDeckName = flashcardDeckName + random;
-        }
+        if (!adding){
+            if (!Files.exists(Paths.get(getFCDeckPath()))) {
+                Files.createFile(Paths.get(getFCDeckPath()));
+            } else {
+                int random = (int) (Math.random() * 100);
+                flashcardDeckName = flashcardDeckName + random;
+            }
+    }
     }
 
-    public boolean saveFlashcardDeck(List<Flashcard> cards) throws IOException {
-        ensureFileExists();
+    public boolean saveFlashcardDeck(List<Flashcard> cards, boolean adding) throws IOException {
+        ensureFileExists(adding);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(getFCDeckPath()))) {
             for (Flashcard c : cards) {
                 // Add speech marks, replace speech amrks inside
@@ -54,6 +56,7 @@ public class FlashcardController extends Controller {
         }
         return true;
     }
+
 
     public List<Flashcard> loadFlashcardDeck(String deckName) throws IOException {
         List<Flashcard> cards = new ArrayList<>();

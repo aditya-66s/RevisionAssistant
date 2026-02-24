@@ -210,6 +210,6 @@ Slider .thumb {
     -fx-wrap-text: true;
 }
 
-.characterCounter .text{
+.counter .text{
     -fx-font-size: 13px !important;
 }

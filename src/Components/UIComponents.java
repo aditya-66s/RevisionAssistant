@@ -104,8 +104,8 @@ public class UIComponents {
         textArea.getStyleClass().add("textArea");
         textArea.setPromptText(promptText);
         Label characterCounter = new Label("0 / " + charLimit);
+        characterCounter.getStyleClass().add("counter");
         characterCounter.setStyle("-fx-text-fill: red;");
-        characterCounter.getStyleClass().add("characterCounter");
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             characterCounter.setText(newValue.length() + " / " + charLimit);
             if (newValue.length() < lowerLimit || newValue.length() > charLimit) {

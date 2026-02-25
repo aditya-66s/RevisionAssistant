@@ -16,6 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -432,6 +435,78 @@ public class FlashcardManagementScreen extends SystemScreens{
         folderTreeView.setRoot(folderStructure);
 
         return folderTreeView;
+    }
+    // Procedure which will allow the dragging and dropping of files within the tree
+    private void addDragAndDrop(TreeView<String> tree){
+        // Creating custom cells with drag and drop feature
+        tree.setCellFactory(_-> {
+            // Create a new cell with item's string value
+            TreeCell<String> cell = new TreeCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    // Show text if cell has content, otherwise leave it blank
+                    setText(empty || item == null ? null : item);
+                }
+            };
+            // User begins dragging
+            cell.setOnDragDetected(e->{
+                // Don't allow the moving of empty cells
+                if(cell.isEmpty()) return;
+                // Start a move drag operation on the cell
+                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+                // Put cell's text into a clipboard to know what's being dragged
+                ClipboardContent cc = new ClipboardContent();
+                cc.putString(cell.getItem());
+                db.setContent(cc);
+                e.consume();
+            });
+            // User drags over cell
+            cell.setOnDragOver(e ->{
+                // Only allow the drag if it has a string and is a folder and not over itself
+                boolean isFolder = e.getDragboard().getString().startsWith("\uD83D\uDCC1 ");
+                if(e.getDragboard().hasString() && e.getGestureSource() != cell && isFolder){
+                    e.acceptTransferModes(TransferMode.MOVE);
+                }
+                e.consume();
+            });
+            // User has entered the drag area of a cell
+            cell.setOnDragEntered(e->{
+                // Change the styling of the cell to show it's a valid move
+                boolean isFolder = e.getDragboard().getString().startsWith("\uD83D\uDCC1 ");
+                if(e.getDragboard().hasString() && e.getGestureSource() != cell && isFolder){
+                    cell.setStyle("-fx-background-color: #6891de; -fx-background-radius: 6px;");
+                }
+            });
+            // When the dragged item has left the cells area, remove the styling
+            cell.setOnDragExited(_-> cell.setStyle(""));
+            // User releases dragged item on cell
+            cell.setOnDragDropped(e->{
+                Dragboard db = e.getDragboard();
+                // If there's no string, return;
+                if(!db.hasString()) return;
+                // Get item being dragged and item being dropped into
+                TreeItem<String> draggedF = tree.getSelectionModel().getSelectedItem();
+                TreeItem<String> droppingF = cell.getTreeItem();
+
+                if(draggedF == null || droppingF == null) return;
+                if(draggedF == droppingF) return;;
+
+            });
+            return cell;
+        });
+    }
+    // Checks if tree item's ancestor is somewhere is above the item in the tree
+    private boolean isAncestor(TreeItem<String> potentialAncestor, TreeItem<String> item){
+        // Start at item's parent
+        TreeItem<String> current = item.getParent();
+        while (current != null){
+            // if match found, block the drop
+            if(current == potentialAncestor) return true;
+            // move a level up if not
+            current = current.getParent();
+        }
+        return false;
     }
     // Function to return folder node for the tree, starting expanded
     private TreeItem<String> folder(String folderName){

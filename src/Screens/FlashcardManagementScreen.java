@@ -19,11 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +77,13 @@ public class FlashcardManagementScreen extends SystemScreens{
         });
         RectangleButtonBundle organise = ui.buildRectangularButtonBundle(rectW, rectH, "Organise", "buttonText", 293, 656);
         ImageView organiseIcon = createIcon(293, 651, "/images/FlashcardManagementScreen/sort.png");
-        organise.button().setOnMouseClicked(_-> buildOrganisationContent(contentLayer));
+        organise.button().setOnMouseClicked(_-> {
+            try {
+                buildOrganisationContent(contentLayer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         Group buttons = new Group(create.button(), modify.button(), organise.button(), createIcon, modifyIcon, organiseIcon);
         contentLayer.getChildren().add(buttons);
         root.getChildren().addAll(background, back, contentLayer);
@@ -301,6 +305,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
         decksTable.setMinHeight(700);
+
         // Table to display the flashcards without the actions column
         TableView<Flashcard> cardsPreview = buildTable(false);
         cardsPreview.getStyleClass().add("cardTable");
@@ -371,7 +376,7 @@ public class FlashcardManagementScreen extends SystemScreens{
 
         decksTable.getColumns().addAll(List.of(deckNameColumn, actionsColumn));
         decksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        decksTable.getItems().addAll(fc.getFlashcardDecks());
+        decksTable.getItems().addAll(fc.getFileContents());
         // Listener to change the card preview based on selection
         decksTable.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue == null) return;
@@ -390,26 +395,45 @@ public class FlashcardManagementScreen extends SystemScreens{
         nav.switchContent(contentLayer, display, getBackView(contentLayer));
     }
     // Procedure to create the organisation page
-    private void buildOrganisationContent(Group contentLayer){
-        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(300, 80, "Add Folder", "smallerButtonText", 0, 0);
-        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(300, 80, "Delete Folder", "smallerButtonText", 0, 0);
-        HBox options = new HBox(20, newFolder.button(), delete.button());
+    private void buildOrganisationContent(Group contentLayer) throws IOException {
         TreeView<String> tree = buildTree();
+        addDragAndDrop(tree);
+
+        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(300, 80, "Add Folder", "smallerButtonText", 0, 0);
+        newFolder.button().setOnMouseClicked(_->addFolder(tree));
+        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(300, 80, "Delete Folder", "smallerButtonText", 0, 0);
+        delete.button().setOnMouseClicked(_-> {
+            try {
+                deleteFolder(tree);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        HBox options = new HBox(20, newFolder.button(), delete.button());
         VBox treeViewVBox = new VBox(20, options, tree);
 
         TableView<Flashcard> cardsPreview = buildTable(false);
         cardsPreview.getStyleClass().add("cardTable");
         cardsPreview.getItems().clear();
         cardsPreview.setMinHeight(700);
+        cardsPreview.setPrefHeight(700);
 
         // Listener to change the card preview based on selection
         tree.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue == null) return;
             try{
                 String item = newValue.getValue();
-                if(item.startsWith("\uD83D\uDCC1 ")) return;
-                String fileNode = item.replace("\uD83D\uDCC4 ", "");
-                cardsPreview.getItems().setAll(fc.loadFlashcardDeck(fileNode));
+                if(item.startsWith("\uD83D\uDCC1 ")) {
+                    cardsPreview.getItems().clear();
+                    Label phText = new Label("This is a folder");
+                    phText.setStyle("-fx-text-fill: red;");
+                    cardsPreview.setPlaceholder(phText);
+                };
+                if(item.startsWith("\uD83D\uDCC4 ")){
+                    String fileNode = item.replace("\uD83D\uDCC4 ", "");
+                    cardsPreview.getItems().setAll(fc.loadFlashcardDeck(fileNode));
+                }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -433,7 +457,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         // Build existing tree copying directory structure
         TreeItem<String> folderStructure = fc.getUserDirectoryStructure(ac.getCurrentUser().getEmail());
         folderTreeView.setRoot(folderStructure);
-
+        folderTreeView.getRoot().setExpanded(true);
         return folderTreeView;
     }
     // Procedure which will allow the dragging and dropping of files within the tree
@@ -464,8 +488,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             // User drags over cell
             cell.setOnDragOver(e ->{
                 // Only allow the drag if it has a string and is a folder and not over itself
-                boolean isFolder = e.getDragboard().getString().startsWith("\uD83D\uDCC1 ");
-                if(e.getDragboard().hasString() && e.getGestureSource() != cell && isFolder){
+                if(e.getDragboard().hasString() && e.getGestureSource() != cell){
                     e.acceptTransferModes(TransferMode.MOVE);
                 }
                 e.consume();
@@ -473,8 +496,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             // User has entered the drag area of a cell
             cell.setOnDragEntered(e->{
                 // Change the styling of the cell to show it's a valid move
-                boolean isFolder = e.getDragboard().getString().startsWith("\uD83D\uDCC1 ");
-                if(e.getDragboard().hasString() && e.getGestureSource() != cell && isFolder){
+                if(e.getDragboard().hasString() && e.getGestureSource() != cell){
                     cell.setStyle("-fx-background-color: #6891de; -fx-background-radius: 6px;");
                 }
             });
@@ -489,8 +511,42 @@ public class FlashcardManagementScreen extends SystemScreens{
                 TreeItem<String> draggedF = tree.getSelectionModel().getSelectedItem();
                 TreeItem<String> droppingF = cell.getTreeItem();
 
+                // Conditions to stop the file movement
                 if(draggedF == null || droppingF == null) return;
-                if(draggedF == droppingF) return;;
+                if(draggedF == droppingF) return;
+                if(isAncestor(draggedF, droppingF)) return;
+                if(draggedF.getParent() == null) return;
+                if(draggedF == tree.getRoot()) return;
+                if(isFolder(draggedF) && isFile(droppingF)) return;
+                if (droppingF == draggedF.getParent()) return;
+
+                String draggedName = draggedF.getValue().replace("\uD83D\uDCC1 ", "").replace("\uD83D\uDCC4 ", "");
+                String droppingName = droppingF.getValue().replace("\uD83D\uDCC1 ", "").replace("\uD83D\uDCC4 ", "");
+                try {
+                    fc.move(draggedName, isFolder(draggedF), droppingName);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                // Remove from previous folder
+                draggedF.getParent().getChildren().remove(draggedF);
+                // Add to selected folder
+                if(droppingF.getValue().startsWith("\uD83D\uDCC1 ")) {
+                    droppingF.getChildren().add(draggedF);
+                    // User can see change
+                    droppingF.setExpanded(true);
+                }else{
+                    // Get parent of deck being dropped into
+                    TreeItem<String> parent = droppingF.getParent();
+                    // Find position of target deck
+                    int idx = parent.getChildren().indexOf(droppingF);
+                    // Insert one after target deck
+                    parent.getChildren().add(idx+1, draggedF);
+                }
+
+                // Drop was successfully handled
+                e.setDropCompleted(true);
+                e.consume();
 
             });
             return cell;
@@ -507,6 +563,69 @@ public class FlashcardManagementScreen extends SystemScreens{
             current = current.getParent();
         }
         return false;
+    }
+    // Check if folder
+    private boolean isFolder(TreeItem<String> potentialFolder){
+        return potentialFolder.getValue().startsWith("\uD83D\uDCC1");
+    }
+    // Check if file
+    private boolean isFile(TreeItem<String> potentialFile){
+        return potentialFile.getValue().startsWith("\uD83D\uDCC4");
+    }
+    // Subroutine to add a new folder within the tree
+    private void addFolder(TreeView<String> tree){
+        TreeItem<String> selected = tree.getSelectionModel().getSelectedItem();
+        // If nothing is selected, use the root, and if a deck is selected use its parent
+        TreeItem<String> folder;
+        if(selected == null){
+            folder = tree.getRoot();
+        } else if (isFile(selected)) {
+            folder = selected.getParent();
+        }else {
+            folder = selected;
+        }
+        // Ask for folder name input
+        Optional<String> folderName = CustomAlert.input(scene.getWindow(), "New Folder", "What do you want to name the folder?", "Enter Folder Name");
+        String parentPath;
+        if(folder == tree.getRoot()){
+            // If target is root, use the user's folder path
+            parentPath = fc.getUserFolderPath();
+        }else{
+            // Search for file path on disk
+            String dirName = folder.getValue().replace("\uD83D\uDCC1 ", "");
+            parentPath = fc.getFilePath(dirName, true);
+        }
+        int outcome;
+        if(folderName.isPresent()){
+            outcome = fc.createFolder(parentPath, folderName.get());
+            switch(outcome){
+                case 2 -> folder.getChildren().add(folder(folderName.get()));
+                case 1 -> CustomAlert.error(scene.getWindow(), "Folder already exists");
+                default -> CustomAlert.error(scene.getWindow(), "Did not work try again later");
+            }
+        }
+    }
+    // Subroutine to delete a folder
+    private void deleteFolder(TreeView<String> tree) throws IOException {
+        TreeItem<String> selected = tree.getSelectionModel().getSelectedItem();
+        if(selected == null){
+            CustomAlert.error(scene.getWindow(), "Pick something to delete");
+            return;
+        } else if (selected == tree.getRoot()) {
+            CustomAlert.error(scene.getWindow(), "Cannot delete this folder");
+            return;
+        }else if (isFile(selected)) {
+            CustomAlert.error(scene.getWindow(), "To delete files, go to the modification page");
+            return;
+        }
+        boolean confirmed = CustomAlert.confirm(scene.getWindow(), "Confirmation of deletion",
+                "Are you sure you would like to delete this folder? \n It will delete all contents");
+        if(confirmed){
+            boolean deleted = fc.deleteFolder(selected.getValue().replace("\uD83D\uDCC1 ", ""));
+            CustomAlert.success(scene.getWindow(), "Folder successfully deleted");
+            selected.getParent().getChildren().remove(selected);
+        }
+
     }
     // Function to return folder node for the tree, starting expanded
     private TreeItem<String> folder(String folderName){

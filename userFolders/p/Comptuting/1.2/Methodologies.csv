@@ -1,0 +1,22 @@
+"What is the Spiral Methodology?","Iterative progressing through repeated loops.
+Set objectives, Analyse risks, Develop and test, Client review.
+Prototypes in each iteration.
++ Risk management, problems identified early, freq client feedback, suitable for complex systems
+- Complex to manage, expensive and time consuming
+For high risk and uncertain projects."
+"What is the Waterfall Methodology?","Linear, sequential made up of:
+Analysis, Design, Implementation, Testing, Maintenance
+Whole stage must be completed before moving to next.
+Needs stable requirements, documented.
++ Clear structure, easy to manage, large projects, documented
+- Inflexible, errors are costly, time consuming"
+"What is the Agile Methodology?","Iterative, frequent client feedback in small increments.
+Prioritises working software over documents, can handle changing requirements.
++ Flexible, regular feedback, issues identified early
+- Less documentation, hard to manage"
+"What is the Rapid Application Development Methodology?","Focuses on rapid prototyping, little formal analysis or design with prototypes continuously refined using user feedback.
++ Very fast, early working models, flexible
+- Less documentation, poor design if rushed, not for safety critical systems."
+"What is the Extreme Programming Methodology?","Follows agile paradigm, focus on high quality code and rapid development through paired programming, continuous testing, frequent releases and refactoring.
++ High code quality, bug identified early, adaptable, feedback
+- Requires high dev+client commitment, less documentation, not ideal for large teams."

@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,14 +18,19 @@ public class FlashcardController extends Controller {
     private final String userFolderPath;
     // Hold then name of the flashcard deck file
     private String flashcardDeckName;
+    private String email;
 
     // Constructor to set the userFolderPath
     public FlashcardController(String email) {
+        this.email = email;
         this.userFolderPath = Paths.get(System.getProperty("user.dir"),"userFolders", email).toString();
     }
 
     public String getFlashcardDeckName() {
         return flashcardDeckName;
+    }
+    public String getUserFolderPath() {
+        return userFolderPath;
     }
 
     public void setFlashcardDeckName(String flashcardDeckName) {
@@ -33,30 +39,35 @@ public class FlashcardController extends Controller {
     // Create path for the FCDeck
     private String getFCDeckPath() throws IOException {
         // If flashcard deck is stored directly in the user folder, then return it
-        File rootFile = new File(userFolderPath + "/" + flashcardDeckName + ".csv");
-        if (rootFile.exists()) return rootFile.getPath();
-        File userDirectory = new File(userFolderPath);
-        // Add subfolders into a file array
-        File[] subfolders = userDirectory.listFiles(File::isDirectory);
-        // Search through subfolders
-        if (subfolders!=null){
-            for(File folder : subfolders){
-                // Build the path and return if it exists there
-                File f = new File(folder.getPath() + "/" + flashcardDeckName + ".csv");
-                if (f.exists()) return f.getPath();
+         File rootFolder = new File(userFolderPath);
+         return searchForCSV(rootFolder, flashcardDeckName);
+    }
+    //  Find the csv in the user folder
+    private String searchForCSV(File searchDirectory, String deckName){
+        File[] contents = searchDirectory.listFiles();
+        if (contents==null) return null;
+        for(File f : contents){
+            if(f.isDirectory()){
+                String result = searchForCSV(f, deckName);
+                if(result!=null) return result;
+            } else if (f.getName().equals(deckName + ".csv")) {
+                return f.getAbsolutePath();
             }
         }
-        return rootFile.getPath();
+        return null;
     }
+
     // Check if file and folder exist
     private void ensureFileExists(boolean adding) throws IOException {
         // Create a Folder if not already there
         Files.createDirectories(Paths.get(userFolderPath));
         // If not adding to a file then
         if (!adding){
+            String deckPath = userFolderPath + "/" + flashcardDeckName + ".csv";
             // Create the file, if doesnt exist
-            if (!Files.exists(Paths.get(getFCDeckPath()))) {
-                Files.createFile(Paths.get(getFCDeckPath()));
+            Path path = Paths.get(deckPath);
+            if (!Files.exists(path)) {
+                Files.createFile(path);
             } else {
                 // If exists then add a random number to keep uniqueness
                 int random = (int) (Math.random() * 100);
@@ -67,7 +78,9 @@ public class FlashcardController extends Controller {
     // Function to write the flashcard deck into .csv
     public boolean saveFlashcardDeck(List<Flashcard> cards, boolean adding) throws IOException {
         ensureFileExists(adding);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(getFCDeckPath()))) {
+        String path = getFCDeckPath();
+        if (path == null) path = userFolderPath + "/" + flashcardDeckName + ".csv";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
             for (Flashcard c : cards) {
                 // Add speech marks, replace speech marks inside
                 bw.write("\"" + c.getQuestion().replace("\"", "\"\"") + "\",\"" + c.getAnswer().replace("\"", "\"\"") + "\"");
@@ -82,7 +95,9 @@ public class FlashcardController extends Controller {
         ArrayList<Flashcard> cards = new ArrayList<>();
         // Set deck to get from parameter
         this.flashcardDeckName = deckName;
-        try (BufferedReader br = new BufferedReader(new FileReader(getFCDeckPath()))) {
+        String path = getFCDeckPath();
+        if (path == null) return cards;
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // Split at ,
@@ -101,21 +116,34 @@ public class FlashcardController extends Controller {
         }
         return cards;
     }
+
     // Return array list of all decks linked to an account
-    public ArrayList<String> getFlashcardDecks() throws IOException {
+    public ArrayList<String> getFileContents() {
         ArrayList<String> deckNames = new ArrayList<>();
         File userFolder = new  File(userFolderPath);
-        if (!userFolder.exists()) {
+        if (!userFolder.exists()){
             return  deckNames;
         }
-        for(File f : Objects.requireNonNull(userFolder.listFiles())){
-            if(f.getName().endsWith(".csv")){
-                deckNames.add(f.getName().replace(".csv",""));
-            }
-        }
+        getAllCSV(userFolder, deckNames);
         return deckNames;
     }
+    // Recursively search through folder and subfolders
+    // to add all csv files to the arraylist
+    private void getAllCSV(File folder, ArrayList<String> deckNames){
+        File[] contents = folder.listFiles();
+        if(contents == null) return;
+        // Loop for each file
+        for(File file : contents){
+            // If folder, then recurse into the directory
+            if(file.isDirectory()){
+                getAllCSV(file, deckNames);
+            } else if (file.getName().endsWith(".csv")) {
+                // Add to the array list
+                deckNames.add(file.getName().replace(".csv", ""));
+            }
+        }
 
+    }
     // Function to change the name of a flashcard deck
     public boolean renameDeck(String oldName, String newName) {
         Path oldPath = Paths.get(userFolderPath + "/" +  oldName + ".csv");
@@ -150,9 +178,9 @@ public class FlashcardController extends Controller {
         if(allUserFiles == null) return;
         // Loop through all the contents
         for(File f : allUserFiles) {
+            System.out.println("Found: " + f.getName() + " isDirectory: " + f.isDirectory());
             if(f.isDirectory()) {
                 // If it's a folder, create a folder node with the prefix and file name
-
                 TreeItem<String> folderNode = new TreeItem<>("\uD83D\uDCC1 " + f.getName());
                 // Recursively go into the subfolder to add its contents
                 buildStructureTree(folderNode, f);
@@ -166,7 +194,79 @@ public class FlashcardController extends Controller {
         }
         // All other files which are not a folder or ending in .csv are ignored
     }
-    public void setFileName(){
-
+    // Returns a file/folder path
+    public String getFilePath(String name, boolean isFolder) {
+        File userDirectory = new File(userFolderPath);
+        return searchForPath(userDirectory, name, isFolder);
+    }
+    // Recursively search user's directory for the file or file
+    private String searchForPath(File directory, String name, boolean isFolder) {
+        // Get all files and folders inside current folder
+        File[] allUserFiles = directory.listFiles();
+        if(allUserFiles == null) return null;
+        // Loop through all items in directory
+        for(File f : allUserFiles) {
+            if(f.isDirectory()) {
+                // If looking for folder, and name matches return the path
+                if(isFolder && f.getName().equals(name)) return f.getAbsolutePath();
+                // Recursively search the directory, go into it
+                String filePath = searchForPath(f, name, isFolder);
+                // If it's within the sub folder, return the path
+                if(filePath != null) return filePath;
+                // If looking for file, return the path if file
+            }else if(!isFolder && f.getName().equals(name + ".csv")) return f.getAbsolutePath();
+        }
+        // If not found
+        return null;
+    }
+    // Moving file/folder to a new destination
+    public boolean move(String fName, boolean isFolder, String destinationFolder) throws IOException {
+        // Find path of file or folder being moved
+        String fPath = getFilePath(fName, isFolder);
+        if(fPath == null) return false;
+        // Find destination's path
+        String dPath;
+        if(destinationFolder.equals(email)){
+            dPath = userFolderPath;
+        }else{
+            dPath = getFilePath(destinationFolder, true);
+        }
+        if(dPath == null) return false;
+        // Create File objects
+        File initial = new  File(fPath);
+        File end = new  File(dPath + "/" + initial.getName());
+        // switch file locations
+        Files.move(initial.toPath(), end.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return true;
+    }
+    // Function to create a new directory
+    public int createFolder(String parentPath, String folderName){
+        // Create file object with specified path
+        File newFolder = new File(parentPath + "/" + folderName);
+        if(newFolder.exists()){
+            return 1; // if exists return 1
+        }else{
+            if(newFolder.mkdir()){
+                return 2; // if added return 2
+            }else{
+                return 3; // anything else add 3 return 3
+            }
+        }
+    }
+    // Function deleting a folder
+    public boolean deleteFolder(String folderName) throws IOException {
+        // get the path
+        String path = getFilePath(folderName, true);
+        // if null return not deleted
+        if(path == null) return false;
+        // Walk through all files and subfolders from given path
+        Files.walk(Path.of(path))
+                // Sort them in reverse order so they are deleted before parent directories
+                .sorted(Comparator.reverseOrder())
+                // Convert each path to an object
+                .map(Path::toFile)
+                // Delete each file
+                .forEach(File::delete);
+        return true;
     }
 }

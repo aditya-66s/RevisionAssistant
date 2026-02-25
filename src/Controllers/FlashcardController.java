@@ -31,8 +31,22 @@ public class FlashcardController extends Controller {
         this.flashcardDeckName = flashcardDeckName;
     }
     // Create path for the FCDeck
-    private String getFCDeckPath(){
-        return  userFolderPath + "/" + flashcardDeckName + ".csv";
+    private String getFCDeckPath() throws IOException {
+        // If flashcard deck is stored directly in the user folder, then return it
+        File rootFile = new File(userFolderPath + "/" + flashcardDeckName + ".csv");
+        if (rootFile.exists()) return rootFile.getPath();
+        File userDirectory = new File(userFolderPath);
+        // Add subfolders into a file array
+        File[] subfolders = userDirectory.listFiles(File::isDirectory);
+        // Search through subfolders
+        if (subfolders!=null){
+            for(File folder : subfolders){
+                // Build the path and return if it exists there
+                File f = new File(folder.getPath() + "/" + flashcardDeckName + ".csv");
+                if (f.exists()) return f.getPath();
+            }
+        }
+        return rootFile.getPath();
     }
     // Check if file and folder exist
     private void ensureFileExists(boolean adding) throws IOException {
@@ -122,7 +136,7 @@ public class FlashcardController extends Controller {
     // Function to return the full directory structure for the current user
     public TreeItem<String> getUserDirectoryStructure(String email) {
         File userDirectory = new File(userFolderPath);
-        // create root node of tree with first user foldr
+        // create root node of tree with first user folder
         TreeItem<String> root = new TreeItem<>("\uD83D\uDCC1 " + email);
         // Populate tree with remaining contents
         buildStructureTree(root, userDirectory);
@@ -138,6 +152,7 @@ public class FlashcardController extends Controller {
         for(File f : allUserFiles) {
             if(f.isDirectory()) {
                 // If it's a folder, create a folder node with the prefix and file name
+
                 TreeItem<String> folderNode = new TreeItem<>("\uD83D\uDCC1 " + f.getName());
                 // Recursively go into the subfolder to add its contents
                 buildStructureTree(folderNode, f);
@@ -150,5 +165,8 @@ public class FlashcardController extends Controller {
             }
         }
         // All other files which are not a folder or ending in .csv are ignored
+    }
+    public void setFileName(){
+
     }
 }

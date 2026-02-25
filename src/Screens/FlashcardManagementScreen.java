@@ -20,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.List;
@@ -101,7 +100,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             cardList.clear();
             cardTable.refresh();
         }
-        // Allow the table to gorw vertically in its VBox
+        // Allow the table to grow vertically in its VBox
         VBox.setVgrow(cardTable, Priority.ALWAYS);
         RectangleButtonBundle addFC = ui.buildRectangularButtonBundle(600, rectH, "Add", "buttonText", 0, 0);
 
@@ -303,6 +302,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         TableView<Flashcard> cardsPreview = buildTable(false);
         cardsPreview.getStyleClass().add("cardTable");
         cardsPreview.setMinHeight(700);
+        cardsPreview.getItems().clear();
 
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
         deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
@@ -388,12 +388,33 @@ public class FlashcardManagementScreen extends SystemScreens{
     }
     // Procedure to create the organisation page
     private void buildOrganisationContent(Group contentLayer){
-        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(500, 80, "Add Folder", "smallButtonText", 0, 0);
-        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(500, 80, "Delete Folder", "smallButtonText", 0, 0);
+        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(300, 80, "Add Folder", "smallerButtonText", 0, 0);
+        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(300, 80, "Delete Folder", "smallerButtonText", 0, 0);
         HBox options = new HBox(20, newFolder.button(), delete.button());
+        TreeView<String> tree = buildTree();
+        VBox treeViewVBox = new VBox(20, options, tree);
 
-        VBox display = new VBox(20, options, buildTree());
-        display.setLayoutX(200);
+        TableView<Flashcard> cardsPreview = buildTable(false);
+        cardsPreview.getStyleClass().add("cardTable");
+        cardsPreview.getItems().clear();
+        cardsPreview.setMinHeight(700);
+
+        // Listener to change the card preview based on selection
+        tree.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue == null) return;
+            try{
+                String item = newValue.getValue();
+                if(item.startsWith("\uD83D\uDCC1 ")) return;
+                String fileNode = item.replace("\uD83D\uDCC4 ", "");
+                cardsPreview.getItems().setAll(fc.loadFlashcardDeck(fileNode));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+
+
+        HBox display = new HBox(20, treeViewVBox, cardsPreview);
+        display.setLayoutX(125);
         display.setLayoutY(200);
         display.getStyleClass().add("display");
         nav.switchContent(contentLayer, display, getBackView(contentLayer));

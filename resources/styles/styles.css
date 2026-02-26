@@ -224,7 +224,7 @@ Slider .thumb {
     -fx-max-height: 700px;
 }
 .folderTreeView .tree-cell .text{
-    -fx-font-size: 12px !important;
+    -fx-font-size: 14px !important;
     -fx-wrap-text: true !important;
     -fx-fill: black;
 }

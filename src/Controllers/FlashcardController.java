@@ -1,7 +1,12 @@
 package Controllers;
 
+import Components.CustomAlert;
 import Models.Flashcard;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfReader;
 import javafx.scene.control.TreeItem;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -83,7 +88,12 @@ public class FlashcardController extends Controller {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
             for (Flashcard c : cards) {
                 // Add speech marks, replace speech marks inside
-                bw.write("\"" + c.getQuestion().replace("\"", "\"\"") + "\",\"" + c.getAnswer().replace("\"", "\"\"") + "\"");
+//                bw.write("\"" + c.getQuestion().replace("\"", "\"\"") + "\",\"" + c.getAnswer().replace("\"", "\"\"") + "\"");
+                bw.write("\"" // Opening speech marks
+                        + c.getQuestion().replace("\"", "\"\"") // Get rid of any speech marks within by adding another
+                        .replace("\n", "\\n") // Replace new lines with \n so readline does not break mid-card
+                        + "\",\"" // Closing speech marks with comma
+                        + c.getAnswer().replace("\"", "\"\"").replace("\n", "\\n") + "\n");
                 bw.newLine();
             }
         }
@@ -98,25 +108,28 @@ public class FlashcardController extends Controller {
         String path = getFCDeckPath();
         if (path == null) return cards;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // Split at ,
-                String[] data = line.split("\",\"");
-                if(data.length == 2){
-                    // Replace speech marks with empty space
-                    String question = data[0].replace("\"", "");
-                    String answer = data[1].replace("\"", "");
-                    // Add a new flashcard object
-                    cards.add(new Flashcard(question, answer));
-                }
-            }
+            readData(br, cards);
         }catch (IOException e){
             // if not available, corrupt
             quarantineCorruptedCSV(e, Path.of(getFCDeckPath()));
         }
         return cards;
     }
-
+    // Re-usable method convert csv to flashcard object list
+    private void readData(BufferedReader br, ArrayList<Flashcard> cards) throws IOException {
+        String line;
+        while ((line = br.readLine()) != null) {
+            // Split at ,
+            String[] data = line.split("\",\"");
+            if(data.length == 2){
+                // Replace speech marks with empty space
+                String question = data[0].replace("\"", "").replace("\\n", "\n");
+                String answer = data[1].replace("\"", "").replace("\\n", "\n");
+                // Add a new flashcard object
+                cards.add(new Flashcard(question, answer));
+            }
+        }
+    }
     // Return array list of all decks linked to an account
     public ArrayList<String> getFileContents() {
         ArrayList<String> deckNames = new ArrayList<>();
@@ -146,10 +159,13 @@ public class FlashcardController extends Controller {
     }
     // Function to change the name of a flashcard deck
     public boolean renameDeck(String oldName, String newName) {
-        Path oldPath = Paths.get(userFolderPath + "/" +  oldName + ".csv");
-        Path newPath = Paths.get(userFolderPath + "/" +  newName + ".csv");
+       this.flashcardDeckName = oldName;
         try{
-            Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+            String oldPath = getFCDeckPath();
+            if(oldPath == null) return false;
+            // Write into same folder
+            Path newPath = Paths.get(new File(oldPath).getPath() + "/" + newName + ".csv");
+            Files.move(Paths.get(oldPath), newPath, StandardCopyOption.REPLACE_EXISTING);
             return true;
         }catch (IOException e){
             return false;
@@ -158,7 +174,13 @@ public class FlashcardController extends Controller {
 
     // Procedure to delete the deck user selects
     public void deleteDeck(String deckName) throws IOException {
-        Files.delete(Paths.get(userFolderPath + "/" +  deckName + ".csv"));
+        // Set deck name so getFCDeckPath can search
+        this.flashcardDeckName = deckName;
+        // get path
+        String path = getFCDeckPath();
+        if (path == null) return;
+        // delete from path
+        Files.delete(Paths.get(path));
     }
 
     // Function to return the full directory structure for the current user
@@ -267,6 +289,103 @@ public class FlashcardController extends Controller {
                 .map(Path::toFile)
                 // Delete each file
                 .forEach(File::delete);
+        return true;
+    }
+
+    // Procedure which allows the user to import a csv file into the system
+    public boolean importCSV(Window owner) throws IOException {
+        // Open the file chooser, filtered to csv files only
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import CSV File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        // Store user's chosen file
+        File  file = fileChooser.showOpenDialog(owner);
+        // If user doesn't choose a file, don't do anything
+        if(file == null) return false;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String importDeck = file.getName().replace(".csv", "");
+            // set the deck name to edit
+            setFlashcardDeckName(importDeck);
+            ArrayList<Flashcard> cards = new ArrayList<>();
+            // add all data to cards
+            readData(br, cards);
+            // Use default save method
+            saveFlashcardDeck(cards, true);
+        }
+        return true;
+    }
+    // Procedure to export a user-chosen flashcard deck to CSV or PDF, at a location of their choosing
+    public boolean export(Window owner, boolean isPDF) throws IOException {
+        CustomAlert.info(owner, "Choose the deck to export, can only be from this directory (and sub-directories of this one)");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export CSV File");
+        fileChooser.setInitialDirectory(new File(userFolderPath));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        // Ask user where to save the file
+        File chosenDeck = fileChooser.showOpenDialog(owner);
+        CustomAlert.info(owner, "Choose the location to save the deck");
+        File userFolder = new File(userFolderPath);
+        // If cancelled return false
+        if(chosenDeck == null) return false;
+        // If outside user directory, return false
+        if(!chosenDeck.toPath().startsWith(userFolder.toPath())) return false;
+        // Get file name
+        String exportDeck = chosenDeck.getName().replace(".csv", "");
+        // Ask user to choose where to save the file
+        FileChooser locationChooser = new FileChooser();
+        locationChooser.setTitle("Choose Save Location");
+        // Set initial save file name to current file name
+        if(!isPDF){
+            locationChooser.setInitialFileName(chosenDeck.getName());
+            // Filter for only .csv
+            locationChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        }
+        if(isPDF){
+            locationChooser.setInitialFileName(chosenDeck.getName().replace("csv","html"));
+            // Filter for only .pdf
+            locationChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
+        }
+
+        File chosenLocation = locationChooser.showSaveDialog(owner);
+
+        if(chosenLocation == null) return false;
+        if(!isPDF) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(chosenLocation))) {
+                for (Flashcard card : loadFlashcardDeck(exportDeck)) {
+                    bw.write("\"" + card.getQuestion().replace("\"", "\"\"") + "\",\"" + card.getAnswer().replace("\"", "\"\"") + "\"");
+                    bw.newLine();
+                }
+            }
+        }else{
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(chosenLocation))) {
+                bw.write("<!DOCTYPE html>");
+                bw.newLine();
+                bw.write("<html><head><title>" + exportDeck + "</title><style>");
+                bw.newLine();
+                bw.write("body{font-family: Arial, sans-serif; margin: 40px;}");
+                bw.newLine();
+                bw.write("h1{color: black; text-align: center;}");
+                bw.newLine();
+                bw.write("table{width: 100%; border-collapse: collapse; margin-top: 20px;}");
+                bw.newLine();
+                bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black;}");
+                bw.newLine();
+                bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; word-wrap: break-word; max-width: 250px;}");
+                bw.newLine();
+                bw.write("tr:nth-child(even){background-color: #f0f0f0;}");
+                bw.newLine();
+                bw.write("</style></head><body>");
+                bw.newLine();
+                bw.write("<h1>" + exportDeck + "</h1>");
+                bw.newLine();
+                bw.write("<table><tr><th>Question</th><th>Answer</th></tr>");
+                for(Flashcard card : loadFlashcardDeck(exportDeck)){
+                    bw.write("<tr><td>" + card.getQuestion() + "</td><td>" + card.getAnswer() + "</td></tr>");
+                }
+                bw.write("</table></body></html>");
+            }
+        }
         return true;
     }
 }

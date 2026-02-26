@@ -47,10 +47,10 @@ public class FlashcardManagementScreen extends SystemScreens{
 
     /* Constructor class for FMScreen, controllers as parameters to maintain
     consistency across screens. */
-    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC) {
+    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc) {
         this.ac = ac;
         this.sc = sC;
-        this.fc = new FlashcardController(ac.getCurrentUser().getEmail());
+        this.fc = fc;
     }
     // Method for creating the initial interface the user see when the screen is switched to the FMScreen
     public Scene create(){

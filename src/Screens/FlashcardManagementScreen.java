@@ -7,6 +7,7 @@ import Controllers.SettingsController;
 import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextAreaBundle;
+import RecordClasses.TextBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -23,8 +24,11 @@ import javafx.scene.layout.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /* Class to be used to create the interface of the FlashcardManagementScreen, containing logic on creating,
 * editing, and organising flashcard and flashcard decks.*/
@@ -304,12 +308,15 @@ public class FlashcardManagementScreen extends SystemScreens{
         // Table to display the deck names
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
-        decksTable.setMinHeight(700);
+        decksTable.setMinHeight(600);
 
         // Table to display the flashcards without the actions column
         TableView<Flashcard> cardsPreview = buildTable(false);
         cardsPreview.getStyleClass().add("cardTable");
-        cardsPreview.setMinHeight(700);
+        Label phText = new Label("No deck selected");
+        phText.setStyle("-fx-text-fill: red;");
+        cardsPreview.setPlaceholder(phText);
+        cardsPreview.setMinHeight(600);
         cardsPreview.getItems().clear();
 
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
@@ -377,6 +384,72 @@ public class FlashcardManagementScreen extends SystemScreens{
         decksTable.getColumns().addAll(List.of(deckNameColumn, actionsColumn));
         decksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         decksTable.getItems().addAll(fc.getFileContents());
+        String searchIcon = "/images/FlashcardManagementScreen/search.png";
+        // Search for deck names
+        TextBundle searchDecks = ui.buildTextFieldInput(0, 0, 600, 98, 95, 10, "Search Decks", searchIcon, 0, 4, 95, 90 );
+        searchDecks.tf().getStyleClass().add("deckSearch");
+        searchDecks.group().getChildren().add(searchDecks.icon());
+        // Search for specific flashcards within all decks, and display what deck it is in
+        TextBundle searchFlashcards = ui.buildTextFieldInput(0, 0, 1000, 98, 95, 10, "Search Flashcards", searchIcon, 0, 4, 95, 90 );
+        searchFlashcards.tf().getStyleClass().add("fcSearch");
+        searchFlashcards.group().getChildren().add(searchFlashcards.icon());
+        // Listeners for searches
+        // All initial decks
+        ArrayList<String> allDecks = new ArrayList<>(decksTable.getItems());
+        searchDecks.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+            TextField searchFlashcardTF = searchFlashcards.tf();
+            cardsPreview.getItems().clear();
+            if(newValue.isEmpty()){
+                searchFlashcardTF.setDisable(false);
+                searchFlashcards.group().setOnMouseClicked(null);
+                // If no search just keep results to all decks
+                decksTable.getItems().setAll(allDecks);
+                return;
+            }else {
+                // Can't have two searches at once
+                searchFlashcards.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(), "Clear the deck search to search flashcards"));
+                searchFlashcardTF.setDisable(true);
+                // Set tableView contents to the following
+                decksTable.getItems().setAll(
+                        allDecks.stream() // Convert the array list into a stream for processing
+                                // Filter so decks which match the search condition are shown
+                                .filter(deck -> deck.toLowerCase().contains(newValue.trim().toLowerCase()))
+                                // Add decks matching the criteria to a list
+                                .collect(Collectors.toList()));
+            }
+        });
+        searchFlashcards.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+            TextField searchDeckTF = searchDecks.tf();
+            cardsPreview.getItems().clear();
+
+            if(newValue.isEmpty()){
+                searchDeckTF.setDisable(false);
+                searchDecks.group().setOnMouseClicked(null);
+                // If no search just keep results to all decks
+                decksTable.getItems().setAll(allDecks);
+                return;
+            }else{
+                searchDecks.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(), "Clear the flashcard search to search decks"));
+                searchDeckTF.setDisable(true);
+                ArrayList<String> decksMatchingCriteria = new ArrayList<>();
+                for (String deck : allDecks){
+                    try{
+                        ArrayList<Flashcard> cards = fc.loadFlashcardDeck(deck);
+                        boolean matchFound = cards.stream().anyMatch(
+                                card ->
+                                        card.getQuestion().toLowerCase().contains(newValue.trim().toLowerCase()) ||
+                                        card.getAnswer().toLowerCase().contains(newValue.trim().toLowerCase())
+                        );
+                        if(matchFound){
+                            decksMatchingCriteria.add(deck);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }decksTable.getItems().setAll(decksMatchingCriteria);
+            }
+        });
+
         // Listener to change the card preview based on selection
         decksTable.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue == null) return;
@@ -386,9 +459,10 @@ public class FlashcardManagementScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         }));
-        decks.getChildren().addAll(decksTable);
+        decks.getChildren().addAll(searchDecks.group(), decksTable);
 
-        HBox display = new HBox(20, decks, cardsPreview);
+        VBox cards = new VBox(10, searchFlashcards.group(), cardsPreview);
+        HBox display = new HBox(20, decks, cards);
         display.setLayoutX(140);
         display.setLayoutY(210);
         display.getStyleClass().add("display");

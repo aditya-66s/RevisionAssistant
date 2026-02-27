@@ -40,13 +40,18 @@ public class CustomAlert {
         input.setPromptText(promptText);
         Button okButton = (Button) a.getDialogPane().lookupButton(ButtonType.OK);
         okButton.setDisable(true);
-        input.textProperty().addListener((observable, oldValue, newValue) -> {
-            okButton.setDisable(newValue.trim().isEmpty());
+        // Only enable when there is text
+        input.textProperty().addListener((_, _, newValue) -> {
+            // Remove any illegal characters
+            String sanitisedInput = newValue.replaceAll("[\\\\/:*?\"<>|\\x00-\\x1F]","").stripTrailing();
+            if(!sanitisedInput.equals(newValue)) input.setText(sanitisedInput);
+            okButton.setDisable(sanitisedInput.trim().isEmpty());
         });
         Label messageText = new Label(message);
         VBox content = new VBox(15, messageText, input);
         a.getDialogPane().setContent(content);
-        return a.showAndWait().filter(b -> b == ButtonType.OK).map(b -> input.getText().trim());
+        // Return text trimmed
+        return a.showAndWait().filter(b -> b == ButtonType.OK).map(_ -> input.getText().trim());
     }
     // builds custom styled alert dialog
     private static Alert build(Window alertWindow, String title, String message, Alert.AlertType alertType, ButtonType... buttons) {

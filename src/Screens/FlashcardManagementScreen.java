@@ -21,11 +21,8 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -129,7 +126,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         int size = cardTable.getItems().size();
         Label deckConstraint = new Label(size + " / 60");
         // Set initial colour identifier
-        if(size == 0 || size >= 60){
+        if(size == 0 || size > 60){
             deckConstraint.setStyle("-fx-text-fill: red;");
         }else {
             deckConstraint.setStyle("-fx-text-fill: green;");
@@ -139,7 +136,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         cardTable.getItems().addListener((ListChangeListener<Flashcard>) _ ->{
             int varyingSize = cardTable.getItems().size();
             deckConstraint.setText(varyingSize + " / 60");
-            if(varyingSize == 0 || size >= 60){
+            if(varyingSize == 0 || varyingSize > 60){
                 deckConstraint.setStyle("-fx-text-fill: red;");
             }else{
                 deckConstraint.setStyle("-fx-text-fill: green;");
@@ -232,7 +229,6 @@ public class FlashcardManagementScreen extends SystemScreens{
                 final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
                 final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
                 final VBox actions = new VBox(5, edit.button(), delete.button());
-
                 {
                     // Delete - removed the card at this row from the list
                     delete.button().setOnMouseClicked(_ -> {
@@ -251,7 +247,6 @@ public class FlashcardManagementScreen extends SystemScreens{
                         }
                     });
                 }
-
                 @Override
                 protected void updateItem(Void item, boolean empty) {
                     super.updateItem(item, empty);
@@ -273,7 +268,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         table.setPlaceholder(placeholderText);
         return table;
     }
-    // Function to add flashcards to the list
+    // Procedure to add flashcards to the list
     private void addFlashcard(TextArea q, TextArea a){
         // Question and Answer constraints
         String qReq = "Questions can be 10-300 characters";
@@ -282,17 +277,12 @@ public class FlashcardManagementScreen extends SystemScreens{
         String question = q.getText().trim();
         String answer = a.getText().trim();
         // Check if valid
-        boolean validQ = false;
-        boolean validA = false;
-        if(q.getLength() >= 10 && q.getLength() <= 300){
-            validQ = true;
-        }
-        if(a.getLength() >= 1 && a.getLength() <= 600){
-            validA = true;
-        }
+        boolean validQ = question.length() >= 10 && question.length() <= 300;
+        boolean validA = !answer.isEmpty() && answer.length() <= 600;
         // Add to list
         if(validQ && validA){
             cardList.add(new Flashcard(question, answer));
+            // Clear the fields for next input
             q.clear();
             a.clear();
         }else{

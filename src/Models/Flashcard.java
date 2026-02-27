@@ -9,15 +9,11 @@ public class Flashcard {
     private SimpleStringProperty question;
     // JavaFX property representing the back of card
     private SimpleStringProperty answer;
-    // Attribute to hold the folder specific flashcards will be under
-    private String folder;
 
     // Constructor to initialise a flashcard
     public Flashcard(String question, String answer){
         this.question = new SimpleStringProperty(question);
         this.answer = new SimpleStringProperty(answer);
-        // Initially set to null, user can decide later
-        this.folder = null;
     }
     // returns JavaFX property for the question and answer for table binding
     public StringProperty questionProperty() { return question; }
@@ -32,9 +28,6 @@ public class Flashcard {
         this.question.set(question);
     }
 
-    public void setFolder(String folder) {
-        this.folder = folder;
-    }
     // Getters
     public String getQuestion() {
         return question.get();
@@ -43,9 +36,4 @@ public class Flashcard {
     public String getAnswer() {
         return answer.get();
     }
-
-    public String getFolder() {
-        return folder;
-    }
-
 }

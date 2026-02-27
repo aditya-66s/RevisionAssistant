@@ -105,10 +105,15 @@ public class UIComponents {
         textArea.setPromptText(promptText);
         Label characterCounter = new Label("0 / " + charLimit);
         characterCounter.getStyleClass().add("counter");
+        // Initial Colour
         characterCounter.setStyle("-fx-text-fill: red;");
-        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
-            characterCounter.setText(newValue.length() + " / " + charLimit);
-            if (newValue.length() < lowerLimit || newValue.length() > charLimit) {
+        textArea.textProperty().addListener((_, _, newValue) -> {
+            // Length when white space is removed
+            int trimmedLength = newValue.trim().length();
+            // Change the number
+            characterCounter.setText(trimmedLength + " / " + charLimit);
+            // Change label colours depending on limits
+            if (trimmedLength < lowerLimit || trimmedLength > charLimit) {
                 characterCounter.setStyle("-fx-text-fill: red;");
             }else{
                 characterCounter.setStyle("-fx-text-fill: green;");

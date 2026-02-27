@@ -27,6 +27,7 @@ public class FlashcardController extends Controller {
     // Constructor to set the userFolderPath
     public FlashcardController(String email) {
         this.email = email;
+        // Sets the path to the user folder
         this.userFolderPath = Paths.get(System.getProperty("user.dir"),"userFolders", email).toString();
     }
 
@@ -40,7 +41,7 @@ public class FlashcardController extends Controller {
     public void setFlashcardDeckName(String flashcardDeckName) {
         this.flashcardDeckName = flashcardDeckName;
     }
-    // Create path for the FCDeck
+    // Retrieves path for the FCDeck
     private String getFCDeckPath() throws IOException {
         // If flashcard deck is stored directly in the user folder, then return it
          File rootFolder = new File(userFolderPath);
@@ -49,12 +50,18 @@ public class FlashcardController extends Controller {
     //  Find the csv in the user folder
     private String searchForCSV(File searchDirectory, String deckName){
         File[] contents = searchDirectory.listFiles();
+        // If no file, return null
         if (contents==null) return null;
         for(File f : contents){
+            // For each file object in the array check, if directory
+            // Else check if name matches
             if(f.isDirectory()){
+                // Recurse into sub-folder
                 String result = searchForCSV(f, deckName);
+                // Return path
                 if(result!=null) return result;
             } else if (f.getName().equals(deckName + ".csv")) {
+                // Return path
                 return f.getAbsolutePath();
             }
         }
@@ -77,7 +84,7 @@ public class FlashcardController extends Controller {
                 int random = (int) (Math.random() * 100);
                 flashcardDeckName = flashcardDeckName + random;
             }
-    }
+        }
     }
     // Function to write the flashcard deck into .csv
     public boolean saveFlashcardDeck(List<Flashcard> cards, boolean adding) throws IOException {
@@ -87,7 +94,6 @@ public class FlashcardController extends Controller {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
             for (Flashcard c : cards) {
                 // Add speech marks, replace speech marks inside
-//                bw.write("\"" + c.getQuestion().replace("\"", "\"\"") + "\",\"" + c.getAnswer().replace("\"", "\"\"") + "\"");
                 bw.write("\"" // Opening speech marks
                         + c.getQuestion().replace("\"", "\"\"") // Get rid of any speech marks within by adding another
                         .replace("\n", "\\n") // Replace new lines with \n so readline does not break mid-card
@@ -141,6 +147,8 @@ public class FlashcardController extends Controller {
                 cards.add(new Flashcard(question, answer));
             }
         }
+        // Error indication to user, if file can't be read
+        if(cards.isEmpty()) CustomAlert.error(javafx.stage.Window.getWindows().getFirst(),  "Problems reading file, might not be of correct format");
     }
     // Return array list of all decks linked to an account
     public ArrayList<String> getFileContents() {
@@ -385,33 +393,39 @@ public class FlashcardController extends Controller {
             }
         }else{
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(chosenLocation))) {
-                bw.write("<!DOCTYPE html>");
-                bw.newLine();
-                bw.write("<html><head><title>" + exportDeck + "</title><style>");
-                bw.newLine();
-                bw.write("body{font-family: Arial, sans-serif; margin: 40px;}");
-                bw.newLine();
-                bw.write("h1{color: black; text-align: center;}");
-                bw.newLine();
-                bw.write("table{width: 100%; border-collapse: collapse; margin-top: 20px;}");
-                bw.newLine();
-                bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black;}");
-                bw.newLine();
-                bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; word-wrap: break-word; max-width: 250px;}");
-                bw.newLine();
-                bw.write("tr:nth-child(even){background-color: #f0f0f0;}");
-                bw.newLine();
-                bw.write("</style></head><body>");
-                bw.newLine();
-                bw.write("<h1>" + exportDeck + "</h1>");
-                bw.newLine();
-                bw.write("<table><tr><th>Question</th><th>Answer</th></tr>");
-                for(Flashcard card : loadFlashcardDeck(exportDeck)){
-                    bw.write("<tr><td>" + card.getQuestion() + "</td><td>" + card.getAnswer() + "</td></tr>");
-                }
-                bw.write("</table></body></html>");
+                writeHTML(bw, exportDeck);
             }
         }
         return true;
     }
+
+    // Procedure to write HTML File
+    private void writeHTML(BufferedWriter bw, String exportDeck) throws IOException {
+        bw.write("<!DOCTYPE html>");
+        bw.newLine();
+        bw.write("<html><head><title>" + exportDeck + "</title><style>");
+        bw.newLine();
+        bw.write("body{font-family: Arial, sans-serif; margin: 40px;}");
+        bw.newLine();
+        bw.write("h1{color: black; text-align: center;}");
+        bw.newLine();
+        bw.write("table{width: 100%; border-collapse: collapse; margin-top: 20px;}");
+        bw.newLine();
+        bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black;}");
+        bw.newLine();
+        bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; word-wrap: break-word; max-width: 250px;}");
+        bw.newLine();
+        bw.write("tr:nth-child(even){background-color: #f0f0f0;}");
+        bw.newLine();
+        bw.write("</style></head><body>");
+        bw.newLine();
+        bw.write("<h1>" + exportDeck + "</h1>");
+        bw.newLine();
+        bw.write("<table><tr><th>Question</th><th>Answer</th></tr>");
+        for(Flashcard card : loadFlashcardDeck(exportDeck)){
+            bw.write("<tr><td>" + card.getQuestion() + "</td><td>" + card.getAnswer() + "</td></tr>");
+        }
+        bw.write("</table></body></html>");
+    }
+
 }

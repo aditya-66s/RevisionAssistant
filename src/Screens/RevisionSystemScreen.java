@@ -67,12 +67,17 @@ public class RevisionSystemScreen extends SystemScreens{
         return scene;
     }
 
+    // Procedure switching the scene the FMS
     private void fcManagementMouseClick() throws IOException {
         ScreenManager.switchScene(new FlashcardManagementScreen(ac, sc, fc).create(), ac.getCurrentUser().getEmail());
     }
+
+    // Procedure creating the Import / Export Content
     private void buildImportExport(Group contentLayer){
+
         Window owner = contentLayer.getScene().getWindow();
         RectangleButtonBundle importCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Import CSV", "buttonText", 293, 315);
+        ImageView importIcon = createIcon(297, 310, "/images/RevisionSystemScreen/upload.png");
         importCSV.button().setOnMouseClicked(_ -> {
             try {
                 if(fc.importCSV(owner)) CustomAlert.success(owner, "Successfully imported CSV file");
@@ -81,7 +86,9 @@ public class RevisionSystemScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
+
         RectangleButtonBundle exportCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Export CSV", "buttonText", 293, 485);
+        ImageView exportIcon = createIcon(293, 480, "/images/RevisionSystemScreen/textFile.png");
         exportCSV.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, false);
@@ -91,7 +98,9 @@ public class RevisionSystemScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
+
         RectangleButtonBundle exportHTML = ui.buildRectangularButtonBundle(rectW, rectH, "Export HTML", "buttonText", 293, 656);
+        ImageView htmlIcon = createIcon(293, 651, "/images/RevisionSystemScreen/file.png");
         exportHTML.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, true);
@@ -109,7 +118,7 @@ public class RevisionSystemScreen extends SystemScreens{
         String exportHTMLInfo = "You can export your decks to a HTML page, and then print to PDF for portability";
         hintView.setOnMouseClicked(_-> CustomAlert.info(owner, importInfo + "\n" + "\n" + exportCSVInfo + "\n" + "\n" + exportHTMLInfo));
 
-        Group importExportButtons = new Group(importCSV.button(), exportCSV.button(), exportHTML.button());
+        Group importExportButtons = new Group(importCSV.button(), exportCSV.button(), exportHTML.button(), importIcon, exportIcon, htmlIcon);
         nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons, hintView);
     }
     private void smMouseClick() throws IOException {

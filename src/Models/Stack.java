@@ -31,7 +31,7 @@ public class Stack<T> {
     }
 
     // Peek method allows user to see what item was last added
-    public T  peek(){
+    public T peek(){
         if(!isEmpty()){
             return stackData.get(top);
         }

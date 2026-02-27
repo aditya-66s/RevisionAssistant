@@ -2,13 +2,12 @@ package Controllers;
 
 import Components.CustomAlert;
 import Models.Flashcard;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfReader;
 import javafx.scene.control.TreeItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -106,6 +105,19 @@ public class FlashcardController extends Controller {
         // Set deck to get from parameter
         this.flashcardDeckName = deckName;
         String path = getFCDeckPath();
+        if (path == null) return cards;
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            readData(br, cards);
+        }catch (IOException e){
+            // if not available, corrupt
+            quarantineCorruptedCSV(e, Path.of(getFCDeckPath()));
+        }
+        return cards;
+    }
+    // Function to read in flashcards from a .csv into an array list
+    public ArrayList<Flashcard> loadFCDeckFromPath(String path) throws IOException {
+        ArrayList<Flashcard> cards = new ArrayList<>();
+        // Set deck to get from parameter
         if (path == null) return cards;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             readData(br, cards);
@@ -298,25 +310,35 @@ public class FlashcardController extends Controller {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import CSV File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
         // Store user's chosen file
-        File  file = fileChooser.showOpenDialog(owner);
+        File file = fileChooser.showOpenDialog(owner);
         // If user doesn't choose a file, don't do anything
         if(file == null) return false;
+        // Check size limits of flashcard deck
+        ArrayList<Flashcard> cardsList = loadFCDeckFromPath(file.getAbsolutePath());
+        if(cardsList.isEmpty() || cardsList.size() > 60){
+            CustomAlert.error(owner, "A deck needs a minimum of 1 card and can have a maximum of 60 cards");
+            return false;
+        }
+        // Check if user is importing flashcard deck from another user, or one which already exists within their folder
+        String allUserFolders = Paths.get(System.getProperty("user.dir"),"userFolders").toString();
+        if(file.getCanonicalPath().startsWith(new File(allUserFolders).getCanonicalPath())){
+            CustomAlert.error(owner, "Not allowed to import from this directory");
+            return false;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String importDeck = file.getName().replace(".csv", "");
-            // set the deck name to edit
+            // Set the file name
             setFlashcardDeckName(importDeck);
-            ArrayList<Flashcard> cards = new ArrayList<>();
-            // add all data to cards
-            readData(br, cards);
+            // Use previously initiated array list
+            readData(br, cardsList);
             // Use default save method
-            saveFlashcardDeck(cards, true);
+            saveFlashcardDeck(cardsList, true);
         }
         return true;
     }
     // Procedure to export a user-chosen flashcard deck to CSV or PDF, at a location of their choosing
-    public boolean export(Window owner, boolean isPDF) throws IOException {
+    public boolean export(Window owner, boolean isHTML) throws IOException {
         CustomAlert.info(owner, "Choose the deck to export, can only be from this directory (and sub-directories of this one)");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export CSV File");
@@ -324,33 +346,37 @@ public class FlashcardController extends Controller {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         // Ask user where to save the file
         File chosenDeck = fileChooser.showOpenDialog(owner);
+        System.out.println("Chosen deck: " + chosenDeck);
         CustomAlert.info(owner, "Choose the location to save the deck");
         File userFolder = new File(userFolderPath);
         // If cancelled return false
-        if(chosenDeck == null) return false;
+        if(chosenDeck == null){
+            return false;
+        }
         // If outside user directory, return false
-        if(!chosenDeck.toPath().startsWith(userFolder.toPath())) return false;
+        // Canonical path -> fully resolved path
+        if(!chosenDeck.getCanonicalPath().startsWith(userFolder.getCanonicalPath())) return false;
         // Get file name
         String exportDeck = chosenDeck.getName().replace(".csv", "");
         // Ask user to choose where to save the file
         FileChooser locationChooser = new FileChooser();
         locationChooser.setTitle("Choose Save Location");
         // Set initial save file name to current file name
-        if(!isPDF){
+        if(!isHTML){
             locationChooser.setInitialFileName(chosenDeck.getName());
             // Filter for only .csv
             locationChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         }
-        if(isPDF){
+        if(isHTML){
             locationChooser.setInitialFileName(chosenDeck.getName().replace("csv","html"));
-            // Filter for only .pdf
+            // Filter for only .html
             locationChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
         }
 
         File chosenLocation = locationChooser.showSaveDialog(owner);
 
         if(chosenLocation == null) return false;
-        if(!isPDF) {
+        if(!isHTML) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(chosenLocation))) {
                 for (Flashcard card : loadFlashcardDeck(exportDeck)) {
                     bw.write("\"" + card.getQuestion().replace("\"", "\"\"") + "\",\"" + card.getAnswer().replace("\"", "\"\"") + "\"");

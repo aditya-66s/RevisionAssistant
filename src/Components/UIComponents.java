@@ -214,4 +214,14 @@ public class UIComponents {
             }
         }
     }
+
+    // Function to return a question mark image view to be used for information
+    public ImageView getHintView(){
+        ImageView hint = new ImageView("/images/Constant/question.png");
+        hint.setCursor(Cursor.HAND);
+        hint.setLayoutX(1820);
+        hint.setFitHeight(95);
+        hint.setFitWidth(95);
+        return hint;
+    }
 }

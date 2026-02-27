@@ -91,8 +91,8 @@ public class RevisionSystemScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        RectangleButtonBundle exportPDF = ui.buildRectangularButtonBundle(rectW, rectH, "Export PDF", "buttonText", 293, 656);
-        exportPDF.button().setOnMouseClicked(_ -> {
+        RectangleButtonBundle exportHTML = ui.buildRectangularButtonBundle(rectW, rectH, "Export HTML", "buttonText", 293, 656);
+        exportHTML.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, true);
                 if(exported) CustomAlert.success(owner, "Successfully exported CSV file as PDF");
@@ -101,8 +101,16 @@ public class RevisionSystemScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        Group importExportButtons = new Group(importCSV.button(), exportCSV.button(), exportPDF.button());
-        nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons);
+
+        ImageView hintView = ui.getHintView();
+        String importInfo = "You can import a CSV which follows the " +
+                "question, answer format with speech marks \n surrounding both and new lines indicated by backslash and n";
+        String exportCSVInfo = "You will get an exported csv following the same lines as import versions";
+        String exportHTMLInfo = "You can export your decks to a HTML page, and then print to PDF for portability";
+        hintView.setOnMouseClicked(_-> CustomAlert.info(owner, importInfo + "\n" + "\n" + exportCSVInfo + "\n" + "\n" + exportHTMLInfo));
+
+        Group importExportButtons = new Group(importCSV.button(), exportCSV.button(), exportHTML.button());
+        nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons, hintView);
     }
     private void smMouseClick() throws IOException {
         ScreenManager.switchScene(new StudyModesScreen(ac, sc).create(), ac.getCurrentUser().getEmail());

@@ -6,8 +6,6 @@ public class Settings {
     // Stylesheet
     private String theme;
     // Accessibility
-    private double fontSize;
-    private double uiScale;
     private double darkness; // use a stack pane overlay rectangle and change opacity
     // Audio
     private double ttsVolume;

@@ -38,6 +38,10 @@ public class FlashcardManagementScreen extends SystemScreens{
     private Scene scene;
     // Observable lists storing all Flashcard objects being created or being edited
     private final ObservableList<Flashcard> cardList = FXCollections.observableArrayList();
+    // Decks table to be updated in save
+    private final TableView<String> decksTable = new TableView<>();
+    // ArrayList to be updated when saved.
+    private ArrayList<String> allDecks;
     // Record class instance being used for flashcard front and back inputs
     private TextAreaBundle questionArea;
     private TextAreaBundle answerArea;
@@ -145,7 +149,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         // Another VBox containing the cardTable and save button
         VBox fcContent = new VBox(10, cardTable, deckConstraint, save.button());
 
-        // HBox with spacing of 20 to display the two vboxes
+        // HBox with spacing of 20 to display the two Vboxes
         HBox display = new HBox(20, inputBox, fcContent);
         display.setLayoutX(140);
         display.setLayoutY(210);
@@ -173,6 +177,13 @@ public class FlashcardManagementScreen extends SystemScreens{
                         if (saved) {
                             // Output Success message
                             CustomAlert.success(scene.getWindow(),"Flashcard deck has been saved");
+                            if(alreadyExists) {
+                                allDecks.clear();
+                                allDecks.addAll(fc.getFileContents());
+                                // Update deck table
+                                decksTable.getItems().addAll(fc.getFileContents());
+                                nav.goBack(contentLayer);
+                            }
                             // Clear table and list
                             cardList.clear();
                             cardTable.refresh();
@@ -192,6 +203,10 @@ public class FlashcardManagementScreen extends SystemScreens{
                             cardList.clear();
                             cardTable.refresh();
                             CustomAlert.success(scene.getWindow(), "Changes have been saved, you will be returned to modification");
+                            // Update deck table
+                            allDecks.clear();
+                            allDecks.addAll(fc.getFileContents());
+                            decksTable.getItems().addAll(fc.getFileContents());
                             nav.goBack(contentLayer);
                         }
                     } catch (IOException e) {
@@ -324,7 +339,8 @@ public class FlashcardManagementScreen extends SystemScreens{
                 rename.button().setOnMouseClicked(_->{
                     String deckName = getTableView().getItems().get(getIndex());
                     if(CustomAlert.confirm(scene.getWindow(),"Confirmation", "Are you sure you want to rename " + deckName + "?")){
-                        Optional<String> newName = CustomAlert.input(scene.getWindow(), "Rename the deck", "Enter a suitable new deck name", "Enter new deck name");
+                        Optional<String> newName = CustomAlert.input(scene.getWindow(), "Rename the deck",
+                                "Enter a suitable new deck name", "Enter new deck name");
                         if (newName.isPresent()) {
                             fc.renameDeck(deckName, newName.get());
                             decksTable.getItems().set(getIndex(), newName.get());
@@ -343,7 +359,7 @@ public class FlashcardManagementScreen extends SystemScreens{
                             cardsPreview.refresh();
                             CustomAlert.success(scene.getWindow(), "Successfully deleted deck " + deckName);
                         } catch (IOException e) {
-                            CustomAlert.error(scene.getWindow(), "Unsuccessfull, try again later");
+                            CustomAlert.error(scene.getWindow(), "Unsuccessful, try again later");
                             throw new RuntimeException(e);
                         }
                     }
@@ -355,9 +371,7 @@ public class FlashcardManagementScreen extends SystemScreens{
                         fc.setFlashcardDeckName(deckName);
                         try {
                             cardList.setAll(fc.loadFlashcardDeck(deckName));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        } catch (IOException e) {throw new RuntimeException(e);}
                         // Takes you to creation page
                         buildCreationContent(contentLayer, true);
                     }
@@ -385,8 +399,8 @@ public class FlashcardManagementScreen extends SystemScreens{
         searchFlashcards.group().getChildren().add(searchFlashcards.icon());
         // Listeners for searches
         // All initial decks
-        ArrayList<String> allDecks = new ArrayList<>(decksTable.getItems());
-        searchDecks.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+        allDecks = new ArrayList<>(decksTable.getItems());
+        searchDecks.tf().textProperty().addListener((_, _, newValue) -> {
             TextField searchFlashcardTF = searchFlashcards.tf();
             cardsPreview.getItems().clear();
             if(newValue.isEmpty()){
@@ -397,7 +411,8 @@ public class FlashcardManagementScreen extends SystemScreens{
                 return;
             }else {
                 // Can't have two searches at once
-                searchFlashcards.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(), "Clear the deck search to search flashcards"));
+                searchFlashcards.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(),
+                        "Clear the deck search to search flashcards"));
                 searchFlashcardTF.setDisable(true);
                 // Set tableView contents to the following
                 decksTable.getItems().setAll(
@@ -408,10 +423,9 @@ public class FlashcardManagementScreen extends SystemScreens{
                                 .collect(Collectors.toList()));
             }
         });
-        searchFlashcards.tf().textProperty().addListener((observable, oldValue, newValue) -> {
+        searchFlashcards.tf().textProperty().addListener((_, _, newValue) -> {
             TextField searchDeckTF = searchDecks.tf();
             cardsPreview.getItems().clear();
-
             if(newValue.isEmpty()){
                 searchDeckTF.setDisable(false);
                 searchDecks.group().setOnMouseClicked(null);
@@ -419,8 +433,10 @@ public class FlashcardManagementScreen extends SystemScreens{
                 decksTable.getItems().setAll(allDecks);
                 return;
             }else{
-                searchDecks.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(), "Clear the flashcard search to search decks"));
+                searchDecks.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(),
+                        "Clear the flashcard search to search decks"));
                 searchDeckTF.setDisable(true);
+                // Create an Array List of the decks which match criteria
                 ArrayList<String> decksMatchingCriteria = new ArrayList<>();
                 for (String deck : allDecks){
                     try{
@@ -441,7 +457,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         });
 
         // Listener to change the card preview based on selection
-        decksTable.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+        decksTable.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {
             if(newValue == null) return;
             try{
                 cardsPreview.getItems().setAll(fc.loadFlashcardDeck(newValue));
@@ -483,7 +499,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         cardsPreview.setPrefHeight(700);
 
         // Listener to change the card preview based on selection
-        tree.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+        tree.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {
             if(newValue == null) return;
             try{
                 String item = newValue.getValue();
@@ -492,7 +508,7 @@ public class FlashcardManagementScreen extends SystemScreens{
                     Label phText = new Label("This is a folder");
                     phText.setStyle("-fx-text-fill: red;");
                     cardsPreview.setPlaceholder(phText);
-                };
+                }
                 if(item.startsWith("\uD83D\uDCC4 ")){
                     String fileNode = item.replace("\uD83D\uDCC4 ", "");
                     cardsPreview.getItems().setAll(fc.loadFlashcardDeck(fileNode));
@@ -515,6 +531,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         // Create the initial TreeView
         TreeView<String> folderTreeView = new TreeView<>();
         folderTreeView.getStyleClass().add("folderTreeView");
+        // Enables possibility of edit
         folderTreeView.setEditable(true);
         folderTreeView.setShowRoot(true);
 
@@ -574,16 +591,19 @@ public class FlashcardManagementScreen extends SystemScreens{
                 // Get item being dragged and item being dropped into
                 TreeItem<String> draggedF = tree.getSelectionModel().getSelectedItem();
                 TreeItem<String> droppingF = cell.getTreeItem();
-
                 // Conditions to stop the file movement
                 if(draggedF == null || droppingF == null) return;
+                // If drop over same cell
                 if(draggedF == droppingF) return;
+                // If destination is already an ancestor of the dragged item
                 if(isAncestor(draggedF, droppingF)) return;
+                // if it is the root
                 if(draggedF.getParent() == null) return;
                 if(draggedF == tree.getRoot()) return;
+                // If folder going into a file
                 if(isFolder(draggedF) && isFile(droppingF)) return;
+                // if item already in folder
                 if (droppingF == draggedF.getParent()) return;
-
                 String draggedName = draggedF.getValue().replace("\uD83D\uDCC1 ", "").replace("\uD83D\uDCC4 ", "");
                 String droppingName = droppingF.getValue().replace("\uD83D\uDCC1 ", "").replace("\uD83D\uDCC4 ", "");
                 try {
@@ -591,7 +611,6 @@ public class FlashcardManagementScreen extends SystemScreens{
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-
                 // Remove from previous folder
                 draggedF.getParent().getChildren().remove(draggedF);
                 // Add to selected folder
@@ -607,11 +626,9 @@ public class FlashcardManagementScreen extends SystemScreens{
                     // Insert one after target deck
                     parent.getChildren().add(idx+1, draggedF);
                 }
-
                 // Drop was successfully handled
                 e.setDropCompleted(true);
                 e.consume();
-
             });
             return cell;
         });
@@ -649,7 +666,8 @@ public class FlashcardManagementScreen extends SystemScreens{
             folder = selected;
         }
         // Ask for folder name input
-        Optional<String> folderName = CustomAlert.input(scene.getWindow(), "New Folder", "What do you want to name the folder?", "Enter Folder Name");
+        Optional<String> folderName = CustomAlert.input(scene.getWindow(), "New Folder",
+                "What do you want to name the folder?", "Enter Folder Name");
         String parentPath;
         if(folder == tree.getRoot()){
             // If target is root, use the user's folder path
@@ -689,7 +707,6 @@ public class FlashcardManagementScreen extends SystemScreens{
             CustomAlert.success(scene.getWindow(), "Folder successfully deleted");
             selected.getParent().getChildren().remove(selected);
         }
-
     }
     // Function to return folder node for the tree, starting expanded
     private TreeItem<String> folder(String folderName){

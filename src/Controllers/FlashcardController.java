@@ -7,7 +7,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,14 +14,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class FlashcardController extends Controller {
     // Holds the string to the user's directory path
     private final String userFolderPath;
     // Hold then name of the flashcard deck file
     private String flashcardDeckName;
-    private String email;
+    private final String email;
 
     // Constructor to set the userFolderPath
     public FlashcardController(String email) {
@@ -148,7 +146,8 @@ public class FlashcardController extends Controller {
             }
         }
         // Error indication to user, if file can't be read
-        if(cards.isEmpty()) CustomAlert.error(javafx.stage.Window.getWindows().getFirst(),  "Problems reading file, might not be of correct format");
+        if(cards.isEmpty()) CustomAlert.error(javafx.stage.Window.getWindows().getFirst(),
+                "Problems reading file, might not be of correct format");
     }
     // Return array list of all decks linked to an account
     public ArrayList<String> getFileContents() {
@@ -175,7 +174,6 @@ public class FlashcardController extends Controller {
                 deckNames.add(file.getName().replace(".csv", ""));
             }
         }
-
     }
     // Function to change the name of a flashcard deck
     public boolean renameDeck(String oldName, String newName) {
@@ -184,8 +182,12 @@ public class FlashcardController extends Controller {
             String oldPath = getFCDeckPath();
             if(oldPath == null) return false;
             // Write into same folder
-            Path newPath = Paths.get(new File(oldPath).getPath() + "/" + newName + ".csv");
-            Files.move(Paths.get(oldPath), newPath, StandardCopyOption.REPLACE_EXISTING);
+            Path oldNamePath = Paths.get(oldPath);
+            // Joins directory with new filename to build destination
+            Path newNamePath = oldNamePath.getParent().resolve(newName + ".csv");
+            Files.move(oldNamePath, newNamePath, StandardCopyOption.REPLACE_EXISTING);
+            // update after successful rename
+            this.flashcardDeckName = newName;
             return true;
         }catch (IOException e){
             return false;
@@ -345,7 +347,8 @@ public class FlashcardController extends Controller {
         }
         return true;
     }
-    // Procedure to export a user-chosen flashcard deck to CSV or PDF, at a location of their choosing
+
+    // Procedure to export a user-chosen flashcard deck to CSV or HTML, at a location of their choosing
     public boolean export(Window owner, boolean isHTML) throws IOException {
         CustomAlert.info(owner, "Choose the deck to export, can only be from this directory (and sub-directories of this one)");
         FileChooser fileChooser = new FileChooser();
@@ -387,7 +390,8 @@ public class FlashcardController extends Controller {
         if(!isHTML) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(chosenLocation))) {
                 for (Flashcard card : loadFlashcardDeck(exportDeck)) {
-                    bw.write("\"" + card.getQuestion().replace("\"", "\"\"") + "\",\"" + card.getAnswer().replace("\"", "\"\"") + "\"");
+                    bw.write("\"" + card.getQuestion().replace("\"", "\"\"").replace("\n", "\\n")
+                            + "\",\"" + card.getAnswer().replace("\"", "\"\"").replace("\n", "\\n") + "\"");
                     bw.newLine();
                 }
             }

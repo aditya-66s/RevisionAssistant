@@ -221,7 +221,7 @@ Slider .thumb {
     -fx-background-color: black;
     -fx-border-color: grey;
     -fx-max-width: 1000px;
-    -fx-max-height: 700px;
+    -fx-pref-height: 600px;
 }
 .folderTreeView .tree-cell .text{
     -fx-font-size: 14px !important;

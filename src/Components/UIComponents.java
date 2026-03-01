@@ -66,7 +66,8 @@ public class UIComponents {
     }
 
     // Creates a text bundle with an icon
-    public TextBundle buildTextFieldInput(int rectX, int rectY, int rectW, int rectH, int fieldX, int fieldY, String promptText, String iconURL, int iconX, int iconY, int iconW, int iconH){
+    public TextBundle buildTextFieldInput(int rectX, int rectY, int rectW, int rectH, int fieldX, int fieldY,
+                                          String promptText, String iconURL, int iconX, int iconY, int iconW, int iconH){
         // Create background rectangle for text input
         Rectangle inputRect = new Rectangle(rectX, rectY, rectW, rectH);
         inputRect.getStyleClass().add("inputRect");
@@ -177,7 +178,7 @@ public class UIComponents {
 
     // Adds a real-time validator to input fields and error styling validation fields.
     public static void attachValidator(TextInputControl field, Predicate<String> rule, String errorClass, TextInputControl... linkedField) {
-        field.textProperty().addListener((obs, oldText, newText) -> {
+        field.textProperty().addListener((_, _, newText) -> {
             boolean invalid = !rule.test(newText);
             updateStyle(field, errorClass, invalid);
             // Apply same styling to linked fields (such as visible copy of password field)

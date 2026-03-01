@@ -104,7 +104,7 @@ public class RevisionSystemScreen extends SystemScreens{
         exportHTML.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, true);
-                if(exported) CustomAlert.success(owner, "Successfully exported CSV file as PDF");
+                if(exported) CustomAlert.success(owner, "Successfully exported CSV file as HTML \n You can print this to a PDF");
                 if(!exported) CustomAlert.error(owner, "Could not export CSV file");
             } catch (IOException e) {
                 throw new RuntimeException(e);

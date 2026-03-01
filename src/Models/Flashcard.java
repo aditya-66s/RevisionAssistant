@@ -6,9 +6,9 @@ import javafx.beans.property.StringProperty;
 // Using StringProperty so data can be observed and bound to table
 public class Flashcard {
     // JavaFX property representing the front of card
-    private SimpleStringProperty question;
+    private final SimpleStringProperty question;
     // JavaFX property representing the back of card
-    private SimpleStringProperty answer;
+    private final SimpleStringProperty answer;
 
     // Constructor to initialise a flashcard
     public Flashcard(String question, String answer){

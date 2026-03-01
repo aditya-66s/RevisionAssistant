@@ -55,7 +55,7 @@ public class RevisionSystemScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle impOrExp = ui.buildRectangularButtonBundle(rectW, rectH, "Import/Export", "buttonText", 310, 591);
+        RectangleButtonBundle impOrExp = ui.buildRectangularButtonBundle(rectW, rectH, "Import / Export", "buttonText", 310, 591);
         ImageView impIcon = createIcon(310, 586, "/images/RevisionSystemScreen/import.png");
         impOrExp.button().setOnMouseClicked(_ -> buildImportExport(contentLayer));
         RectangleButtonBundle analytics = ui.buildRectangularButtonBundle(rectW, rectH, "Analytics", "buttonText", 310, 762);
@@ -122,7 +122,7 @@ public class RevisionSystemScreen extends SystemScreens{
         nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons, hintView);
     }
     private void smMouseClick() throws IOException {
-        ScreenManager.switchScene(new StudyModesScreen(ac, sc).create(), ac.getCurrentUser().getEmail());
+        ScreenManager.switchScene(new StudyModesScreen(ac, sc, fc).create(), ac.getCurrentUser().getEmail());
     }
 
 }

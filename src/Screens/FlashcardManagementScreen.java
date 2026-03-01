@@ -104,7 +104,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         answerArea = ui.createTextArea("Back of card...", 600, 1);
 
         // Table displaying all flashcards in the deck
-        TableView<Flashcard> cardTable = buildTable(true);
+        TableView<Flashcard> cardTable = buildFlashcardTableWColumns();
         cardTable.getStyleClass().add("cardTable");
         // To prevent table from having flashcard data from previous modifications
         if(!alreadyExists){
@@ -226,7 +226,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         }
     }
     // Function which builds the table to display Flashcards
-    private TableView<Flashcard> buildTable(Boolean actionsNeeded){
+    public TableView<Flashcard> buildFlashcardTableWColumns() {
         // Create a new tableview bound to observable list
         TableView<Flashcard> table = new TableView<>(cardList);
         // Create columns and link to the specific property of Flashcard.java
@@ -235,46 +235,39 @@ public class FlashcardManagementScreen extends SystemScreens{
         frontColumn.setCellValueFactory(new PropertyValueFactory<>("question"));
         TableColumn<Flashcard, String> backColumn = new TableColumn<>("Back");
         backColumn.setCellValueFactory(new PropertyValueFactory<>("answer"));
-
-        // Add this column if in create page, not in Modify
-        if (actionsNeeded) {
-            TableColumn<Flashcard, Void> actionsColumn = new TableColumn<>("Actions");
-            actionsColumn.setMaxWidth(250);
-            actionsColumn.setCellFactory(_ -> new TableCell<>() {
-                final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
-                final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
-                final VBox actions = new VBox(5, edit.button(), delete.button());
-                {
-                    // Delete - removed the card at this row from the list
-                    delete.button().setOnMouseClicked(_ -> {
-                        Flashcard card = getTableView().getItems().get(getIndex());
-                        if (CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to delete?")) {
-                            cardList.remove(card);
-                        }
-                    });
-                    // Edit - changes current text field and removes from list so it can be resaved
-                    edit.button().setOnMouseClicked(_ -> {
-                        Flashcard card = getTableView().getItems().get(getIndex());
-                        if (CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to edit?")) {
-                            questionArea.textArea().setText(card.getQuestion());
-                            answerArea.textArea().setText(card.getAnswer());
-                            cardList.remove(card);
-                        }
-                    });
-                }
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    // Only show options on the rows which have data
-                    setGraphic(empty ? null : actions);
-                }
-            });
-            // Add all columns to the table
-            table.getColumns().addAll(List.of(frontColumn, backColumn, actionsColumn));
-        }else{
-            // Add all columns to table
-            table.getColumns().addAll(List.of(frontColumn, backColumn));
-        }
+        TableColumn<Flashcard, Void> actionsColumn = new TableColumn<>("Actions");
+        actionsColumn.setMaxWidth(250);
+        actionsColumn.setCellFactory(_ -> new TableCell<>() {
+            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
+            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
+            final VBox actions = new VBox(5, edit.button(), delete.button());
+            {
+                // Delete - removed the card at this row from the list
+                delete.button().setOnMouseClicked(_ -> {
+                    Flashcard card = getTableView().getItems().get(getIndex());
+                    if (CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to delete?")) {
+                        cardList.remove(card);
+                    }
+                });
+                // Edit - changes current text field and removes from list so it can be resaved
+                edit.button().setOnMouseClicked(_ -> {
+                    Flashcard card = getTableView().getItems().get(getIndex());
+                    if (CustomAlert.confirm(scene.getWindow(), "Deletion?", "Are you sure you want to edit?")) {
+                        questionArea.textArea().setText(card.getQuestion());
+                        answerArea.textArea().setText(card.getAnswer());
+                        cardList.remove(card);
+                    }
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                // Only show options on the rows which have data
+                setGraphic(empty ? null : actions);
+            }
+        });
+        // Add all columns to the table
+        table.getColumns().add(actionsColumn);
         // Columns are resized to fill available width, last column will shrink or expand
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         // Set the text when there are no cards
@@ -283,6 +276,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         table.setPlaceholder(placeholderText);
         return table;
     }
+
     // Procedure to add flashcards to the list
     private void addFlashcard(TextArea q, TextArea a){
         // Question and Answer constraints
@@ -307,22 +301,10 @@ public class FlashcardManagementScreen extends SystemScreens{
     }
     // Procedure to create the modification page
     private void buildModifyContent(Group contentLayer) throws IOException {
-        VBox decks = new VBox(10);
-        decks.setPrefWidth(600);
-        decks.setMinWidth(600);
         // Table to display the deck names
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
         decksTable.setMinHeight(600);
-
-        // Table to display the flashcards without the actions column
-        TableView<Flashcard> cardsPreview = buildTable(false);
-        cardsPreview.getStyleClass().add("cardTable");
-        Label phText = new Label("No deck selected");
-        phText.setStyle("-fx-text-fill: red;");
-        cardsPreview.setPlaceholder(phText);
-        cardsPreview.setMinHeight(600);
-        cardsPreview.getItems().clear();
 
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
         deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
@@ -356,7 +338,7 @@ public class FlashcardManagementScreen extends SystemScreens{
                             fc.deleteDeck(deckName);
                             String selectedRow = getTableView().getSelectionModel().getSelectedItem();
                             getTableView().getItems().remove(selectedRow);
-                            cardsPreview.refresh();
+//                            cardsPreview.refresh();
                             CustomAlert.success(scene.getWindow(), "Successfully deleted deck " + deckName);
                         } catch (IOException e) {
                             CustomAlert.error(scene.getWindow(), "Unsuccessful, try again later");
@@ -388,90 +370,9 @@ public class FlashcardManagementScreen extends SystemScreens{
         decksTable.getColumns().addAll(List.of(deckNameColumn, actionsColumn));
         decksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         decksTable.getItems().addAll(fc.getFileContents());
-        String searchIcon = "/images/FlashcardManagementScreen/search.png";
-        // Search for deck names
-        TextBundle searchDecks = ui.buildTextFieldInput(0, 0, 600, 98, 95, 10, "Search Decks", searchIcon, 0, 4, 95, 90 );
-        searchDecks.tf().getStyleClass().add("deckSearch");
-        searchDecks.group().getChildren().add(searchDecks.icon());
-        // Search for specific flashcards within all decks, and display what deck it is in
-        TextBundle searchFlashcards = ui.buildTextFieldInput(0, 0, 1000, 98, 95, 10, "Search Flashcards", searchIcon, 0, 4, 95, 90 );
-        searchFlashcards.tf().getStyleClass().add("fcSearch");
-        searchFlashcards.group().getChildren().add(searchFlashcards.icon());
-        // Listeners for searches
-        // All initial decks
         allDecks = new ArrayList<>(decksTable.getItems());
-        searchDecks.tf().textProperty().addListener((_, _, newValue) -> {
-            TextField searchFlashcardTF = searchFlashcards.tf();
-            cardsPreview.getItems().clear();
-            if(newValue.isEmpty()){
-                searchFlashcardTF.setDisable(false);
-                searchFlashcards.group().setOnMouseClicked(null);
-                // If no search just keep results to all decks
-                decksTable.getItems().setAll(allDecks);
-                return;
-            }else {
-                // Can't have two searches at once
-                searchFlashcards.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(),
-                        "Clear the deck search to search flashcards"));
-                searchFlashcardTF.setDisable(true);
-                // Set tableView contents to the following
-                decksTable.getItems().setAll(
-                        allDecks.stream() // Convert the array list into a stream for processing
-                                // Filter so decks which match the search condition are shown
-                                .filter(deck -> deck.toLowerCase().contains(newValue.trim().toLowerCase()))
-                                // Add decks matching the criteria to a list
-                                .collect(Collectors.toList()));
-            }
-        });
-        searchFlashcards.tf().textProperty().addListener((_, _, newValue) -> {
-            TextField searchDeckTF = searchDecks.tf();
-            cardsPreview.getItems().clear();
-            if(newValue.isEmpty()){
-                searchDeckTF.setDisable(false);
-                searchDecks.group().setOnMouseClicked(null);
-                // If no search just keep results to all decks
-                decksTable.getItems().setAll(allDecks);
-                return;
-            }else{
-                searchDecks.group().setOnMouseClicked(_-> CustomAlert.error(scene.getWindow(),
-                        "Clear the flashcard search to search decks"));
-                searchDeckTF.setDisable(true);
-                // Create an Array List of the decks which match criteria
-                ArrayList<String> decksMatchingCriteria = new ArrayList<>();
-                for (String deck : allDecks){
-                    try{
-                        ArrayList<Flashcard> cards = fc.loadFlashcardDeck(deck);
-                        boolean matchFound = cards.stream().anyMatch(
-                                card ->
-                                        card.getQuestion().toLowerCase().contains(newValue.trim().toLowerCase()) ||
-                                        card.getAnswer().toLowerCase().contains(newValue.trim().toLowerCase())
-                        );
-                        if(matchFound){
-                            decksMatchingCriteria.add(deck);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }decksTable.getItems().setAll(decksMatchingCriteria);
-            }
-        });
 
-        // Listener to change the card preview based on selection
-        decksTable.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {
-            if(newValue == null) return;
-            try{
-                cardsPreview.getItems().setAll(fc.loadFlashcardDeck(newValue));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-        decks.getChildren().addAll(searchDecks.group(), decksTable);
-
-        VBox cards = new VBox(10, searchFlashcards.group(), cardsPreview);
-        HBox display = new HBox(20, decks, cards);
-        display.setLayoutX(140);
-        display.setLayoutY(210);
-        display.getStyleClass().add("display");
+        HBox display = getPreviewDecksAndCards(fc, decksTable, scene.getWindow());
         nav.switchContent(contentLayer, display, getBackView(contentLayer));
     }
     // Procedure to create the organisation page
@@ -492,11 +393,8 @@ public class FlashcardManagementScreen extends SystemScreens{
         HBox options = new HBox(20, newFolder.button(), delete.button());
         VBox treeViewVBox = new VBox(20, options, tree);
 
-        TableView<Flashcard> cardsPreview = buildTable(false);
-        cardsPreview.getStyleClass().add("cardTable");
+        TableView<Flashcard> cardsPreview = buildCardPreviewTable(700);
         cardsPreview.getItems().clear();
-        cardsPreview.setMinHeight(700);
-        cardsPreview.setPrefHeight(700);
 
         // Listener to change the card preview based on selection
         tree.getSelectionModel().selectedItemProperty().addListener(((_, _, newValue) -> {

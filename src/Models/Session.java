@@ -1,35 +1,41 @@
 package Models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 
 public class Session {
     private String selectedDeck;
     private String studyMode;
-    private int currentIndex;
-    private int correctCount;
-    private int incorrectCount;
+    private final ArrayList<Flashcard> currentQueue;
+    private final ArrayList<Flashcard> correctList;
+    private final ArrayList<Flashcard> incorrectList;
     private boolean showingAnswer;
     private long elapsedTime;
     private LocalDateTime date;
 
     // New session
-    public Session(String selectedDeck, String studyMode, int correctCount, int incorrectCount, long elapsedTime){
+    public Session(ArrayList<Flashcard> cards, String selectedDeck, String studyMode){
         this.selectedDeck = selectedDeck;
         this.studyMode = studyMode;
-        this.correctCount = correctCount;
-        this.incorrectCount = incorrectCount;
-        this.elapsedTime = elapsedTime;
+        this.currentQueue = new ArrayList<>(cards);
+        this.correctList = new ArrayList<>();
+        this.incorrectList = new ArrayList<>();
+        this.elapsedTime = 0;
+        this.showingAnswer = false;
         this.date = LocalDateTime.now();
     }
-    // Old sessions
-    public Session(String selectedDeck, String studyMode, int correctCount, int incorrectCount, long elapsedTime, LocalDateTime date){
-        this.selectedDeck = selectedDeck;
-        this.studyMode = studyMode;
-        this.correctCount = correctCount;
-        this.incorrectCount = incorrectCount;
-        this.elapsedTime = elapsedTime;
-        this.date = date;
+
+    // Returns true if session is complete
+    public boolean recordAnswer(boolean correct){
+        Flashcard current = currentQueue.removeFirst();
+        if(correct) correctList.add(current);
+        else{
+            incorrectList.add(current);
+            currentQueue.add(current);
+        }
+        showingAnswer = false;
+        return currentQueue.isEmpty();
     }
 
     // Getters and Setters
@@ -39,14 +45,11 @@ public class Session {
     public String getStudyMode() {
         return studyMode;
     }
-    public int getCurrentIndex() {
-        return currentIndex;
-    }
     public int getIncorrectCount() {
-        return incorrectCount;
+        return incorrectList.size();
     }
     public int getCorrectCount() {
-        return correctCount;
+        return correctList.size();
     }
     public long getElapsedTime() {
         return elapsedTime;
@@ -57,32 +60,27 @@ public class Session {
     public LocalDateTime getDate() {
         return date;
     }
-    public String getTimeFormated(){
-        long seconds = elapsedTime;
-        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+    public Flashcard getCurrentCard(){
+        return currentQueue.getFirst();
+    }
+    public int getRemainingCount(){
+        return currentQueue.size();
+    }
+    public double getAccuracy(){
+        int total = correctList.size() + incorrectList.size();
+        return (double) (correctList.size() * 100) / total;
+    }
+    public String getProgressText(){
+        return "Remaining: " + currentQueue.size() + "\n Correct: " + correctList.size();
     }
 
-    public void setSelectedDeck(String selectedDeck) {
-        this.selectedDeck = selectedDeck;
-    }
-    public void setStudyMode(String studyMode) {
-        this.studyMode = studyMode;
-    }
-    public void setCurrentIndex(int currentIndex) {
-        this.currentIndex = currentIndex;
-    }
-    public void setCorrectCount(int correctCount) {
-        this.correctCount = correctCount;
-    }
-    public void setIncorrectCount(int incorrectCount) {
-        this.incorrectCount = incorrectCount;
-    }
-    public void setShowingAnswer(boolean showingAnswer) {
+    public void setShowingAnswer(boolean showingAnswer){
         this.showingAnswer = showingAnswer;
     }
-    public void setElapsedTime(long elapsedTime) {
-        this.elapsedTime = elapsedTime;
-    }
+
+    public void tick(){elapsedTime++;}
+
+
     public void setDate(LocalDateTime date) {
         this.date = date;
     }

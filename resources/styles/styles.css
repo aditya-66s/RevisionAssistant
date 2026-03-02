@@ -238,3 +238,73 @@ Slider .thumb {
 .fcSearch{
     -fx-pref-width: 850px;
 }
+
+.timerLabel{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 36px;
+    -fx-text-fill: white;
+    -fx-background-color: #111111;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 12px;
+}
+.fcRect{
+    -fx-fill: white;
+    -fx-stroke: #222222;
+    -fx-stroke-width: 3px;
+    -fx-arc-width: 40px;
+    -fx-arc-height: 40px;
+}
+.fcBRect{
+    -fx-fill: #e1f3f3;
+    -fx-stroke: #4a90d9;
+    -fx-stroke-width: 3px;
+    -fx-arc-width: 40px;
+    -fx-arc-height: 40px;
+}
+.cardBody{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 30px;
+    -fx-wrapping-width: 1100px;
+    -fx-text-alignment: center;
+}
+.cardLabel{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 22px;
+    -fx-fill: grey;
+}
+.flipH{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 18px;
+    -fx-fill: lightgrey;
+}
+.correctC {
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 48px;
+    -fx-fill: green;
+}
+
+.incorrectC {
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 48px;
+    -fx-fill: red;
+}
+.flashcard{
+    -fx-pref-width: 1200;
+    -fx-pref-height: 450;
+    -fx-cursor: hand;
+}
+.fcButtonRect{
+    -fx-arc-width: 40px;
+    -fx-arc-height: 40px;
+}
+
+.fcButtonText{
+    -fx-font-size: 72px;
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+.fcButton{
+    -fx-pref-width: 200px;
+    -fx-pref-height: 130px;
+    -fx-cursor: hand;
+}

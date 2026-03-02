@@ -265,7 +265,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             }
         });
         // Add all columns to the table
-        table.getColumns().add(actionsColumn);
+        table.getColumns().addAll(List.of(frontColumn, backColumn, actionsColumn));
         // Columns are resized to fill available width, last column will shrink or expand
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         // Set the text when there are no cards

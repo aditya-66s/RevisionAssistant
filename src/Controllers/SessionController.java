@@ -1,25 +1,23 @@
 package Controllers;
 
 import Models.Flashcard;
+import Models.Session;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class SessionController {
     private final String email;
-    private ArrayList<Flashcard> sessionCards;
-    private String selectedDeck = "";
-    private String studyMode = "";
-    private int currentIndex = 0;
-    private int correctCount = 0;
-    private int incorrectCount = 0;
-    private boolean showingAnswer = false;
-    private long elapsedTime = 0;
+    private Session session;
+
 
     public SessionController(String email) {
         this.email = email;
     }
 
+    public void startSession(ArrayList<Flashcard> cards, String deck, String mode){
+        this.session = new Session(cards, deck, mode);
+    }
     // Shuffle ArrayList of cards for Shuffle mode
     public void shuffle(ArrayList<Flashcard> cards) {
         // Create a random object to generate random indices
@@ -38,53 +36,52 @@ public class SessionController {
         }
     }
 
-    // Getters and Setters
+    public boolean recordAnswer(boolean correct){
+        return session.recordAnswer(correct);
+    }
+
+    public void tick(){
+        session.tick();
+    }
+    public String getFormattedTime(){
+        return formatTime(session.getElapsedTime());
+    }
+
+    // Getters
+    public Flashcard getCurrentCard(){return session.getCurrentCard();}
     public String getSelectedDeck() {
-        return selectedDeck;
+        return session.getSelectedDeck();
+    }
+    public double getAccuracy(){
+        return session.getAccuracy();
     }
     public String getStudyMode() {
-        return studyMode;
+        return session.getStudyMode();
     }
-    public int getCurrentIndex() {
-        return currentIndex;
+    public int getRemainingCount() {
+        return session.getRemainingCount();
     }
     public int getIncorrectCount() {
-        return incorrectCount;
+        return session.getIncorrectCount();
     }
     public int getCorrectCount() {
-        return correctCount;
+        return session.getCorrectCount();
     }
     public long getElapsedTime() {
-        return elapsedTime;
-    }
-    public boolean isShowingAnswer() {
-        return showingAnswer;
-    }
-    public String getProgressText(){
-        return "Card " + (currentIndex+1) + " / " + sessionCards.size();
-    }
-    public String getTimeFormated(Long seconds){
-        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
-    }
-    public void setSelectedDeck(String selectedDeck) {
-        this.selectedDeck = selectedDeck;
-    }
-    public void setStudyMode(String studyMode) {
-        this.studyMode = studyMode;
-    }
-    public void setCurrentIndex(int currentIndex) {
-        this.currentIndex = currentIndex;
-    }
-    public void setCorrectCount(int correctCount) {
-        this.correctCount = correctCount;
-    }
-    public void setIncorrectCount(int incorrectCount) {
-        this.incorrectCount = incorrectCount;
+        return session.getElapsedTime();
     }
     public void setShowingAnswer(boolean showingAnswer) {
-        this.showingAnswer = showingAnswer;
+        session.setShowingAnswer(showingAnswer);
     }
-    public void setElapsedTime(long elapsedTime) {
-        this.elapsedTime = elapsedTime;
+    public boolean isShowingAnswer() {
+        return session.isShowingAnswer();
     }
+    public String getProgressText(){
+        return session.getProgressText();
+    }
+
+    public String formatTime(Long seconds){
+        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+    }
+
 }

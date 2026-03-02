@@ -52,7 +52,7 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
         primaryStage.setMaximized(true);
-//        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
 //        MainMenuScreen mMS = new MainMenuScreen(universalAuth);
 //        Scene mainMenuTest = mMS.create();
 //        primaryStage.setScene(mainMenuTest);

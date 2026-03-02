@@ -7,7 +7,6 @@ import Controllers.SettingsController;
 import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextAreaBundle;
-import RecordClasses.TextBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -25,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /* Class to be used to create the interface of the FlashcardManagementScreen, containing logic on creating,
 * editing, and organising flashcard and flashcard decks.*/
@@ -104,7 +102,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         answerArea = ui.createTextArea("Back of card...", 600, 1);
 
         // Table displaying all flashcards in the deck
-        TableView<Flashcard> cardTable = buildFlashcardTableWColumns();
+        TableView<Flashcard> cardTable = buildFlashcardTableWActions();
         cardTable.getStyleClass().add("cardTable");
         // To prevent table from having flashcard data from previous modifications
         if(!alreadyExists){
@@ -226,7 +224,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         }
     }
     // Function which builds the table to display Flashcards
-    public TableView<Flashcard> buildFlashcardTableWColumns() {
+    public TableView<Flashcard> buildFlashcardTableWActions() {
         // Create a new tableview bound to observable list
         TableView<Flashcard> table = new TableView<>(cardList);
         // Create columns and link to the specific property of Flashcard.java
@@ -305,10 +303,8 @@ public class FlashcardManagementScreen extends SystemScreens{
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
         decksTable.setMinHeight(600);
-
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
         deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
-
         TableColumn<String, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(_ -> new TableCell<>(){
             // Buttons in the actions column
@@ -366,12 +362,10 @@ public class FlashcardManagementScreen extends SystemScreens{
                 setGraphic(empty ? null : buttons);
             }
         });
-
         decksTable.getColumns().addAll(List.of(deckNameColumn, actionsColumn));
         decksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         decksTable.getItems().addAll(fc.getFileContents());
         allDecks = new ArrayList<>(decksTable.getItems());
-
         HBox display = getPreviewDecksAndCards(fc, decksTable, scene.getWindow());
         nav.switchContent(contentLayer, display, getBackView(contentLayer));
     }

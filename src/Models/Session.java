@@ -84,4 +84,10 @@ public class Session {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public void reset(ArrayList<Flashcard> lastCards) {
+        currentQueue.clear();
+        currentQueue.addAll(lastCards);
+        showingAnswer = false;
+    }
 }

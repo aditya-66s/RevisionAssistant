@@ -1,6 +1,7 @@
 package Screens;
 
 import Components.CustomAlert;
+import Components.ScreenManager;
 import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SessionController;
@@ -15,20 +16,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Window;
 import javafx.util.Duration;
-
-import javax.swing.plaf.DimensionUIResource;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,10 +36,6 @@ public class StudyModesScreen extends SystemScreens{
     private final SettingsController sc;
     private final FlashcardController fc;
     private final SessionController sessionC;
-
-    private ArrayList<Flashcard> lastFlashcards;
-    private String lastDeckName;
-    private String lastStudyMode;
 
     private Text correctText;
     private Text incorrectText;
@@ -60,6 +53,12 @@ public class StudyModesScreen extends SystemScreens{
         this.sc = sC;
         this.fc = fc;
         this.sessionC = new SessionController(ac.getCurrentUser().getEmail(), fc);
+    }
+    public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, SessionController sessionC) {
+        this.ac = ac;
+        this.sc = sC;
+        this.fc = fc;
+        this.sessionC = sessionC;
     }
     public Scene create(){
         Pane root = new Pane();
@@ -118,10 +117,8 @@ public class StudyModesScreen extends SystemScreens{
             try{
                 ArrayList<Flashcard> cards = fc.loadFlashcardDeck(deckName);
                 if(mode.equals("Shuffle")) sessionC.shuffle(cards);
-                lastFlashcards = new ArrayList<>(cards);
-                lastDeckName = deckName;
-                lastStudyMode = mode;
                 sessionC.startSession(cards, deckName, mode);
+                sessionC.setLastCards(new ArrayList<>(cards));
                 buildSessionContent(contentLayer);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -133,7 +130,7 @@ public class StudyModesScreen extends SystemScreens{
     }
 
     private void buildSessionContent(Group contentLayer){
-        timerLabel = new Label("00:00:00");
+        timerLabel = new Label(sessionC.getFormattedTime());
         timerLabel.getStyleClass().add("timerLabel");
         timerLabel.setLayoutX(700); timerLabel.setLayoutY(940);
 
@@ -163,11 +160,11 @@ public class StudyModesScreen extends SystemScreens{
         });
         cross.setLayoutX(685); cross.setLayoutY(760);
 
-        correctText = new Text("✓      0");
+        correctText = new Text("✓      " + sessionC.getCorrectCount());
         correctText.getStyleClass().add("correctC");
         correctText.setLayoutX(1520); correctText.setLayoutY(830);
 
-        incorrectText = new Text("✗      0");
+        incorrectText = new Text("✗      " + sessionC.getIncorrectCount());
         incorrectText.getStyleClass().add("incorrectC");
         incorrectText.setLayoutX(200); incorrectText.setLayoutY(830);
 
@@ -191,10 +188,8 @@ public class StudyModesScreen extends SystemScreens{
             nav.switchContent(contentLayer, information, getBackView(contentLayer));
             return;
         }
-        lastStudyMode = "Wrong Answers";
-        lastFlashcards = new ArrayList<>(wrongAnswers);
-        lastDeckName = "wrongAnswers";
-        sessionC.startSession(lastFlashcards, lastDeckName, lastStudyMode);
+        sessionC.startSession(wrongAnswers, "wrongAnswers", "Wrong Answers");
+        sessionC.setLastCards(new ArrayList<>(wrongAnswers));
         buildSessionContent(contentLayer);
     }
 
@@ -271,6 +266,7 @@ public class StudyModesScreen extends SystemScreens{
 
         if(sessionComplete){
             stopTimer();
+            ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc).create(), ac.getCurrentUser().getEmail());
             return;
         }
         cardBody.setText(sessionC.getCurrentCard().getQuestion());
@@ -291,5 +287,14 @@ public class StudyModesScreen extends SystemScreens{
     }
     private void stopTimer(){
         if(timer != null){ timer.stop(); }
+    }
+
+    public Scene continueSession(ArrayList<Flashcard> cards, String deck, String mode){
+        Scene scene = create();
+//        sessionC.startSession(cards, deck, mode);
+        // Find content layer and start a session
+        Group contentLayer = (Group) ((Pane) scene.getRoot()).getChildren().get(2);
+        buildSessionContent(contentLayer);
+        return scene;
     }
 }

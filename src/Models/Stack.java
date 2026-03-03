@@ -50,6 +50,7 @@ public class Stack<T> {
 
     // Function to clear the stack
     public void clear(){
+        top = -1;
         stackData.clear();
     }
 }

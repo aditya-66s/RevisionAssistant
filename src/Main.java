@@ -2,9 +2,7 @@ import Components.ScreenManager;
 import Controllers.AuthenticationController;
 import Controllers.SettingsController;
 import Screens.AuthScreen;
-import Screens.MainMenuScreen;
 import Screens.SplashScreen;
-import Screens.SystemScreens;
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.text.Font;
@@ -40,7 +38,10 @@ public class Main extends Application {
         }while (yes);
     }
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+        Runtime.getRuntime().exec(new String[]{"powershell", "-Command",
+                "Add-Type -AssemblyName System.Speech; " +
+                        "(New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('DOG DOG DOG')"});
         // Set stage reference for scene management
         ScreenManager.setStage(primaryStage);
         // Creates and configures the splash screen, linking the stylesheet to it.

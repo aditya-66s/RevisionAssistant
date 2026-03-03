@@ -308,3 +308,9 @@ Slider .thumb {
     -fx-pref-height: 130px;
     -fx-cursor: hand;
 }
+.summaryText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 80px;
+    -fx-fill: black;
+    -fx-padding: 7.21 14.17 7.21 14.17;
+}

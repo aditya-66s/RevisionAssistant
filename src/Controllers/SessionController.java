@@ -11,6 +11,7 @@ public class SessionController {
     private final String email;
     private Session session;
     private FlashcardController fc;
+    private ArrayList<Flashcard> lastCards;
 
 
     public SessionController(String email, FlashcardController fc) {
@@ -19,7 +20,12 @@ public class SessionController {
     }
 
     public void startSession(ArrayList<Flashcard> cards, String deck, String mode){
+        this.lastCards = new ArrayList<>(cards);
         this.session = new Session(cards, deck, mode);
+    }
+    public void retrySession(){
+        if(getStudyMode().equals("Shuffle")) shuffle(lastCards);
+        session.reset(lastCards);
     }
     // Shuffle ArrayList of cards for Shuffle mode
     public void shuffle(ArrayList<Flashcard> cards) {
@@ -77,6 +83,9 @@ public class SessionController {
     public long getElapsedTime() {
         return session.getElapsedTime();
     }
+    public ArrayList<Flashcard> getLastCards(){
+        return this.lastCards;
+    }
     public void setShowingAnswer(boolean showingAnswer) {
         session.setShowingAnswer(showingAnswer);
     }
@@ -87,6 +96,9 @@ public class SessionController {
         return session.getProgressText();
     }
 
+    public void setLastCards(ArrayList<Flashcard> lastCards) {
+        this.lastCards = lastCards;
+    }
     public String formatTime(Long seconds){
         return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
     }

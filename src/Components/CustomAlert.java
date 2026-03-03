@@ -1,6 +1,5 @@
 package Components;
 
-import RecordClasses.TextBundle;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;

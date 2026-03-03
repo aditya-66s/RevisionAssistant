@@ -23,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Window;
 import javafx.util.Duration;
@@ -58,7 +59,7 @@ public class StudyModesScreen extends SystemScreens{
         this.ac = ac;
         this.sc = sC;
         this.fc = fc;
-        this.sessionC = new SessionController(ac.getCurrentUser().getEmail());
+        this.sessionC = new SessionController(ac.getCurrentUser().getEmail(), fc);
     }
     public Scene create(){
         Pane root = new Pane();
@@ -76,6 +77,13 @@ public class StudyModesScreen extends SystemScreens{
 
         RectangleButtonBundle wrongAnswers = ui.buildRectangularButtonBundle(rectW, rectH, "Wrong Answers", "buttonText", 293, 485);
         ImageView wrongAnswersIcon = createIcon(293, 480, "/images/StudyModesScreen/wrongAnswers.png");
+        wrongAnswers.button().setOnMouseClicked(_-> {
+            try {
+                buildWrongAnswersMode(contentLayer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         RectangleButtonBundle shuffle = ui.buildRectangularButtonBundle(rectW, rectH, "Shuffle Mode", "buttonText", 293, 656);
         ImageView shuffleIcon = createIcon(293, 651, "/images/StudyModesScreen/shuffle.png");
@@ -137,10 +145,22 @@ public class StudyModesScreen extends SystemScreens{
         flashcard.setLayoutX(360); flashcard.setLayoutY(290);
 
         StackPane tick = buildFlashcardButton("✓","lightGreen");
-        tick.setOnMouseClicked(_-> handleAnswer(true));
+        tick.setOnMouseClicked(_-> {
+            try {
+                handleAnswer(true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         tick.setLayoutX(1035); tick.setLayoutY(760);
         StackPane cross = buildFlashcardButton("✗", "red");
-        cross.setOnMouseClicked(_-> handleAnswer(false));
+        cross.setOnMouseClicked(_-> {
+            try {
+                handleAnswer(false);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         cross.setLayoutX(685); cross.setLayoutY(760);
 
         correctText = new Text("✓      0");
@@ -158,6 +178,24 @@ public class StudyModesScreen extends SystemScreens{
 
         nav.switchContent(contentLayer, timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
         startTimer();
+    }
+
+    private void buildWrongAnswersMode(Group contentLayer) throws IOException {
+        ArrayList<Flashcard> wrongAnswers = sessionC.loadWrongAnswers();
+        if(wrongAnswers.isEmpty()){
+            Text information = new Text("No wrong answers yet \n Study a deck prior to using this mode");
+            information.getStyleClass().add("infoText");
+            information.setTextAlignment(TextAlignment.CENTER);
+            information.setLayoutX(310);
+            information.setLayoutY(500);
+            nav.switchContent(contentLayer, information, getBackView(contentLayer));
+            return;
+        }
+        lastStudyMode = "Wrong Answers";
+        lastFlashcards = new ArrayList<>(wrongAnswers);
+        lastDeckName = "wrongAnswers";
+        sessionC.startSession(lastFlashcards, lastDeckName, lastStudyMode);
+        buildSessionContent(contentLayer);
     }
 
     private StackPane buildCard() {
@@ -222,7 +260,7 @@ public class StudyModesScreen extends SystemScreens{
         half1.play();
     }
 
-    private void handleAnswer(boolean correct){
+    private void handleAnswer(boolean correct) throws IOException {
         if(!hasFlipped){
             CustomAlert.error(correctText.getScene().getWindow(), "Check the answer first");
             return;

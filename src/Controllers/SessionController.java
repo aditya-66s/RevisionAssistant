@@ -3,16 +3,19 @@ package Controllers;
 import Models.Flashcard;
 import Models.Session;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class SessionController {
     private final String email;
     private Session session;
+    private FlashcardController fc;
 
 
-    public SessionController(String email) {
+    public SessionController(String email, FlashcardController fc) {
         this.email = email;
+        this.fc = fc;
     }
 
     public void startSession(ArrayList<Flashcard> cards, String deck, String mode){
@@ -36,7 +39,8 @@ public class SessionController {
         }
     }
 
-    public boolean recordAnswer(boolean correct){
+    public boolean recordAnswer(boolean correct) throws IOException {
+        if(!correct) fc.saveWrongAnswers(session.getCurrentCard());
         return session.recordAnswer(correct);
     }
 
@@ -48,6 +52,9 @@ public class SessionController {
     }
 
     // Getters
+    public ArrayList<Flashcard> loadWrongAnswers() throws IOException {
+        return fc.loadWrongAnswers();
+    }
     public Flashcard getCurrentCard(){return session.getCurrentCard();}
     public String getSelectedDeck() {
         return session.getSelectedDeck();

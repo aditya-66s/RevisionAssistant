@@ -5,15 +5,19 @@ import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextAreaBundle;
 import RecordClasses.TextBundle;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -120,6 +124,7 @@ public class UIComponents {
                 characterCounter.setStyle("-fx-text-fill: green;");
             }
         });
+
         return new TextAreaBundle(textArea, characterCounter, charLimit, lowerLimit);
     }
 

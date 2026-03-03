@@ -21,12 +21,14 @@ public class FlashcardController extends Controller {
     // Hold then name of the flashcard deck file
     private String flashcardDeckName;
     private final String email;
+    private final Path wrongAnswersPath;
 
     // Constructor to set the userFolderPath
     public FlashcardController(String email) {
         this.email = email;
         // Sets the path to the user folder
         this.userFolderPath = Paths.get(System.getProperty("user.dir"),"userFolders", email).toString();
+        this.wrongAnswersPath = Paths.get(userFolderPath, "wrongAnswers.csv");
     }
 
     public String getFlashcardDeckName() {
@@ -96,7 +98,7 @@ public class FlashcardController extends Controller {
                         + c.getQuestion().replace("\"", "\"\"") // Get rid of any speech marks within by adding another
                         .replace("\n", "\\n") // Replace new lines with \n so readline does not break mid-card
                         + "\",\"" // Closing speech marks with comma
-                        + c.getAnswer().replace("\"", "\"\"").replace("\n", "\\n") + "\n");
+                        + c.getAnswer().replace("\"", "\"\"").replace("\n", "\\n"));
                 bw.newLine();
             }
         }
@@ -111,7 +113,7 @@ public class FlashcardController extends Controller {
         String path = getFCDeckPath();
         if (path == null) return cards;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            readData(br, cards);
+            readData(br, cards, false);
         }catch (IOException e){
             // if not available, corrupt
             quarantineCorruptedCSV(e, Path.of(getFCDeckPath()));
@@ -119,12 +121,12 @@ public class FlashcardController extends Controller {
         return cards;
     }
     // Function to read in flashcards from a .csv into an array list
-    public ArrayList<Flashcard> loadFCDeckFromPath(String path) throws IOException {
+    public ArrayList<Flashcard> loadFCDeckFromPath(String path, boolean isWrongAnswers) throws IOException {
         ArrayList<Flashcard> cards = new ArrayList<>();
         // Set deck to get from parameter
         if (path == null) return cards;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            readData(br, cards);
+            readData(br, cards, isWrongAnswers);
         }catch (IOException e){
             // if not available, corrupt
             quarantineCorruptedCSV(e, Path.of(getFCDeckPath()));
@@ -132,7 +134,7 @@ public class FlashcardController extends Controller {
         return cards;
     }
     // Re-usable method convert csv to flashcard object list
-    private void readData(BufferedReader br, ArrayList<Flashcard> cards) throws IOException {
+    private void readData(BufferedReader br, ArrayList<Flashcard> cards, boolean isWrongAnswers) throws IOException {
         String line;
         while ((line = br.readLine()) != null) {
             // Split at ,
@@ -146,7 +148,7 @@ public class FlashcardController extends Controller {
             }
         }
         // Error indication to user, if file can't be read
-        if(cards.isEmpty()) CustomAlert.error(javafx.stage.Window.getWindows().getFirst(),
+        if(cards.isEmpty() && !isWrongAnswers) CustomAlert.error(javafx.stage.Window.getWindows().getFirst(),
                 "Problems reading file, might not be of correct format");
     }
     // Return array list of all decks linked to an account
@@ -325,7 +327,7 @@ public class FlashcardController extends Controller {
         // If user doesn't choose a file, don't do anything
         if(file == null) return false;
         // Check size limits of flashcard deck
-        ArrayList<Flashcard> cardsList = loadFCDeckFromPath(file.getAbsolutePath());
+        ArrayList<Flashcard> cardsList = loadFCDeckFromPath(file.getAbsolutePath(), false);
         if(cardsList.isEmpty() || cardsList.size() > 60){
             CustomAlert.error(owner, "A deck needs a minimum of 1 card and can have a maximum of 60 cards");
             return false;
@@ -341,7 +343,7 @@ public class FlashcardController extends Controller {
             // Set the file name
             setFlashcardDeckName(importDeck);
             // Use previously initiated array list
-            readData(br, cardsList);
+            readData(br, cardsList, false);
             // Use default save method
             saveFlashcardDeck(cardsList, true);
         }
@@ -431,5 +433,31 @@ public class FlashcardController extends Controller {
         }
         bw.write("</table></body></html>");
     }
+
+    // Procedure to save user's wrong answers to WrongAnswers.csv for the WrongAnswers mode
+    public void saveWrongAnswers(Flashcard card) throws IOException {
+        ArrayList<Flashcard> cards = loadWrongAnswers();
+        boolean exists = cards.stream().anyMatch(
+                c -> c.getQuestion().equals(card.getQuestion()) && c.getAnswer().equals(card.getAnswer())
+        );
+        if(exists) return;
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(wrongAnswersPath.toFile(), true))){
+            // Add speech marks, replace speech marks inside
+            bw.write("\"" // Opening speech marks
+                    + card.getQuestion().replace("\"", "\"\"") // Get rid of any speech marks within by adding another
+                    .replace("\n", "\\n") // Replace new lines with \n so readline does not break mid-card
+                    + "\",\"" // Closing speech marks with comma
+                    + card.getAnswer().replace("\"", "\"\"").replace("\n", "\\n"));
+            bw.newLine();
+        }
+
+    }
+
+    // load wrong answers into an array list
+    public ArrayList<Flashcard> loadWrongAnswers() throws IOException {
+        ArrayList<Flashcard> cards = loadFCDeckFromPath(wrongAnswersPath.toFile().getCanonicalPath(), true);
+        return cards;
+    }
+
 
 }

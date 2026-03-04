@@ -10,6 +10,7 @@ import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
 import javafx.animation.*;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -20,14 +21,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Window;
 import javafx.util.Duration;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class StudyModesScreen extends SystemScreens{
@@ -45,6 +54,7 @@ public class StudyModesScreen extends SystemScreens{
     private Text cardBody;
     private Rectangle cardRect;
     private boolean hasFlipped = false;
+    private boolean hasSessionStarted = false;
 
     private Timeline timer;
 
@@ -145,6 +155,7 @@ public class StudyModesScreen extends SystemScreens{
         tick.setOnMouseClicked(_-> {
             try {
                 handleAnswer(true);
+                playSFX("correct");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -154,6 +165,7 @@ public class StudyModesScreen extends SystemScreens{
         cross.setOnMouseClicked(_-> {
             try {
                 handleAnswer(false);
+                playSFX("incorrect");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -173,7 +185,7 @@ public class StudyModesScreen extends SystemScreens{
         mode.getStyleClass().add("infoText");
         mode.setLayoutX(125); mode.setLayoutY(230);
 
-        nav.switchContent(contentLayer, timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
+        nav.switchContent(contentLayer, timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode, backButton(contentLayer));
         startTimer();
     }
 
@@ -258,8 +270,10 @@ public class StudyModesScreen extends SystemScreens{
     private void handleAnswer(boolean correct) throws IOException {
         if(!hasFlipped){
             CustomAlert.error(correctText.getScene().getWindow(), "Check the answer first");
+            playSFX("incorrect");
             return;
         }
+        hasSessionStarted = true;
         boolean sessionComplete = sessionC.recordAnswer(correct);
         correctText.setText("✓      " + sessionC.getCorrectCount());
         incorrectText.setText("✗      " + sessionC.getIncorrectCount());
@@ -267,6 +281,7 @@ public class StudyModesScreen extends SystemScreens{
         if(sessionComplete){
             stopTimer();
             ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc).create(), ac.getCurrentUser().getEmail());
+            playSFX("sessionComplete");
             return;
         }
         cardBody.setText(sessionC.getCurrentCard().getQuestion());
@@ -296,5 +311,52 @@ public class StudyModesScreen extends SystemScreens{
         Group contentLayer = (Group) ((Pane) scene.getRoot()).getChildren().get(2);
         buildSessionContent(contentLayer);
         return scene;
+    }
+
+    private ImageView backButton(Group contentLayer){
+        ImageView back = ui.createBRImageView("back");
+        back.setCursor(Cursor.HAND);
+        back.setOnMouseClicked(_->{
+            boolean endSession = CustomAlert.confirm(back.getScene().getWindow(),
+                    "Confirmation", "Are you sure you want to end the session?");
+            if(!hasSessionStarted && endSession) {
+                nav.goBack(contentLayer);
+            }else{
+                if (endSession) {
+                    stopTimer();
+                    try {
+                        ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc).create(), ac.getCurrentUser().getEmail());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        return back;
+    }
+
+    // procedure which will play the sound fx when requested
+    private void playSFX(String sound) {
+        try{
+            System.out.println("sc is: " + sc);
+            System.out.println("sc.getSFXVolume() is: " + sc.getSFXVolume());
+            // Create a temp file on the system to store the sound
+            // JavaFX media requires a URI
+            InputStream is = getClass().getResourceAsStream("/sounds/" + sound + ".mp3");
+            File tempSoundFile = File.createTempFile("sound", ".mp3");
+            // Ensure it is deleted on exit
+            tempSoundFile.deleteOnExit();
+            // Copy sound data from sound file to file
+            Files.copy(Objects.requireNonNull(is), tempSoundFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            Media testSound = new Media(tempSoundFile.toURI().toString());
+            MediaPlayer player = new MediaPlayer(testSound);
+            System.out.println(sc.getSFXVolume());
+            player.setVolume(sc.getSFXVolume());
+//            player.setVolume(1.0);
+            player.play();
+        } catch (IOException e){
+            System.out.println("play fx error: " + e.getMessage());
+        }
     }
 }

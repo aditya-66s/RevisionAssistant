@@ -18,6 +18,8 @@ import java.util.Base64;
 import java.util.Objects;
 
 public class  AuthenticationController extends Controller {
+    // Create a SettingsController object
+    private final SettingsController sc = new SettingsController();
     // Stores most recently generated salt
     private byte[] salt;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
@@ -241,5 +243,9 @@ public class  AuthenticationController extends Controller {
     }
     private void setSettingsControllertoSM(SettingsController sc){
         ScreenManager.setSC(sc);
+    }
+
+    public SettingsController getSettingsController(){
+        return sc;
     }
 }

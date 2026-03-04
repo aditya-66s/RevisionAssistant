@@ -126,4 +126,14 @@ public class SettingsController extends Controller {
         newSettings.setMuted(oldSettings.isMuted());
         newSettings.setTTSEnabled(oldSettings.isTTSEnabled());
     }
+    // Getters
+    public double getSFXVolume() throws IOException {
+        if(getCurrentSettings() == null){
+            setCurrentSettings(loadSettings(getCurrentUser().getEmail()));
+        }
+        return getCurrentSettings().getSFXVolume();
+    }
+    public double getTTSVolume() throws IOException {
+        return getCurrentSettings().getTTSVolume();
+    }
 }

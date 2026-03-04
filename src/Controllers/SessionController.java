@@ -83,6 +83,10 @@ public class SessionController {
     public long getElapsedTime() {
         return session.getElapsedTime();
     }
+    public ArrayList<Flashcard> getCurrentQueue() {
+        return session.getCurrentQueue();
+    }
+
     public ArrayList<Flashcard> getLastCards(){
         return this.lastCards;
     }

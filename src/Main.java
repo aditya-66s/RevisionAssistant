@@ -16,7 +16,7 @@ public class Main extends Application {
     public Font Xirod = Font.loadFont(getClass().getResourceAsStream("/fonts/Xirod.otf"), 30);
     public Font Vipnagorgialla = Font.loadFont(getClass().getResourceAsStream("/fonts/Vipnagorgialla.otf"), 30);
     private final AuthenticationController universalAuth = new AuthenticationController();
-    private final SettingsController universalSettings = new SettingsController();
+    private final SettingsController universalSettings = universalAuth.getSettingsController();
     public static void main(String[] args){
 //        conversion();
         launch(args);
@@ -39,9 +39,9 @@ public class Main extends Application {
     }
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Runtime.getRuntime().exec(new String[]{"powershell", "-Command",
-                "Add-Type -AssemblyName System.Speech; " +
-                        "(New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('DOG DOG DOG')"});
+//        Runtime.getRuntime().exec(new String[]{"powershell", "-Command",
+//                "Add-Type -AssemblyName System.Speech; " +
+//                        "(New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('DOG DOG DOG')"});
         // Set stage reference for scene management
         ScreenManager.setStage(primaryStage);
         // Creates and configures the splash screen, linking the stylesheet to it.

@@ -426,9 +426,13 @@ public class SettingsScreen extends SystemScreens{
     // procedure which will play the test sound when volume is altered
     private void playTestSound(double volume) {
         try {
+            // Create a temp file on the system to store the sound
+            // JavaFX media requires a URI
             InputStream is = getClass().getResourceAsStream("/sounds/testSound.wav");
             File tempFile = File.createTempFile("testSound", ".wav");
+            // Ensure it is deleted on exit
             tempFile.deleteOnExit();
+            // Copy sound data from sound file to file
             Files.copy(Objects.requireNonNull(is), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             Media testSound = new Media(tempFile.toURI().toString());

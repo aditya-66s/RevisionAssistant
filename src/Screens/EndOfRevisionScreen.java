@@ -35,7 +35,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         root.getStyleClass().add("screens");
         Scene scene = new Scene(root, 1920, 1057);
         Group background = createBackground("End of Revision");
-        getTitle().setLayoutX(420);
+        getTitle().setLayoutX(300);
 
         Group contentLayer = new Group();
 

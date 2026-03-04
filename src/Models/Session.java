@@ -60,6 +60,9 @@ public class Session {
     public LocalDateTime getDate() {
         return date;
     }
+    public ArrayList<Flashcard> getCurrentQueue() {
+        return currentQueue;
+    }
     public Flashcard getCurrentCard(){
         return currentQueue.getFirst();
     }

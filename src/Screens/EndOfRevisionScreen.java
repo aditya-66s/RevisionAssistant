@@ -18,18 +18,19 @@ import java.io.IOException;
 
 
 public class EndOfRevisionScreen extends SystemScreens{
+    // Controller
     private final AuthenticationController ac;
     private final SettingsController sc;
     private final SessionController session;
     private final FlashcardController fc;
-
+    // Constructor
     public EndOfRevisionScreen(AuthenticationController ac, SettingsController sc, SessionController session, FlashcardController fc) {
         this.ac = ac;
         this.sc = sc;
         this.session = session;
         this.fc = fc;
     }
-
+    // Create to be displayed
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
@@ -38,7 +39,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         getTitle().setLayoutX(300);
 
         Group contentLayer = new Group();
-
+        // timer text
         Rectangle timeRect = new Rectangle(738, 143);
         Text timeInfoText = new Text("Time:");
         timeInfoText.getStyleClass().add("buttonText");
@@ -50,7 +51,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         ui.setPosition(timeText, 1107, 360);
         Rectangle timeHolder = new Rectangle(1063, 397, 583, 8);
 
-
+        // Xp text
         Rectangle xpRect = new Rectangle(738, 127);
         Text xpInfoText = new Text("XP:");
         xpInfoText.getStyleClass().add("buttonText");
@@ -62,10 +63,10 @@ public class EndOfRevisionScreen extends SystemScreens{
         ui.setPosition(xpText, 1204, 538);
         Rectangle xpHolder = new Rectangle(1063, 565, 583, 8);
 
-
+        // button to take you to graphs
         RectangleButtonBundle graphs = ui.buildRectangularButtonBundle(1519, 127, "Graphs", "buttonText", 184, 599);
         ImageView graphIcon = createIcon(184, 594, "/images/EndOfRevisionScreen/graphs.png");
-
+        // Button to go back to main menu
         RectangleButtonBundle backToMainMenu = ui.buildRectangularButtonBundle(1519, 127, "Back to Revision System", "buttonText", 184, 764);
         ImageView backIcon = createIcon(184, 759, "/images/Constant/back.png");
         backToMainMenu.button().setOnMouseClicked(_ -> {
@@ -76,17 +77,20 @@ public class EndOfRevisionScreen extends SystemScreens{
             }
             ScreenManager.clearHistory();
         });
-
+        // Retry button to continue the session
         ImageView retry = new ImageView("/images/EndOfRevisionScreen/retry.png");
         retry.getStyleClass().add("constantImages");
         retry.setLayoutY(957);
         retry.setCursor(Cursor.HAND);
         retry.setOnMouseClicked(_ -> {
             session.retrySession();
-            StudyModesScreen retryModes = new StudyModesScreen(ac, sc, fc, session);
-            ScreenManager.switchScene(retryModes.continueSession(
-                    session.getLastCards(), session.getSelectedDeck(), session.getStudyMode()
-            ));
+            StudyModesScreen retryModes = null;
+            try {
+                retryModes = new StudyModesScreen(ac, sc, fc, session);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            ScreenManager.switchScene(retryModes.continueSession());
         });
 
         Group icons = new Group(timeIcon, xpIcon, graphIcon, backIcon, retry);

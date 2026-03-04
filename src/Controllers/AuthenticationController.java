@@ -45,7 +45,7 @@ public class  AuthenticationController extends Controller {
             // Settings will be loaded and the SettingsController set into the ScreenManager class
             setCurrentUser(user);
             sc.createDefaultSettings(email);
-            setCurrentSettings(sc.loadSettings(email));
+            sc.setCurrentSettings(sc.loadSettings(email));
             setSettingsControllertoSM(sc);
             return true;
         }else{
@@ -70,7 +70,7 @@ public class  AuthenticationController extends Controller {
                 // Settings will be loaded and the SettingsController set into the ScreenManager class
                 setCurrentUser(temp);
                 Settings userSettings = sc.loadSettings(email);
-                setCurrentSettings(userSettings);
+                sc.setCurrentSettings(userSettings);
                 setSettingsControllertoSM(sc);
                 return true;
             }
@@ -218,7 +218,6 @@ public class  AuthenticationController extends Controller {
         // User cannot find a way to go back into Main Menu after logging out
         ScreenManager.clearHistory();
         // Switch to Log in/Registration Screen
-        SettingsController sc = new SettingsController();
         setSettingsControllertoSM(sc);
         ScreenManager.switchScene(new AuthScreen(new AuthenticationController(), sc).create());
     }

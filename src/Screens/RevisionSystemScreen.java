@@ -19,7 +19,7 @@ public class RevisionSystemScreen extends SystemScreens{
     private final SettingsController sc;
     private final FlashcardController fc;
 
-    public RevisionSystemScreen(AuthenticationController ac, SettingsController sC) {
+    public RevisionSystemScreen(AuthenticationController ac, SettingsController sC){
         this.ac = ac;
         this.sc = sC;
         this.fc = new FlashcardController(ac.getCurrentUser().getEmail());

@@ -46,7 +46,7 @@ public class FlashcardManagementScreen extends SystemScreens{
 
     /* Constructor class for FMScreen, controllers as parameters to maintain
     consistency across screens. */
-    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc) {
+    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc){
         this.ac = ac;
         this.sc = sC;
         this.fc = fc;

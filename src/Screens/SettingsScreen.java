@@ -40,7 +40,7 @@ public class SettingsScreen extends SystemScreens{
     private final SettingsController sC;
     private final Settings currentSettings;
     private Settings draftSettings;
-    public SettingsScreen(AuthenticationController ac, SettingsController sC) {
+    public SettingsScreen(AuthenticationController ac, SettingsController sC){
         this.ac = ac;
         this.sC = sC;
         // Load settings if not already loaded

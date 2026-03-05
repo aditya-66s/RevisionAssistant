@@ -67,7 +67,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         RectangleButtonBundle graphs = ui.buildRectangularButtonBundle(1519, 127, "Graphs", "buttonText", 184, 599);
         ImageView graphIcon = createIcon(184, 594, "/images/EndOfRevisionScreen/graphs.png");
         // Button to go back to main menu
-        RectangleButtonBundle backToMainMenu = ui.buildRectangularButtonBundle(1519, 127, "Back to Revision System", "buttonText", 184, 764);
+        RectangleButtonBundle backToMainMenu = ui.buildRectangularButtonBundle(1519, 127, "Back to Main Menu", "buttonText", 184, 764);
         ImageView backIcon = createIcon(184, 759, "/images/Constant/back.png");
         backToMainMenu.button().setOnMouseClicked(_ -> {
             try {

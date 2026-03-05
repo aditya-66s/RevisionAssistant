@@ -437,6 +437,7 @@ public class FlashcardController extends Controller {
     // Procedure to save user's wrong answers to WrongAnswers.csv for the WrongAnswers mode
     public void saveWrongAnswers(Flashcard card) throws IOException {
         ArrayList<Flashcard> cards = loadWrongAnswers();
+        // Check if already exists
         boolean exists = cards.stream().anyMatch(
                 c -> c.getQuestion().equals(card.getQuestion()) && c.getAnswer().equals(card.getAnswer())
         );
@@ -450,7 +451,6 @@ public class FlashcardController extends Controller {
                     + card.getAnswer().replace("\"", "\"\"").replace("\n", "\\n"));
             bw.newLine();
         }
-
     }
 
     // load wrong answers into an array list

@@ -28,13 +28,18 @@ public class Session {
 
     // Returns true if session is complete
     public boolean recordAnswer(boolean correct){
+        // Remove flashcard from active queue
         Flashcard current = currentQueue.removeFirst();
+        // add it to correct list if correct
         if(correct) correctList.add(current);
         else{
+            // Add to incorrect list, and place at end of queue again
             incorrectList.add(current);
             currentQueue.add(current);
         }
+        // Set to question side for next flashcard
         showingAnswer = false;
+        // Return true if the session is complete
         return currentQueue.isEmpty();
     }
 
@@ -87,10 +92,13 @@ public class Session {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-
+    // Method to restart the session with same card
     public void reset(ArrayList<Flashcard> lastCards) {
+        // Clear the current cards
         currentQueue.clear();
+        // add the last cards
         currentQueue.addAll(lastCards);
+        // set to question side
         showingAnswer = false;
     }
 }

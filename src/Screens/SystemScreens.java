@@ -6,6 +6,7 @@ import Components.ScreenManager;
 import Components.UIComponents;
 import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
+import Controllers.TTSController;
 import Models.Flashcard;
 import RecordClasses.TextBundle;
 import javafx.scene.Group;

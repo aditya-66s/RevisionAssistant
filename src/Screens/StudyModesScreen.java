@@ -63,7 +63,7 @@ public class StudyModesScreen extends SystemScreens{
         this.sc = sC;
         this.fc = fc;
         this.sessionC = new SessionController(ac.getCurrentUser().getEmail(), fc);
-        this.tts = new TTSController(sc);
+        this.tts = new TTSController(sc.getTTSVolume());
     }
     // Constructor to continue a prior Study Session
     public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, SessionController sessionC) throws IOException {
@@ -71,7 +71,7 @@ public class StudyModesScreen extends SystemScreens{
         this.sc = sC;
         this.fc = fc;
         this.sessionC = sessionC;
-        this.tts = new TTSController(sc);
+        this.tts = new TTSController(sc.getTTSVolume());
     }
 
     // Create initial content where user can select study modes
@@ -199,7 +199,7 @@ public class StudyModesScreen extends SystemScreens{
         Text mode = new Text(sessionC.getStudyMode() + "  ·  "
                 + sessionC.getSelectedDeck());
         mode.getStyleClass().add("infoText");
-        mode.setLayoutX(125); mode.setLayoutY(230);
+        mode.setLayoutX(125); mode.setLayoutY(230); mode.setWrappingWidth(1350);
         Group newContent = new Group(timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
         // If TTS is enabled, add the ttsIcon
         if(sc.getCurrentSettings().isTTSEnabled()) newContent.getChildren().add(ttsIcon);
@@ -304,9 +304,9 @@ public class StudyModesScreen extends SystemScreens{
     private void handleAnswer(boolean correct) throws IOException {
         // if not flipped, then display error
         if(!hasFlipped){
-            CustomAlert.error(correctText.getScene().getWindow(), "Check the answer first");
             // Audial feedback
             playSFX("incorrect");
+            CustomAlert.error(correctText.getScene().getWindow(), "Check the answer first");
             return;
         }
         // If correct, play correct.mp3, else incorrect.mp3

@@ -18,7 +18,7 @@ public class MainMenuScreen extends SystemScreens {
     private final AuthenticationController ac;
     private final SettingsController sc;
 
-    public MainMenuScreen(AuthenticationController ac, SettingsController sC) {
+    public MainMenuScreen(AuthenticationController ac, SettingsController sC){
         this.ac = ac;
         this.sc = sC;
     }

@@ -24,7 +24,7 @@ public class EndOfRevisionScreen extends SystemScreens{
     private final SessionController session;
     private final FlashcardController fc;
     // Constructor
-    public EndOfRevisionScreen(AuthenticationController ac, SettingsController sc, SessionController session, FlashcardController fc) {
+    public EndOfRevisionScreen(AuthenticationController ac, SettingsController sc, SessionController session, FlashcardController fc){
         this.ac = ac;
         this.sc = sc;
         this.session = session;

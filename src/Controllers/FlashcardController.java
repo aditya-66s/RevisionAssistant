@@ -125,6 +125,7 @@ public class FlashcardController extends Controller {
         ArrayList<Flashcard> cards = new ArrayList<>();
         // Set deck to get from parameter
         if (path == null) return cards;
+        if(!new File(path).exists()) return cards;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             readData(br, cards, isWrongAnswers);
         }catch (IOException e){

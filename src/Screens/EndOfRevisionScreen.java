@@ -1,10 +1,8 @@
 package Screens;
 
 import Components.ScreenManager;
-import Controllers.AuthenticationController;
-import Controllers.FlashcardController;
-import Controllers.SessionController;
-import Controllers.SettingsController;
+import Controllers.*;
+import Models.UserStats;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -23,12 +21,17 @@ public class EndOfRevisionScreen extends SystemScreens{
     private final SettingsController sc;
     private final SessionController session;
     private final FlashcardController fc;
+    private final StatsController stats;
+    private final UserStats userStats;
     // Constructor
-    public EndOfRevisionScreen(AuthenticationController ac, SettingsController sc, SessionController session, FlashcardController fc){
+    public EndOfRevisionScreen(AuthenticationController ac, SettingsController sc, SessionController session,
+                               FlashcardController fc, StatsController stats,  UserStats userStats){
         this.ac = ac;
         this.sc = sc;
         this.session = session;
         this.fc = fc;
+        this.stats = stats;
+        this.userStats = userStats;
     }
     // Create to be displayed
     public Scene create(){
@@ -58,7 +61,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         StackPane xpPane = new StackPane(xpRect, xpInfoText);
         ImageView xpIcon = createIcon(184, 438, "/images/EndOfRevisionScreen/xp.png");
         ui.setPosition(xpPane, 184, 443);
-        Text xpText = new Text("XXXX");
+        Text xpText = new Text(String.valueOf(new XPController().calculateXP(session.getSession())));
         xpText.getStyleClass().add("summaryText");
         ui.setPosition(xpText, 1204, 538);
         Rectangle xpHolder = new Rectangle(1063, 565, 583, 8);
@@ -71,7 +74,7 @@ public class EndOfRevisionScreen extends SystemScreens{
         ImageView backIcon = createIcon(184, 759, "/images/Constant/back.png");
         backToMainMenu.button().setOnMouseClicked(_ -> {
             try {
-                ScreenManager.switchScene(new MainMenuScreen(ac, sc).create(), ac.getCurrentUser().getEmail());
+                ScreenManager.switchScene(new MainMenuScreen(ac, sc).create(), ac.getEmail());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -86,7 +89,7 @@ public class EndOfRevisionScreen extends SystemScreens{
             session.retrySession();
             StudyModesScreen retryModes = null;
             try {
-                retryModes = new StudyModesScreen(ac, sc, fc, session);
+                retryModes = new StudyModesScreen(ac, sc, fc, session, stats);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

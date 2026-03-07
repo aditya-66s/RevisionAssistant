@@ -13,6 +13,7 @@ public class Session {
     private boolean showingAnswer;
     private long elapsedTime;
     private LocalDateTime date;
+    private int consecutiveCorrect;
 
     // New session
     public Session(ArrayList<Flashcard> cards, String selectedDeck, String studyMode){
@@ -24,6 +25,7 @@ public class Session {
         this.elapsedTime = 0;
         this.showingAnswer = false;
         this.date = LocalDateTime.now();
+        consecutiveCorrect = 0;
     }
 
     // Returns true if session is complete
@@ -74,6 +76,9 @@ public class Session {
     public int getRemainingCount(){
         return currentQueue.size();
     }
+    public int getConsecutiveCorrect() {
+        return consecutiveCorrect;
+    }
     public double getAccuracy(){
         int total = correctList.size() + incorrectList.size();
         return (double) (correctList.size() * 100) / total;
@@ -88,7 +93,12 @@ public class Session {
 
     public void tick(){elapsedTime++;}
 
-
+    public void incrementConsecutiveCorrect(){
+        consecutiveCorrect++;
+    }
+    public void resetConsecutiveCorrect(){
+        consecutiveCorrect = 0;
+    }
     public void setDate(LocalDateTime date) {
         this.date = date;
     }

@@ -314,3 +314,29 @@ Slider .thumb {
     -fx-fill: black;
     -fx-padding: 7.21 14.17 7.21 14.17;
 }
+.XPBar{
+    -fx-fill: #444444;
+    -fx-arc-width: 20px;
+    -fx-arc-height: 20px;
+    /*-fx-stroke: black;*/
+    /*-fx-stroke-width: 3px;*/
+}
+.progressFill{
+    -fx-fill: #61df61;
+    -fx-arc-width: 20px;
+    -fx-arc-height: 20px;
+}
+.levelText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 40px;
+    -fx-fill: black;
+}
+.statText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 30px;
+}
+.descriptionText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 18px;
+    -fx-fill: #494949;
+}

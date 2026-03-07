@@ -4,6 +4,7 @@ import Components.CustomAlert;
 import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SettingsController;
+import Controllers.StatsController;
 import Models.Flashcard;
 import RecordClasses.RectangleButtonBundle;
 import RecordClasses.TextAreaBundle;
@@ -32,6 +33,7 @@ public class FlashcardManagementScreen extends SystemScreens{
     private final AuthenticationController ac;
     private final SettingsController sc;
     private final FlashcardController fc;
+    private final StatsController stats;
     // Global Scene for creating alert windows
     private Scene scene;
     // Observable lists storing all Flashcard objects being created or being edited
@@ -46,10 +48,11 @@ public class FlashcardManagementScreen extends SystemScreens{
 
     /* Constructor class for FMScreen, controllers as parameters to maintain
     consistency across screens. */
-    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc){
+    public FlashcardManagementScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, StatsController stats){
         this.ac = ac;
         this.sc = sC;
         this.fc = fc;
+        this.stats = stats;
     }
     // Method for creating the initial interface the user see when the screen is switched to the FMScreen
     public Scene create(){
@@ -428,7 +431,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         folderTreeView.setShowRoot(true);
 
         // Build existing tree copying directory structure
-        TreeItem<String> folderStructure = fc.getUserDirectoryStructure(ac.getCurrentUser().getEmail());
+        TreeItem<String> folderStructure = fc.getUserDirectoryStructure(ac.getEmail());
         folderTreeView.setRoot(folderStructure);
         folderTreeView.getRoot().setExpanded(true);
         return folderTreeView;

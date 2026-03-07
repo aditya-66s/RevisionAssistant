@@ -5,6 +5,7 @@ import Components.ScreenManager;
 import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SettingsController;
+import Controllers.StatsController;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -18,11 +19,13 @@ public class RevisionSystemScreen extends SystemScreens{
     private final AuthenticationController ac;
     private final SettingsController sc;
     private final FlashcardController fc;
+    private final StatsController stats;
 
-    public RevisionSystemScreen(AuthenticationController ac, SettingsController sC){
+    public RevisionSystemScreen(AuthenticationController ac, SettingsController sC, StatsController stats) {
         this.ac = ac;
         this.sc = sC;
-        this.fc = new FlashcardController(ac.getCurrentUser().getEmail());
+        this.fc = new FlashcardController(ac.getEmail());
+        this.stats = stats;
     }
 
     public Scene create(){
@@ -69,7 +72,7 @@ public class RevisionSystemScreen extends SystemScreens{
 
     // Procedure switching the scene the FMS
     private void fcManagementMouseClick() throws IOException {
-        ScreenManager.switchScene(new FlashcardManagementScreen(ac, sc, fc).create(), ac.getCurrentUser().getEmail());
+        ScreenManager.switchScene(new FlashcardManagementScreen(ac, sc, fc, stats).create(), ac.getEmail());
     }
 
     // Procedure creating the Import / Export Content
@@ -122,7 +125,7 @@ public class RevisionSystemScreen extends SystemScreens{
         nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons, hintView);
     }
     private void smMouseClick() throws IOException {
-        ScreenManager.switchScene(new StudyModesScreen(ac, sc, fc).create(), ac.getCurrentUser().getEmail());
+        ScreenManager.switchScene(new StudyModesScreen(ac, sc, fc, stats).create(), ac.getEmail());
     }
 
 }

@@ -205,23 +205,25 @@ public class EndOfRevisionScreen extends SystemScreens{
         NumberAxis yAxis = new NumberAxis(0, 100, 10);
         xAxis.setLabel("Session");
         yAxis.setLabel("Accuracy / %");
-
+        // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
         chart.getStyleClass().add("barChart1");
         chart.setTitle("Accuracy Comparison with Last 3 Sessions");
         chart.setPrefSize(1500, 600);
         chart.setLegendVisible(false);
-
+        // Create the series and populate it with data
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         ArrayList<SessionRecord> sessionHistory = stats.loadSessionRecords(ac.getEmail());
+        // Get last three sessions
         int size = sessionHistory.size();
         int start = Math.max(0, size - 3);
 
         for(int i = start; i < size; i++) {
+            // Add each accuracy to the chart
             series.getData().add(new XYChart.Data<>("Session - " + (size - i),
                     sessionHistory.get(i).getAccuracy()));
         }
-
+        // Add this session's accuracy
         series.getData().add(new XYChart.Data<>("This Session", session.getAccuracy()));
 
         chart.getData().add(series);

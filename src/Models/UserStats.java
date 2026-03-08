@@ -16,6 +16,7 @@ public class UserStats {
     private int totalRetries;
     private ArrayList<String> unlockedAchievements;
 
+    // Constructors for new users
     public UserStats(String email) {
         this.email = email;
         this.totalXP = 0;
@@ -30,6 +31,7 @@ public class UserStats {
         this.totalRetries = 0;
         this.unlockedAchievements = new ArrayList<>();
     }
+    // Constructor for existing users
     public UserStats(String email, int totalXP, int totalSessions, int totalCorrect,
                      int totalIncorrect, long totalStudyTime, int currentStreak,
                      int longestStreak, String lastStudyDate, int consecutiveCorrect,
@@ -99,8 +101,6 @@ public class UserStats {
         // How much xp user has got in their current level
         return totalXP-xp;
     }
-
-
 
 
     // Getters

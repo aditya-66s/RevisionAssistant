@@ -23,7 +23,7 @@ public class MainMenuScreen extends SystemScreens {
     private final SettingsController sc;
     private final StatsController stats;
 
-    public MainMenuScreen(AuthenticationController ac, SettingsController sC){
+    public MainMenuScreen(AuthenticationController ac, SettingsController sC) throws IOException {
         this.ac = ac;
         this.sc = sC;
         this.stats = new StatsController();
@@ -88,7 +88,7 @@ public class MainMenuScreen extends SystemScreens {
     private void revisionSystemMouseClick() throws IOException {
         ScreenManager.switchScene(new RevisionSystemScreen(ac, sc, stats).create(), ac.getEmail());
     }
-
+    // Procedure which builds the content for the User Management Page
     private void buildUMContent(Group contentLayer) {
         RectangleButtonBundle statistics = ui.buildRectangularButtonBundle(rectW, rectH, "Statistics", "buttonText", 293, 315);
         ImageView sIcon = createIcon(293, 310, "/images/MainMenuScreen/stats.png");
@@ -143,13 +143,20 @@ public class MainMenuScreen extends SystemScreens {
     // Creates a grid of stats
     private Group createStatsGrid(UserStats uStats) {
         Group statsGrid = new Group();
+        // Preventing divide by 0 error
+        int correct = uStats.getTotalCorrect();
+        int incorrect = uStats.getTotalIncorrect();
+        double accuracy;
+        if(correct + incorrect == 0){accuracy = 0;}
+        else{accuracy = (double) correct / (correct + incorrect);}
         // 2D array used to store each stat as a pair, avoiding repeating code
         String[][] grid = {
                 {"Total XP", String.valueOf(uStats.getTotalXP())},
+                {"Accuracy", (Math.round(100*accuracy) + "%")},
                 {"Sessions Completed", String.valueOf(uStats.getTotalSessions())},
-                {"Total Correct", String.valueOf(uStats.getTotalCorrect())},
-                {"Total Incorrect", String.valueOf(uStats.getTotalIncorrect())},
                 {"Total Study Time", formatTime(uStats.getTotalStudyTime())},
+                {"Total Correct", String.valueOf(correct)},
+                {"Total Incorrect", String.valueOf(incorrect)},
                 {"Current Streak", uStats.getCurrentStreak() + " days"},
                 {"Longest Streak", uStats.getLongestStreak() + " days"},
                 {"Max Streak", uStats.getConsecutiveCorrect() + " cards"},
@@ -157,7 +164,7 @@ public class MainMenuScreen extends SystemScreens {
                 {"Achievements", uStats.getUnlockedAchievements().size() + " / 14"},
                 {"Last Study Date", uStats.getLastStudyDate()},
         };
-        int leftX = 250;
+        int leftX = 200;
         int rightX = 1000;
         int startY = 310;
         int rowH = 70;
@@ -165,12 +172,10 @@ public class MainMenuScreen extends SystemScreens {
             // Even rows go on the left, odd goes to the right
             int x = (i % 2 == 0) ? leftX : rightX;
             int y = startY + (i/2) * rowH;
-
             // Create the stat text
             Text statNameText = new Text(grid[i][0] + ":");
             statNameText.getStyleClass().add("statText");
             ui.setPosition(statNameText, x, y);
-
             // Create the actual statistic to accompany this text
             Text statistic = new Text(grid[i][1]);
             statistic.getStyleClass().add("statText");
@@ -200,12 +205,11 @@ public class MainMenuScreen extends SystemScreens {
                 {"Study Streak", "Study for 3 days in a row"},
                 {"Dedicated Learner", "Study for 7 days in a row"},
                 {"Revision Veteran", "Study for a total of 30 days"},
-                {"Keep Trying", "Get 5 answers correct in a row"},
-                {"Never Give Up", "Retry a session"},
+                {"Keep Trying", "Retry a session"},
+                {"Never Give Up", "Retry 10 sessions"},
                 {"Ultimate Scholar", "Unlock all achievements"},
         };
         Group grid = new Group();
-
         int leftX = 450;
         int rightX = 1000;
         int startY = 250;
@@ -226,14 +230,13 @@ public class MainMenuScreen extends SystemScreens {
             Text descriptionText = new Text(description);
             descriptionText.getStyleClass().add("descriptionText");
             ui.setPosition(descriptionText, x + 40, y + 30);
-
+            // Set the colour to locked achievements differently
             if(!unlocked){
                 achievementText.setStyle("-fx-fill: #888888;");
                 descriptionText.setStyle("-fx-fill: #888888;");
             }
             grid.getChildren().addAll(achievementText, descriptionText);
         }
-
         nav.switchContent(contentLayer, grid, getBackView(contentLayer));
     }
 }

@@ -1,9 +1,11 @@
 package Controllers;
 
 import Models.Session;
+import Models.SessionRecord;
 import Models.UserStats;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -86,7 +88,14 @@ public class StatsController extends Controller{
         // If not found
         return new UserStats(email);
     }
-
+    // is user stats saved?
+    public boolean isUserStatsSaved(String email) throws IOException {
+        ArrayList<UserStats> statsList = convertCSVtoArrayList();
+        for(UserStats s : statsList) {
+            if(s.getEmail().equals(email)) return true;
+        }
+        return false;
+    }
     // Save updated stats for a user
     public void saveUserStats(UserStats updated) throws IOException {
         ArrayList<UserStats> statsList = convertCSVtoArrayList();
@@ -105,7 +114,6 @@ public class StatsController extends Controller{
     }
     // Create default stats for user on registration
     public void createDefaultUserStats(String email) throws IOException {
-        ensureCSVExists(csvPath);
         saveUserStats(new UserStats(email));
     }
     // Update all stats after a session and returns the updated stats
@@ -140,9 +148,7 @@ public class StatsController extends Controller{
         String last = stats.getLastStudyDate();
         if(last == null || last.isBlank()){
             stats.setCurrentStreak(1);
-        }else if (last.equals(today)){
-            // no change
-        }else{
+        }else if (!last.equals(today)) {
             // Consecutive days
             LocalDate lastDate = LocalDate.parse(last, dtf);
             if(lastDate.plusDays(1).equals(LocalDate.now())){
@@ -151,12 +157,73 @@ public class StatsController extends Controller{
                 // New streak
                 stats.setCurrentStreak(1);
             }
+        } else {
+            // no change
         }
         if(stats.getCurrentStreak() > stats.getLongestStreak()){
             stats.setLongestStreak(stats.getCurrentStreak());
         }
         // Update the day
         stats.setLastStudyDate(today);
+    }
+
+    // Function to return the path where individual Session data is stored for user analytics
+    private Path sessionPath(String email){
+        return Paths.get(System.getProperty("user.dir"), "files", "sessions", email + ".csv");
+    }
+
+    // Saving a session to the user's session history CSV
+    public void saveSessionRecord(String email, SessionRecord sr) throws IOException {
+        Path sessionPath = sessionPath(email);
+        // Create directory and folder if not there already
+        Files.createDirectories(sessionPath.getParent());
+        if(!Files.exists(sessionPath)) Files.createFile(sessionPath);
+        // Join the answer history as Ts and Fs to represent true and false
+        StringBuilder answers = new StringBuilder();
+        for(boolean b : sr.getAnswerHistory()){
+            answers.append(b ? "T" : "F");
+        }
+        // Write it into the csv
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(sessionPath.toFile(), true))) {
+            bw.write(sr.getDate() + "," +
+                    sr.getAccuracy() + "," +
+                    sr.getStudySeconds() + "," +
+                    sr.getCorrect() + "," +
+                    sr.getIncorrect() + "," +
+                    sr.getDeckName() + "," +
+                    answers
+            );
+            bw.newLine();
+        }
+    }
+
+    // Load all session records for a user from their session csv
+    public ArrayList<SessionRecord> loadSessionRecords(String email) throws IOException {
+        Path sessionPath = sessionPath(email);
+        ArrayList<SessionRecord> historicalSessions = new ArrayList<>();
+        if(!Files.exists(sessionPath)) return historicalSessions; // no sessions yet
+        // Read data line by line
+        try(BufferedReader br = new BufferedReader(new FileReader(sessionPath.toFile()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                // Not enough data in a row
+                if(data.length < 7) throw new IllegalArgumentException("Corrupted Row: " + line);
+                ArrayList<Boolean> answerHistory = new ArrayList<>();
+                // Reconvert Ts and Fs into trues and falses
+                for(char c : data[6].toCharArray()){
+                    answerHistory.add(c == 'T');
+                }
+                // Add new SessionRecord object to ArrayList
+                historicalSessions.add(new SessionRecord(data[0], Double.parseDouble(data[1]),
+                        Long.parseLong(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]),
+                        data[5], answerHistory));
+            }
+        } catch (Exception e) {
+            quarantineCorruptedCSV(e, sessionPath);
+            return new ArrayList<>();
+        }
+        return historicalSessions;
     }
 
 }

@@ -343,14 +343,15 @@ public class StudyModesScreen extends SystemScreens{
         hasFlipped = false;
     }
     // Update timer
-    private void startTimer(){
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), _->{
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
             sessionC.tick();
             timerLabel.setText(sessionC.getFormattedTime());
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
     }
+    // Procedure which will get updated UserStats object and switch the scene to EORScreen
     private void changeToSummary() throws IOException {
         int xpGained = new XPController().calculateXP(sessionC.getSession());
         UserStats updated = stats.updateStats(ac.getEmail(), sessionC.getSession(),

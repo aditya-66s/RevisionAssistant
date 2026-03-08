@@ -47,6 +47,8 @@ public class  AuthenticationController extends Controller {
             sc.createDefaultSettings(email);
             sc.setCurrentSettings(sc.loadSettings(email));
             setSettingsControllertoSM(sc);
+            // Write stats into stats.csv for new user
+            new StatsController().createDefaultUserStats(email);
             return true;
         }else{
             // Email already in CSV
@@ -72,6 +74,8 @@ public class  AuthenticationController extends Controller {
                 Settings userSettings = sc.loadSettings(email);
                 sc.setCurrentSettings(userSettings);
                 setSettingsControllertoSM(sc);
+                // Write default stats if not saved already, via a temporary object
+                if(!new StatsController().isUserStatsSaved(email)) new StatsController().createDefaultUserStats(email);
                 return true;
             }
         }

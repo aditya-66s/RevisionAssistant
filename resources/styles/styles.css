@@ -340,3 +340,23 @@ Slider .thumb {
     -fx-font-size: 18px;
     -fx-fill: #494949;
 }
+.barChart1{
+    -fx-background-color: transparent;
+}
+.barChart1 .chart-plot-background{
+    -fx-background-color: transparent;
+}
+.barChart1 .chart-title .text{
+    -fx-fill: black;
+    -fx-font-size: 24px;
+}
+.barChart1 .axis-label .text{
+    -fx-fill: black;
+    -fx-font-size: 18px;
+}
+.barChart1 .chart-vertical-grid-lines { -fx-stroke: transparent; }
+.barChart1 .chart-horizontal-grid-lines { -fx-stroke: #dddddd; }
+.block{
+    -fx-arc-width: 6px;
+    -fx-arc-height: 6px;
+}

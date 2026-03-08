@@ -51,7 +51,7 @@ public class SessionController {
     }
     // Function to record answer
     public boolean recordAnswer(boolean correct) throws IOException {
-        // add to wrongAnswers.csv to
+        // add to wrongAnswers.csv
         if(!correct) {
             fc.saveWrongAnswers(session.getCurrentCard());
             session.resetConsecutiveCorrect();

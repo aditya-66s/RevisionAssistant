@@ -18,8 +18,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RevisionSystemScreen extends SystemScreens{
     private final AuthenticationController ac;
@@ -99,6 +103,8 @@ public class RevisionSystemScreen extends SystemScreens{
 
         accuracy.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildAccuracyChart(historicalSessions)));
         studyTime.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildStudyTime(historicalSessions)));
+        weakDecks.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildWeakDecksChart(historicalSessions)));
+        sessions.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildSessionsPerWeekChart(historicalSessions)));
         nav.switchContent(contentLayer, buttons, chartGroup, getBackView(contentLayer));
     }
 
@@ -189,7 +195,70 @@ public class RevisionSystemScreen extends SystemScreens{
             deckAccuracies.computeIfAbsent(s.getDeckName(), _->
                     new ArrayList<>()).add(s.getAccuracy());
         }
+
+        // Create the series to populate the chart
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        // convert each map entry from deck name and list of accuracies to deck name and average accuracies
+        deckAccuracies.entrySet().stream().map(
+                // Calculate the avg of the accuracy values in the list
+                e ->{
+                    double average = e.getValue().stream()
+                            // convert to primitive doubles instead of double objects
+                            // Find average
+                            .mapToDouble(Double::doubleValue).average().orElse(0);
+                    return Map.entry(e.getKey(), average);
+                    // Sort in ascending order
+                }).sorted(Map.Entry.comparingByValue())
+                // Add each entry to the series
+                .forEach(e -> series.getData().add(new XYChart.Data<>(e.getKey(), Math.round(e.getValue() * 10.0) / 10.0)));
+        chart.getData().add(series);
         return chart;
+    }
+    // Sessions per Week -> bar chart
+    private BarChart<String, Number> buildSessionsPerWeekChart(ArrayList<SessionRecord> historicalSessions){
+        // Create the axis
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Week");
+        yAxis.setLabel("Sessions");
+        // Create the chart
+        BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
+        chart.getStyleClass().add("barChart1");
+        chart.setLegendVisible(false);
+        chart.setTitle("Sessions per Week");
+        chart.setMaxSize(1500, 600);
+        chart.setPrefSize(1500, 600);
+        // Populate the chart with a hash map
+        HashMap<String, Integer> weeklySessions = new HashMap<>();
+        for(SessionRecord s : historicalSessions){
+            // Split date into day, month and year
+            String[] date = s.getDate().split("/");
+            // Ensure date is valid
+            if(date.length == 3){
+                // Convert the date into a week number and label it
+                String week = "W" + getWeek(date[0], date[1], date[2]);
+                // Add session to correct week, if week exists increment, if not create it with value 1
+                weeklySessions.merge(week, 1, Integer::sum);
+            }
+        }
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        // Convert to stream and sort it by week
+        weeklySessions.entrySet().stream().sorted((a,b) -> {
+                        int weekA = Integer.parseInt(a.getKey().substring(1)); // Remove the W and compare
+                        int weekB = Integer.parseInt(b.getKey().substring(1));
+                        return Integer.compare(weekA, weekB);
+                        })
+                // For each week, add the session count to chart
+                .forEach(e -> series.getData().add(new XYChart.Data<>(e.getKey(), e.getValue())));
+        chart.getData().add(series);
+        return chart;
+    }
+    // Function to determine the week number from a date
+    private int getWeek(String day, String month, String year){
+        // Convert into a date object
+        LocalDate date = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
+        // Return the week number of the year (ISO, weeks start on monday)
+        return date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
     // Procedure switching the scene the FMS
     private void fcManagementMouseClick() throws IOException {
@@ -245,6 +314,7 @@ public class RevisionSystemScreen extends SystemScreens{
         Group importExportButtons = new Group(importCSV.button(), exportCSV.button(), exportHTML.button(), importIcon, exportIcon, htmlIcon);
         nav.switchContent(contentLayer, getBackView(contentLayer), importExportButtons, hintView);
     }
+    // Switch scene when study modes is clicked
     private void smMouseClick() throws IOException {
         ScreenManager.switchScene(new StudyModesScreen(ac, sc, fc, stats).create(), ac.getEmail());
     }

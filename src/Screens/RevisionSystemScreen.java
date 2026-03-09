@@ -6,14 +6,20 @@ import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SettingsController;
 import Controllers.StatsController;
+import Jampack.H;
+import Models.SessionRecord;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RevisionSystemScreen extends SystemScreens{
     private final AuthenticationController ac;
@@ -63,6 +69,13 @@ public class RevisionSystemScreen extends SystemScreens{
         impOrExp.button().setOnMouseClicked(_ -> buildImportExport(contentLayer));
         RectangleButtonBundle analytics = ui.buildRectangularButtonBundle(rectW, rectH, "Analytics", "buttonText", 310, 762);
         ImageView aIcon = createIcon(310, 757, "/images/RevisionSystemScreen/analytics.png");
+        analytics.button().setOnMouseClicked(_-> {
+            try {
+                buildAnalyticsContent(contentLayer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Group buttons = new Group(fcManagement.button(), studyModes.button(), impOrExp.button(), analytics.button(), fcmIcon, smIcon, impIcon, aIcon);
         contentLayer.getChildren().add(buttons);
@@ -70,6 +83,114 @@ public class RevisionSystemScreen extends SystemScreens{
         return scene;
     }
 
+    private void buildAnalyticsContent(Group contentLayer) throws IOException {
+        RectangleButtonBundle accuracy = ui.buildRectangularButtonBundle(380, 80, "Accuracy", "smallerButtonText", 0, 0);
+        RectangleButtonBundle studyTime = ui.buildRectangularButtonBundle(380, 80, "Study Time", "smallerButtonText", 0, 0);
+        RectangleButtonBundle weakDecks = ui.buildRectangularButtonBundle(380, 80, "Weakest Decks", "smallerButtonText", 0, 0);
+        RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(380, 80, "Sessions / Day", "smallerButtonText", 0, 0);
+        HBox buttons = new HBox(10, accuracy.button(), studyTime.button(), weakDecks.button(), sessions.button());
+        ui.setPosition(buttons, 180, 200);
+
+        Group chartGroup = new Group();
+        ui.setPosition(chartGroup, 200, 300);
+        ArrayList<SessionRecord> historicalSessions = stats.loadSessionRecords(ac.getEmail());
+
+        chartGroup.getChildren().addAll(buildAccuracyChart(historicalSessions));
+
+        accuracy.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildAccuracyChart(historicalSessions)));
+        studyTime.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildStudyTime(historicalSessions)));
+        nav.switchContent(contentLayer, buttons, chartGroup, getBackView(contentLayer));
+    }
+
+    // Accuracy Line Graph
+    private LineChart<String, Number> buildAccuracyChart(ArrayList<SessionRecord> historicalSessions) {
+        // Create the axis
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis(0, 100.0, 5);
+        xAxis.setLabel("Session");
+        yAxis.setLabel("Accuracy / %");
+
+        // Create the chart
+        LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
+        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.setTitle("Accuracy over Time");
+        lineGraph.setMaxSize(1500, 600);
+        lineGraph.setPrefSize(1500, 600);
+        lineGraph.setLegendVisible(false);
+        lineGraph.setCreateSymbols(true);
+
+        // Populate the graph
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        int sessionNumber = 1;
+        for(SessionRecord s : historicalSessions){
+            series.getData().add(
+                    new XYChart.Data<>("Session " + sessionNumber,
+                            s.getAccuracy()));
+                    sessionNumber++;
+        }
+
+        lineGraph.getData().add(series);
+        return lineGraph;
+    }
+    // Study time per session line graph
+    private LineChart<String, Number> buildStudyTime(ArrayList<SessionRecord> historicalSessions) {
+        // Create the axis
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Session");
+        yAxis.setLabel("Time / m");
+
+        // Create the chart
+        LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
+        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.setTitle("Study Time per Session");
+        lineGraph.setMaxSize(1500, 600);
+        lineGraph.setPrefSize(1500, 600);
+        lineGraph.setLegendVisible(false);
+        lineGraph.setCreateSymbols(true);
+
+        // Populate the graph
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        int sessionNumber = 1;
+        for(SessionRecord s : historicalSessions){
+            double minutes = s.getStudySeconds() / 60.0;
+            minutes = Math.round(minutes * 10.0) / 10.0;
+            series.getData().add(
+                    new XYChart.Data<>("Session " + sessionNumber,
+                           minutes));
+            sessionNumber++;
+        }
+
+        lineGraph.getData().add(series);
+        return lineGraph;
+    }
+    // Create the weak decks bar chart
+    private BarChart<String, Number> buildWeakDecksChart(ArrayList<SessionRecord> historicalSessions){
+        // Create the axis
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Deck");
+        yAxis.setLabel("Average Accuracy / %");
+
+        // Create the chart
+        BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
+        chart.getStyleClass().add("barChart1");
+        chart.setTitle("Weakest Decks");
+        chart.setMaxSize(1500, 600);
+        chart.setPrefSize(1500, 600);
+        chart.setLegendVisible(false);
+
+        // Group sessions by deck and avg accuracy
+        HashMap<String, ArrayList<Double>> deckAccuracies = new HashMap<>();
+        // Iterate through each session record
+        for(SessionRecord s : historicalSessions){
+            // If deck name does not exist in the map, create a new ArrayList and key for it
+            // Session accuracy added to list
+            deckAccuracies.computeIfAbsent(s.getDeckName(), _->
+                    new ArrayList<>()).add(s.getAccuracy());
+        }
+        return chart;
+    }
     // Procedure switching the scene the FMS
     private void fcManagementMouseClick() throws IOException {
         ScreenManager.switchScene(new FlashcardManagementScreen(ac, sc, fc, stats).create(), ac.getEmail());

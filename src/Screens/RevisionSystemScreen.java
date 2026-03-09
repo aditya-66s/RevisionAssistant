@@ -6,7 +6,6 @@ import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SettingsController;
 import Controllers.StatsController;
-import Jampack.H;
 import Models.SessionRecord;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Group;
@@ -20,7 +19,6 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,7 +89,7 @@ public class RevisionSystemScreen extends SystemScreens{
         RectangleButtonBundle accuracy = ui.buildRectangularButtonBundle(380, 80, "Accuracy", "smallerButtonText", 0, 0);
         RectangleButtonBundle studyTime = ui.buildRectangularButtonBundle(380, 80, "Study Time", "smallerButtonText", 0, 0);
         RectangleButtonBundle weakDecks = ui.buildRectangularButtonBundle(380, 80, "Weakest Decks", "smallerButtonText", 0, 0);
-        RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(380, 80, "Sessions / Day", "smallerButtonText", 0, 0);
+        RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(380, 80, "Sessions / Week", "smallerButtonText", 0, 0);
         HBox buttons = new HBox(10, accuracy.button(), studyTime.button(), weakDecks.button(), sessions.button());
         ui.setPosition(buttons, 180, 200);
 

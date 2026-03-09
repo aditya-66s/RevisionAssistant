@@ -12,11 +12,21 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class MainMenuScreen extends SystemScreens {
     private final AuthenticationController ac;
@@ -112,7 +122,7 @@ public class MainMenuScreen extends SystemScreens {
 
         RectangleButtonBundle fileManagement = ui.buildRectangularButtonBundle(rectW, rectH, "File Management", "buttonText", 293, 656);
         ImageView fmIcon = createIcon(293, 651, "/images/MainMenuScreen/folder.png");
-//        fileManagement.button().setOnMouseClicked(_ -> );
+        fileManagement.button().setOnMouseClicked(_ -> buildFileManagementContent(contentLayer));
 
         Group options = new Group(statistics.button(), fileManagement.button(), achievements.button(), sIcon, aIcon, fmIcon);
 
@@ -238,5 +248,78 @@ public class MainMenuScreen extends SystemScreens {
             grid.getChildren().addAll(achievementText, descriptionText);
         }
         nav.switchContent(contentLayer, grid, getBackView(contentLayer));
+    }
+    // Create file management content
+    private void buildFileManagementContent(Group contentLayer) {
+        Window window = contentLayer.getScene().getWindow();
+        HBox content = new HBox(20);
+        ui.setPosition(content, 270, 350);
+        String[] files = { "users.csv", "settings.csv", "stats.csv" };
+        // Create buttons for each
+        for(int i = 0; i < files.length; i++){
+            String file = files[i];
+
+            Text text = new Text(file);
+            text.getStyleClass().add("infoText");
+
+            RectangleButtonBundle exp = ui.buildRectangularButtonBundle(450, 100, "Export Backup", "smallerButtonText", 0, 0);
+            exp.button().setOnMouseClicked(_ -> {
+                try {
+                    exportFile(window, file);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            RectangleButtonBundle imp = ui.buildRectangularButtonBundle(450, 100, "Import Backup", "smallerButtonText", 0, 0);
+            imp.button().setOnMouseClicked(_ -> {
+                try {
+                    importFile(window, file);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            VBox box = new VBox(30, text, exp.button(), imp.button());
+            content.getChildren().addAll(box);
+        }
+        nav.switchContent(contentLayer, content, getBackView(contentLayer));
+    }
+    // Copies the system CSV to a location chosen by user
+    private void exportFile(Window window, String fileName) throws IOException {
+        // Create a file chooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export " + fileName);
+        fileChooser.setInitialFileName(fileName);
+        // Filter to csv
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+        File destination = fileChooser.showSaveDialog(window);
+        // if save cancelled, return
+        if(destination == null) return;
+
+        // Find the source and copy it to save location
+        Path source = Paths.get(System.getProperty("user.dir"), "files", fileName);
+        Files.copy(source, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        CustomAlert.success(window, fileName + " has been exported");
+    }
+    // Replaces the system CSV with user chosen file
+    private void importFile(Window window, String fileName) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import " + fileName);
+        // Filter to csv
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+        File source = fileChooser.showOpenDialog(window);
+        // return if empty or cancelled
+        if(source == null) return;
+        if(source.length() == 0){
+            CustomAlert.error(window, "File has no contents");
+            return;
+        }
+        // Ask for user confirmation
+        boolean confirmed = CustomAlert.confirm(window, "Import Backup", "This will replace your current " + fileName
+                    + ". Are you sure you want to continue?");
+        if(!confirmed) return;
+        Path destination = Paths.get(System.getProperty("user.dir"), "files", fileName);
+        Files.copy(source.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
+        CustomAlert.success(window, fileName + " has been imported");
     }
 }

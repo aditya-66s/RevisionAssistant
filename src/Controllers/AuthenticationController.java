@@ -5,7 +5,12 @@ import Models.Settings;
 import Models.User;
 import Screens.AuthScreen;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -24,6 +29,64 @@ public class  AuthenticationController extends Controller {
     private byte[] salt;
     //getResourceAsStream() is for reading packaged resources, not for storing/editing data
     private final Path csvPath = Paths.get(System.getProperty("user.dir"), "files", "users.csv");
+    // Encryption / Decryption
+    // Hardcoded 16-byte AES key -> 16 characters exactly for AES-128
+    private static final String encryptionKey = "RevAssistant2026";
+    // Encrypt a string and returns base 66 encrypted string
+    private String encrypt(String line){
+        try{
+            // Create an AES secret key using the predefined encryption key
+            SecretKey key = new SecretKeySpec(encryptionKey.getBytes(StandardCharsets.UTF_8), "AES");
+            // Create and configure the cipher for encryption with padding
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            // Convert the text into bytes and encrypt it
+            byte[] encrypted = cipher.doFinal(line.getBytes(StandardCharsets.UTF_8));
+            // Convert encrypted bytes to base 64 so it can be saved safely as text
+            return Base64.getEncoder().encodeToString(encrypted);
+        }catch(Exception e){
+            throw new RuntimeException("Encryption did not work: " + e.getMessage());
+        }
+    }
+
+    // Decrypt a base 64 encoded string to plain text
+    private String decrypt(String line){
+        try{
+            // Create an AES secret key using the predefined encryption key
+            SecretKey key = new SecretKeySpec(encryptionKey.getBytes(StandardCharsets.UTF_8), "AES");
+            // Create and configure the cipher for encryption with padding
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            // Decode the Base64 string back to plain text
+            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(line));
+            return new String(decrypted, StandardCharsets.UTF_8);
+        }catch(Exception e){
+            throw new RuntimeException("Decryption did not work: " + e.getMessage());
+        }
+    }
+    // Read encrypted users.csv, decrypt and returns the line in an ArrayList
+    private ArrayList<String> getDecryptedLines() throws IOException{
+        ArrayList<String> lines = new ArrayList<>();
+        // Read all content
+        byte[] fileBytes = Files.readAllBytes(csvPath);
+        // If file is empty, return empty list
+        if(fileBytes.length == 0) return lines;
+        // Decrypt the entire file
+        String decrypted = decrypt(new String(fileBytes, StandardCharsets.UTF_8).trim());
+        // Iterate through and add to ArrayList
+        for(String line : decrypted.split("\n")){
+            if(!line.isBlank()) lines.add(line);
+        }
+        return lines;
+    }
+    // Encrypt the given content and write to users.csv
+    private void writeEncrypted(String text) throws IOException{
+        // get encrypted text
+        String encrypted = encrypt(text);
+
+        // Write to the file
+        Files.writeString(csvPath, encrypted);
+    }
     // Registers a user
     public boolean registerUser(String email, String inpPassword, String recoveryWord, SettingsController sc) throws NoSuchAlgorithmException, IOException {
         // Check if email does not already exist within the CSV
@@ -36,11 +99,10 @@ public class  AuthenticationController extends Controller {
             String saltBase64 = Base64.getEncoder().encodeToString(getSalt());
             // Create new user object
             User user = new User(email, hashedPassword, saltBase64, getDate(), recoveryWord);
-            // Opens in append mode, won't overwrite the file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString(), true))) {
-                bw.write(email + "," + hashedPassword + "," + saltBase64 + "," + user.getLastLogin() + "," + recoveryWord);
-                bw.newLine();
-            }
+            // Load existing users and add new and then rewrite entire encrypted files
+            ArrayList<User> users = convertCSVtoArrayList();
+            users.add(user);
+            rewriteUsersCSV(users);
             // On register the system's current user will be set to the temp user
             // Settings will be loaded and the SettingsController set into the ScreenManager class
             setCurrentUser(user);
@@ -88,17 +150,12 @@ public class  AuthenticationController extends Controller {
         ensureCSVExists(csvPath);
         ArrayList<User> users = new ArrayList<>();
         // Read CSV line by line
-        try(BufferedReader br = new BufferedReader(new FileReader(csvPath.toString()))) {
-            String line;
-            while((line = br.readLine())!=null){
+        try {
+            ArrayList<String> lines = getDecryptedLines();
+            for (String line : lines) {
                 String[] temp = line.split(",");
-                // Validate row lengths to avoid ArrayIndexOutOfBoundsException, throw an exception
-                if (temp.length < 5) {
-                    throw new IllegalArgumentException("Corrupted Row: " + line);
-                }
-                // Create a Models.User from CSV columns
-                User newUser = new User(temp[0], temp[1], temp[2], temp[3], temp[4]);
-                users.add(newUser);
+                if(temp.length < 5) throw new IllegalArgumentException("Corrupted Row: " + line);
+                users.add(new User(temp[0], temp[1], temp[2], temp[3], temp[4]));
             }
         } catch (Exception e) {
             quarantineCorruptedCSV(e, csvPath);
@@ -106,6 +163,16 @@ public class  AuthenticationController extends Controller {
             return new ArrayList<>();
         }
         return users;
+    }
+    // Will be used to update CSV when user makers changes
+    private void rewriteUsersCSV(ArrayList<User> users) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        // Rewrite the entire file, so updates persist
+        for (User u : users) {
+            sb.append(u.getEmail()).append(",").append(u.getHashedPassword()).append(",").append(u.getSaltBase64()).append(",")
+                    .append(u.getLastLogin()).append(",").append(u.getRecoveryWord()).append("\n");
+        }
+        writeEncrypted(sb.toString());
     }
     // Checks if a given email exists in the CSV
     public boolean doesEmailExist(String email) throws IOException {
@@ -200,17 +267,17 @@ public class  AuthenticationController extends Controller {
         rewriteUsersCSV(users);
         return true;
     }
-    // Will be used to update CSV when user makers changes
-    private void rewriteUsersCSV(ArrayList<User> users) throws IOException {
-        // Rewrite the entire file, so updates persist
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
-            for (User u : users) {
-                // writes row back into file
-                bw.write(u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord());
-                bw.newLine();
-            }
-        }
-    }
+//    // Will be used to update CSV when user makers changes
+//    private void rewriteUsersCSV(ArrayList<User> users) throws IOException {
+//        // Rewrite the entire file, so updates persist
+//        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
+//            for (User u : users) {
+//                // writes row back into file
+//                bw.write(u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord());
+//                bw.newLine();
+//            }
+//        }
+//    }
     // System Logout
     public void logout(){
         if (getCurrentUser() != null){

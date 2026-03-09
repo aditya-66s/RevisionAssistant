@@ -51,8 +51,11 @@ public class SessionController {
     }
     // Function to record answer
     public boolean recordAnswer(boolean correct) throws IOException {
-        // add to wrongAnswers.csv to
-        if(!correct) fc.saveWrongAnswers(session.getCurrentCard());
+        // add to wrongAnswers.csv
+        if(!correct) {
+            fc.saveWrongAnswers(session.getCurrentCard());
+            session.resetConsecutiveCorrect();
+        }else session.incrementConsecutiveCorrect();
         // Update it in the session object
         return session.recordAnswer(correct);
     }
@@ -106,6 +109,9 @@ public class SessionController {
     }
     public String getProgressText(){
         return session.getProgressText();
+    }
+    public Session getSession(){
+        return session;
     }
 
     public void setLastCards(ArrayList<Flashcard> lastCards) {

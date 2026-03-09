@@ -4,6 +4,7 @@ import Components.CustomAlert;
 import Components.ScreenManager;
 import Controllers.*;
 import Models.Flashcard;
+import Models.UserStats;
 import RecordClasses.RectangleButtonBundle;
 import javafx.animation.*;
 import javafx.beans.property.SimpleStringProperty;
@@ -43,6 +44,7 @@ public class StudyModesScreen extends SystemScreens{
     private final FlashcardController fc;
     private final SessionController sessionC;
     private final TTSController tts;
+    private final StatsController stats;
     // Content filling revision system to be modified globally
     private Text correctText;
     private Text incorrectText;
@@ -54,24 +56,27 @@ public class StudyModesScreen extends SystemScreens{
     // Flags
     private boolean hasFlipped = false;
     private boolean hasSessionStarted = false;
+    private boolean isRetrySession = false;
     // Timer
     private Timeline timer;
 
     // Constructor to start a NEW Study Session
-    public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc) throws IOException {
+    public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, StatsController stats) throws IOException {
         this.ac = ac;
         this.sc = sC;
         this.fc = fc;
-        this.sessionC = new SessionController(ac.getCurrentUser().getEmail(), fc);
+        this.sessionC = new SessionController(ac.getEmail(), fc);
         this.tts = new TTSController(sc.getTTSVolume());
+        this.stats = stats;
     }
     // Constructor to continue a prior Study Session
-    public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, SessionController sessionC) throws IOException {
+    public StudyModesScreen(AuthenticationController ac, SettingsController sC, FlashcardController fc, SessionController sessionC, StatsController stats) throws IOException {
         this.ac = ac;
         this.sc = sC;
         this.fc = fc;
         this.sessionC = sessionC;
         this.tts = new TTSController(sc.getTTSVolume());
+        this.stats = stats;
     }
 
     // Create initial content where user can select study modes
@@ -128,7 +133,10 @@ public class StudyModesScreen extends SystemScreens{
         RectangleButtonBundle startSession = ui.buildRectangularButtonBundle(500, 100, "Start Session", "smallButtonText", 760, 0);
         startSession.button().setOnMouseClicked(_->{
             String deckName = decksTable.getSelectionModel().getSelectedItem();
-            if(deckName == null) CustomAlert.error(owner, "Select a deck before starting a session");
+            if(deckName == null){
+                CustomAlert.error(owner, "Select a deck before starting a session");
+                return;
+            }
             try{
                 ArrayList<Flashcard> cards = fc.loadFlashcardDeck(deckName);
                 // If shuffle mode, shuffle the cards
@@ -322,8 +330,7 @@ public class StudyModesScreen extends SystemScreens{
         // If no remaining cards, stop timer switch to EoRScreen, play sessionComplete.mp3
         if(sessionComplete){
             stopTimer();
-            ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc).create(), ac.getCurrentUser().getEmail());
-            playSFX("sessionComplete");
+            changeToSummary();
             return;
         }
         // Change flashcard content to next car
@@ -336,13 +343,22 @@ public class StudyModesScreen extends SystemScreens{
         hasFlipped = false;
     }
     // Update timer
-    private void startTimer(){
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), _->{
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
             sessionC.tick();
             timerLabel.setText(sessionC.getFormattedTime());
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
+    }
+    // Procedure which will get updated UserStats object and switch the scene to EORScreen
+    private void changeToSummary() throws IOException {
+        int xpGained = new XPController().calculateXP(sessionC.getSession());
+        UserStats updated = stats.updateStats(ac.getEmail(), sessionC.getSession(),
+                xpGained, isRetrySession);
+        ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc, stats, updated).create(),
+                ac.getEmail());
+        playSFX("sessionComplete");
     }
     // Stop timer
     private void stopTimer(){
@@ -352,6 +368,7 @@ public class StudyModesScreen extends SystemScreens{
     // if user wants to retry, session is continued
     public Scene continueSession(){
         Scene scene = create();
+        isRetrySession = true;
         // Find content layer and start a session
         Group contentLayer = (Group) ((Pane) scene.getRoot()).getChildren().get(2);
         buildSessionContent(contentLayer);
@@ -376,11 +393,8 @@ public class StudyModesScreen extends SystemScreens{
                     // stop timer
                     stopTimer();
                     try {
-                        // Switch of EoRScreen
-                        ScreenManager.switchScene(new EndOfRevisionScreen(ac, sc, sessionC, fc).create(), ac.getCurrentUser().getEmail());
+                        changeToSummary();
                         tts.stop();
-                        // Play success sound
-                        playSFX("sessionComplete");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

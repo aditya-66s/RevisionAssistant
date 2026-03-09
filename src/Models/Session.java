@@ -13,6 +13,8 @@ public class Session {
     private boolean showingAnswer;
     private long elapsedTime;
     private LocalDateTime date;
+    private int consecutiveCorrect;
+    private ArrayList<Boolean> answerHistory = new ArrayList<>();
 
     // New session
     public Session(ArrayList<Flashcard> cards, String selectedDeck, String studyMode){
@@ -24,10 +26,12 @@ public class Session {
         this.elapsedTime = 0;
         this.showingAnswer = false;
         this.date = LocalDateTime.now();
+        consecutiveCorrect = 0;
     }
 
     // Returns true if session is complete
     public boolean recordAnswer(boolean correct){
+        answerHistory.add(correct);
         // Remove flashcard from active queue
         Flashcard current = currentQueue.removeFirst();
         // add it to correct list if correct
@@ -59,6 +63,9 @@ public class Session {
     public long getElapsedTime() {
         return elapsedTime;
     }
+    public ArrayList<Boolean> getAnswerHistory() {
+        return answerHistory;
+    }
     public boolean isShowingAnswer() {
         return showingAnswer;
     }
@@ -74,6 +81,9 @@ public class Session {
     public int getRemainingCount(){
         return currentQueue.size();
     }
+    public int getConsecutiveCorrect() {
+        return consecutiveCorrect;
+    }
     public double getAccuracy(){
         int total = correctList.size() + incorrectList.size();
         return (double) (correctList.size() * 100) / total;
@@ -88,7 +98,12 @@ public class Session {
 
     public void tick(){elapsedTime++;}
 
-
+    public void incrementConsecutiveCorrect(){
+        consecutiveCorrect++;
+    }
+    public void resetConsecutiveCorrect(){
+        consecutiveCorrect = 0;
+    }
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
@@ -101,4 +116,5 @@ public class Session {
         // set to question side
         showingAnswer = false;
     }
+
 }

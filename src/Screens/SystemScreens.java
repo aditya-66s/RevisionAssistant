@@ -68,7 +68,7 @@ public abstract class SystemScreens {
         ImageView back = ui.createBRImageView("back");
         back.setOnMouseClicked(_ -> {
             try {
-                ScreenManager.goBack(ac.getCurrentUser().getEmail());
+                ScreenManager.goBack(ac.getEmail());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

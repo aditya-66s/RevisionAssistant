@@ -9,3 +9,52 @@
 "What is Agile methodology?","Iterative, frequent client feedback in small increments.\nPrioritises working software over documents, can handle changing requirements.\n+ Flexible, regular feedback, issues identified early\n- Less documentation, hard to manage
 "What is the Spiral methodology?","Iterative progressing through repeated loops.\nSet objectives, Analyse risks, Develop and test, Client review.\nPrototypes in each iteration.\n+ Risk management, problems identified early, freq client feedback, suitable for complex systems\n- Complex to manage, expensive and time consuming\nFor high risk and uncertain projects.
 "What is the Rapid Application Development methodology?","Focuses on rapid prototyping, little formal analysis or design with prototypes continuously refined using user feedback.\n+ Very fast, early working models, flexible\n- Less documentation, poor design if rushed, not for safety critical systems.
+"General formula of alkanes?","CnH2n+2
+"What is cracking?","Breaking long-chain hydrocarbons into shorter ones
+"What is polymerisation?","Joining many small monomers to form a large polymer
+"Define addition reaction","Two molecules combine to form one product
+"Define substitution reaction","One atom/group is replaced by another
+"What is a functional group?","Group of atoms responsible for chemical properties
+"What is esterification?","Reaction between carboxylic acid and alcohol forming ester and water
+"What is a homologous series?","Series of organic compounds with same functional group and general formula
+"What is a nucleophile?","Electron pair donor
+"What is an electrophile?","Electron pair acceptor
+"question","answer
+"Equation for kinetic energy","KE = 1/2 mv^2
+"Define work done","Force times distance moved in direction of force
+"asdasdasdasdas","asdasd
+"State Newton's First Law","An object remains at rest or constant velocity unless acted on by a resultant force
+"Equation for force","F = ma
+"Equation for power","P = E/t
+"What is a random variable?","A variable that takes numerical values determined by chance.
+"What is the difference between discrete and continuous data?","Discrete data takes countable values; continuous data can take any value in an interval.
+"What is the mean of a discrete random variable?","E(X) = Σ xP(X=x).
+"What must probabilities in a distribution sum to?","1.
+"What is the binomial distribution used for?","Modelling number of successes in fixed independent trials with constant probability.
+"What are the conditions for a binomial model?","Fixed n, independent trials, two outcomes, constant probability p.
+"What is the mean of a binomial distribution?","np.
+"What is the variance of a binomial distribution?","np(1−p).
+"What is the normal distribution?","A continuous symmetric bell-shaped distribution defined by mean and variance.
+"What is the standard normal distribution?","Normal distribution with mean 0 and variance 1.
+"What is a z-score?","Number of standard deviations a value is from the mean.
+"What is continuity correction?","Adjusting discrete values by ±0.5 when using normal approximation.
+"What is the Central Limit Theorem?","Sample mean becomes approximately normal as sample size increases.
+"What is the mean of the sampling distribution of the mean?","Equal to population mean.
+"What is a Type II error?","Failing to reject a false null hypothesis.
+"What is a p-value?","Probability of observing result at least as extreme assuming H0 is true.
+"What is correlation?","Measure of strength and direction of linear relationship.
+"What is the regression line equation?","y = a + bx.
+"What is interpolation?","Estimating within range of data.
+"What is extrapolation?","Estimating outside range of data.
+"What is expectation?","Long-run average value of a random variable.
+"What is skewness?","Measure of asymmetry of a distribution.
+"What does positive skew mean?","Tail extends to the right.
+"What is a confidence interval?","Range of values likely to contain a population parameter.
+"What affects width of confidence interval?","Sample size, variability, confidence level.
+"What is unbiased estimator?","Estimator whose expected value equals true parameter.
+"What is standard error?","Standard deviation of sampling distribution.
+"What is a geometric distribution?","Models number of trials until first success.
+"What is memoryless property?","Future probability independent of past (Poisson and geometric).
+"asdasdasdasdasasdasdasdasdasasdasdasdasdas","asdasdasdasdasasdasdasdasdas
+"asdasdasdasdas","asdasdasdasdas
+"asdasdasdasdas","v

@@ -46,7 +46,7 @@ public class SettingsScreen extends SystemScreens{
         // Load settings if not already loaded
         if (sC.getCurrentSettings() == null) {
             try {
-                Settings userSettings = sC.loadSettings(ac.getCurrentUser().getEmail());
+                Settings userSettings = sC.loadSettings(ac.getEmail());
                 sC.setCurrentSettings(userSettings);
             } catch (IOException e) {
                 // Default Setting set as a fallback
@@ -260,7 +260,7 @@ public class SettingsScreen extends SystemScreens{
             }
         }
         if(brightnessOverlay == null){
-            brightnessOverlay = ScreenManager.getBrightnessOverlay(ac.getCurrentUser().getEmail());
+            brightnessOverlay = ScreenManager.getBrightnessOverlay(ac.getEmail());
         }
         return brightnessOverlay;
     }
@@ -504,7 +504,7 @@ public class SettingsScreen extends SystemScreens{
         if (!validInput) {
             String emailReq = "Email should follow the standard format";
             CustomAlert.error(alertWindow, "Invalid inputs \n" + emailReq);
-        } else if(ac.getCurrentUser().getEmail().equals(confirmNewEmailInput.tf().getText())) {
+        } else if(ac.getEmail().equals(confirmNewEmailInput.tf().getText())) {
             CustomAlert.error(alertWindow, "This is already the email associated with the account");
         } else if (ac.doesEmailExist(newEmailInput.tf().getText())) {
             CustomAlert.error(alertWindow, "Email already exists, try a new one");

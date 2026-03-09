@@ -53,6 +53,9 @@ public abstract class Controller {
     public User getCurrentUser(){
         return currentUser;
     }
+    public String getEmail(){
+        return currentUser.getEmail();
+    }
     public Settings getCurrentSettings(){
         return currentSettings;
     }

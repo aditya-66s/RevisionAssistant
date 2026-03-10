@@ -6,7 +6,7 @@ import Controllers.AuthenticationController;
 import Controllers.FlashcardController;
 import Controllers.SettingsController;
 import Controllers.StatsController;
-import Models.SessionRecord;
+import RecordClasses.SessionRecord;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -129,7 +129,7 @@ public class RevisionSystemScreen extends SystemScreens{
         for(SessionRecord s : historicalSessions){
             series.getData().add(
                     new XYChart.Data<>("Session " + sessionNumber,
-                            s.getAccuracy()));
+                            s.accuracy()));
                     sessionNumber++;
         }
 
@@ -157,7 +157,7 @@ public class RevisionSystemScreen extends SystemScreens{
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         int sessionNumber = 1;
         for(SessionRecord s : historicalSessions){
-            double minutes = s.getStudySeconds() / 60.0;
+            double minutes = s.studySeconds() / 60.0;
             minutes = Math.round(minutes * 10.0) / 10.0;
             series.getData().add(
                     new XYChart.Data<>("Session " + sessionNumber,
@@ -190,8 +190,8 @@ public class RevisionSystemScreen extends SystemScreens{
         for(SessionRecord s : historicalSessions){
             // If deck name does not exist in the map, create a new ArrayList and key for it
             // Session accuracy added to list
-            deckAccuracies.computeIfAbsent(s.getDeckName(), _->
-                    new ArrayList<>()).add(s.getAccuracy());
+            deckAccuracies.computeIfAbsent(s.deckName(), _->
+                    new ArrayList<>()).add(s.accuracy());
         }
 
         // Create the series to populate the chart
@@ -230,7 +230,7 @@ public class RevisionSystemScreen extends SystemScreens{
         HashMap<String, Integer> weeklySessions = new HashMap<>();
         for(SessionRecord s : historicalSessions){
             // Split date into day, month and year
-            String[] date = s.getDate().split("/");
+            String[] date = s.date().split("/");
             // Ensure date is valid
             if(date.length == 3){
                 // Convert the date into a week number and label it

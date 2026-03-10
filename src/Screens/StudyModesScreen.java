@@ -43,7 +43,7 @@ public class StudyModesScreen extends SystemScreens{
     private final SettingsController sc;
     private final FlashcardController fc;
     private final SessionController sessionC;
-    private final TTSController tts;
+    private TTSController tts;
     private final StatsController stats;
     // Content filling revision system to be modified globally
     private Text correctText;
@@ -66,7 +66,8 @@ public class StudyModesScreen extends SystemScreens{
         this.sc = sC;
         this.fc = fc;
         this.sessionC = new SessionController(ac.getEmail(), fc);
-        this.tts = new TTSController(sc.getTTSVolume());
+        // only load if tts is enabled
+        if(sc.getCurrentSettings().isTTSEnabled()) this.tts = new TTSController(sc.getTTSVolume());
         this.stats = stats;
     }
     // Constructor to continue a prior Study Session
@@ -75,7 +76,8 @@ public class StudyModesScreen extends SystemScreens{
         this.sc = sC;
         this.fc = fc;
         this.sessionC = sessionC;
-        this.tts = new TTSController(sc.getTTSVolume());
+        // Only load if tts is enabled
+        if(sc.getCurrentSettings().isTTSEnabled()) this.tts = new TTSController(sc.getTTSVolume());
         this.stats = stats;
     }
 
@@ -388,7 +390,7 @@ public class StudyModesScreen extends SystemScreens{
                 tts.stop();
                 nav.goBack(contentLayer);
             }else{
-                // if wants to end and session has started
+                // if user wants to end and session has started
                 if (endSession) {
                     // stop timer
                     stopTimer();

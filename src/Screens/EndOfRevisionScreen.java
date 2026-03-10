@@ -2,7 +2,7 @@ package Screens;
 
 import Components.ScreenManager;
 import Controllers.*;
-import Models.SessionRecord;
+import RecordClasses.SessionRecord;
 import Models.UserStats;
 import RecordClasses.RectangleButtonBundle;
 import javafx.scene.Cursor;
@@ -214,18 +214,17 @@ public class EndOfRevisionScreen extends SystemScreens{
         ArrayList<SessionRecord> deckSessionHistory = new ArrayList<>();
         for(SessionRecord s : sessionHistory){
             // if deck name matches, add to list
-            if(s.getDeckName().equals(session.getSelectedDeck())){
+            if(s.deckName().equals(session.getSelectedDeck())){
                 deckSessionHistory.add(s);
             }
         }
         // Get last three sessions
         int size = deckSessionHistory.size();
         int start = Math.max(0, size - 3);
-
         for(int i = start; i < size; i++) {
             // Add each accuracy to the chart
             series.getData().add(new XYChart.Data<>("Session - " + (size - i),
-                    deckSessionHistory.get(i).getAccuracy()));
+                    deckSessionHistory.get(i).accuracy()));
         }
         // Add this session's accuracy
         series.getData().add(new XYChart.Data<>("This Session", session.getAccuracy()));

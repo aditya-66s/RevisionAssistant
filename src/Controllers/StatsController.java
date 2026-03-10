@@ -1,7 +1,7 @@
 package Controllers;
 
 import Models.Session;
-import Models.SessionRecord;
+import RecordClasses.SessionRecord;
 import Models.UserStats;
 
 import java.io.*;
@@ -180,19 +180,16 @@ public class StatsController extends Controller{
         if(!Files.exists(sessionPath)) Files.createFile(sessionPath);
         // Join the answer history as Ts and Fs to represent true and false
         StringBuilder answers = new StringBuilder();
-        for(boolean b : sr.getAnswerHistory()){
-            answers.append(b ? "T" : "F");
-        }
+        for(boolean b : sr.answerHistory()){answers.append(b ? "T" : "F");}
         // Write it into the csv
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(sessionPath.toFile(), true))) {
-            bw.write(sr.getDate() + "," +
-                    sr.getAccuracy() + "," +
-                    sr.getStudySeconds() + "," +
-                    sr.getCorrect() + "," +
-                    sr.getIncorrect() + "," +
-                    sr.getDeckName() + "," +
-                    answers
-            );
+            bw.write(sr.date() + "," +
+                    sr.accuracy() + "," +
+                    sr.studySeconds() + "," +
+                    sr.correct() + "," +
+                    sr.incorrect() + "," +
+                    sr.deckName() + "," +
+                    answers);
             bw.newLine();
         }
     }

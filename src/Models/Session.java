@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 
 public class Session {
-    private String selectedDeck;
-    private String studyMode;
+    private final String selectedDeck;
+    private final String studyMode;
     private final ArrayList<Flashcard> currentQueue;
     private final ArrayList<Flashcard> correctList;
     private final ArrayList<Flashcard> incorrectList;
@@ -14,7 +14,7 @@ public class Session {
     private long elapsedTime;
     private LocalDateTime date;
     private int consecutiveCorrect;
-    private ArrayList<Boolean> answerHistory = new ArrayList<>();
+    private final ArrayList<Boolean> answerHistory = new ArrayList<>();
 
     // New session
     public Session(ArrayList<Flashcard> cards, String selectedDeck, String studyMode){

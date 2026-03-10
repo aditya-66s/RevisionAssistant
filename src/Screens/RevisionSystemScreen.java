@@ -84,21 +84,23 @@ public class RevisionSystemScreen extends SystemScreens{
         root.getChildren().addAll(background, back, contentLayer);
         return scene;
     }
-
+    // Build the content to show the graphs
     private void buildAnalyticsContent(Group contentLayer) throws IOException {
+        // Buttons to switch the graphs
         RectangleButtonBundle accuracy = ui.buildRectangularButtonBundle(380, 80, "Accuracy", "smallerButtonText", 0, 0);
         RectangleButtonBundle studyTime = ui.buildRectangularButtonBundle(380, 80, "Study Time", "smallerButtonText", 0, 0);
         RectangleButtonBundle weakDecks = ui.buildRectangularButtonBundle(380, 80, "Weakest Decks", "smallerButtonText", 0, 0);
         RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(380, 80, "Sessions / Week", "smallerButtonText", 0, 0);
         HBox buttons = new HBox(10, accuracy.button(), studyTime.button(), weakDecks.button(), sessions.button());
         ui.setPosition(buttons, 180, 200);
-
+        // Create the chart group
         Group chartGroup = new Group();
         ui.setPosition(chartGroup, 200, 300);
+        // Load all session history
         ArrayList<SessionRecord> historicalSessions = stats.loadSessionRecords(ac.getEmail());
-
+        // Initial chart
         chartGroup.getChildren().addAll(buildAccuracyChart(historicalSessions));
-
+        // On button mouseclicks
         accuracy.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildAccuracyChart(historicalSessions)));
         studyTime.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildStudyTime(historicalSessions)));
         weakDecks.button().setOnMouseClicked(_-> chartGroup.getChildren().setAll(buildWeakDecksChart(historicalSessions)));
@@ -113,16 +115,14 @@ public class RevisionSystemScreen extends SystemScreens{
         NumberAxis yAxis = new NumberAxis(0, 100.0, 5);
         xAxis.setLabel("Session");
         yAxis.setLabel("Accuracy / %");
-
         // Create the chart
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
-        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Accuracy over Time");
         lineGraph.setMaxSize(1500, 600);
         lineGraph.setPrefSize(1500, 600);
         lineGraph.setLegendVisible(false);
-        lineGraph.setCreateSymbols(true);
-
+        lineGraph.setCreateSymbols(true); // data points at each plot point
         // Populate the graph
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         int sessionNumber = 1;
@@ -132,7 +132,6 @@ public class RevisionSystemScreen extends SystemScreens{
                             s.accuracy()));
                     sessionNumber++;
         }
-
         lineGraph.getData().add(series);
         return lineGraph;
     }
@@ -143,16 +142,14 @@ public class RevisionSystemScreen extends SystemScreens{
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Session");
         yAxis.setLabel("Time / m");
-
         // Create the chart
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
-        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Study Time per Session");
         lineGraph.setMaxSize(1500, 600);
         lineGraph.setPrefSize(1500, 600);
         lineGraph.setLegendVisible(false);
         lineGraph.setCreateSymbols(true);
-
         // Populate the graph
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         int sessionNumber = 1;
@@ -164,7 +161,6 @@ public class RevisionSystemScreen extends SystemScreens{
                            minutes));
             sessionNumber++;
         }
-
         lineGraph.getData().add(series);
         return lineGraph;
     }
@@ -175,15 +171,13 @@ public class RevisionSystemScreen extends SystemScreens{
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Deck");
         yAxis.setLabel("Average Accuracy / %");
-
         // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
+        chart.getStyleClass().add("charts");
         chart.setTitle("Weakest Decks");
         chart.setMaxSize(1500, 600);
         chart.setPrefSize(1500, 600);
         chart.setLegendVisible(false);
-
         // Group sessions by deck and avg accuracy
         HashMap<String, ArrayList<Double>> deckAccuracies = new HashMap<>();
         // Iterate through each session record
@@ -193,7 +187,6 @@ public class RevisionSystemScreen extends SystemScreens{
             deckAccuracies.computeIfAbsent(s.deckName(), _->
                     new ArrayList<>()).add(s.accuracy());
         }
-
         // Create the series to populate the chart
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         // convert each map entry from deck name and list of accuracies to deck name and average accuracies
@@ -221,7 +214,7 @@ public class RevisionSystemScreen extends SystemScreens{
         yAxis.setLabel("Sessions");
         // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
+        chart.getStyleClass().add("charts");
         chart.setLegendVisible(false);
         chart.setTitle("Sessions per Week");
         chart.setMaxSize(1500, 600);

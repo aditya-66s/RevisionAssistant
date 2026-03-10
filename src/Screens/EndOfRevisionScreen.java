@@ -141,26 +141,22 @@ public class EndOfRevisionScreen extends SystemScreens{
         // Place in a HBox
         HBox buttons = new HBox(10, correctIncorrect.button(), accuracyComparison.button(), answerTimeline.button());
         ui.setPosition(buttons, 230, 200);
-
+        // Group where the chart is placed
         Group chartGroup = new Group();
         ui.setPosition(chartGroup, 200, 300);
         chartGroup.getChildren().addAll(buildCorrectIncorrectChart());
-
+        // On click of buttons
         correctIncorrect.button().setOnMouseClicked(_ ->
                 chartGroup.getChildren().setAll(buildCorrectIncorrectChart()));
-
-        accuracyComparison.button().setOnMouseClicked(_ ->
-        {
+        accuracyComparison.button().setOnMouseClicked(_ -> {
             try {
                 chartGroup.getChildren().setAll(buildAccuracyComparisonChart());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-
         answerTimeline.button().setOnMouseClicked(_ ->
                 chartGroup.getChildren().setAll(buildAnswerTimeline()));
-
         nav.switchContent(contentLayer, buttons, chartGroup, getBackView(contentLayer));
     }
 
@@ -177,7 +173,7 @@ public class EndOfRevisionScreen extends SystemScreens{
 
         // Create the actual chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
+        chart.getStyleClass().add("charts");
         chart.setTitle("Correct Vs Incorrect");
         chart.setPrefSize(1500, 600);
         chart.setLegendVisible(false);
@@ -207,21 +203,29 @@ public class EndOfRevisionScreen extends SystemScreens{
         yAxis.setLabel("Accuracy / %");
         // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
-        chart.setTitle("Accuracy Comparison with Last 3 Sessions");
+        chart.getStyleClass().add("charts");
+        chart.setTitle("Accuracy Comparison with last 3 (at most) Sessions with this deck");
         chart.setPrefSize(1500, 600);
         chart.setLegendVisible(false);
         // Create the series and populate it with data
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         ArrayList<SessionRecord> sessionHistory = stats.loadSessionRecords(ac.getEmail());
+        // Create a list for only this deck
+        ArrayList<SessionRecord> deckSessionHistory = new ArrayList<>();
+        for(SessionRecord s : sessionHistory){
+            // if deck name matches, add to list
+            if(s.getDeckName().equals(session.getSelectedDeck())){
+                deckSessionHistory.add(s);
+            }
+        }
         // Get last three sessions
-        int size = sessionHistory.size();
+        int size = deckSessionHistory.size();
         int start = Math.max(0, size - 3);
 
         for(int i = start; i < size; i++) {
             // Add each accuracy to the chart
             series.getData().add(new XYChart.Data<>("Session - " + (size - i),
-                    sessionHistory.get(i).getAccuracy()));
+                    deckSessionHistory.get(i).getAccuracy()));
         }
         // Add this session's accuracy
         series.getData().add(new XYChart.Data<>("This Session", session.getAccuracy()));

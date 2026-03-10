@@ -19,6 +19,4 @@ public class XPController {
         if(session.getAccuracy() >= 90.0) xp += 100;
         return xp;
     }
-
-
 }

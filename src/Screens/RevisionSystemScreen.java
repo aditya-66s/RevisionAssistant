@@ -118,7 +118,7 @@ public class RevisionSystemScreen extends SystemScreens{
 
         // Create the chart
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
-        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Accuracy over Time");
         lineGraph.setMaxSize(1500, 600);
         lineGraph.setPrefSize(1500, 600);
@@ -148,7 +148,7 @@ public class RevisionSystemScreen extends SystemScreens{
 
         // Create the chart
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
-        lineGraph.getStyleClass().add("barChart1");
+        lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Study Time per Session");
         lineGraph.setMaxSize(1500, 600);
         lineGraph.setPrefSize(1500, 600);
@@ -180,7 +180,7 @@ public class RevisionSystemScreen extends SystemScreens{
 
         // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
+        chart.getStyleClass().add("charts");
         chart.setTitle("Weakest Decks");
         chart.setMaxSize(1500, 600);
         chart.setPrefSize(1500, 600);
@@ -223,7 +223,7 @@ public class RevisionSystemScreen extends SystemScreens{
         yAxis.setLabel("Sessions");
         // Create the chart
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.getStyleClass().add("barChart1");
+        chart.getStyleClass().add("charts");
         chart.setLegendVisible(false);
         chart.setTitle("Sessions per Week");
         chart.setMaxSize(1500, 600);

@@ -248,7 +248,7 @@ public class RevisionSystemScreen extends SystemScreens{
     private int getWeek(String day, String month, String year){
         // Convert into a date object
         LocalDate date = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
-        // Return the week number of the year (ISO, weeks start on monday)
+        // Return the week number of the year (ISO, weeks start on Monday)
         return date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
     // Procedure switching the scene the FMS

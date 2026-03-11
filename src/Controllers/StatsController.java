@@ -223,4 +223,18 @@ public class StatsController extends Controller{
         return historicalSessions;
     }
 
+    // Procedure to update the email within the file when the user changes their email
+    public void updateEmail(String oldEmail, String newEmail) throws IOException {
+        // load all users
+        ArrayList<UserStats> statsList = convertCSVtoArrayList();
+        for(UserStats stats : statsList){
+            if(stats.getEmail().equals(oldEmail)){
+                // change the email
+                stats.setEmail(newEmail);
+                break;
+            }
+        }
+        // rewrite the file
+        rewriteCSV(statsList);
+    }
 }

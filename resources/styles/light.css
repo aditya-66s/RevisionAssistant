@@ -43,3 +43,11 @@ Rectangle{
 .cardTable{
     -fx-fill: grey;
 }
+.timerLabel{
+    -fx-font-family: "Xirod-Regular";
+    -fx-font-size: 36px;
+    -fx-text-fill: white;
+    -fx-background-color: grey;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 12px;
+}

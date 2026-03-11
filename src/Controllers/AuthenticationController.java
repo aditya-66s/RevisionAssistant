@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -83,7 +84,6 @@ public class  AuthenticationController extends Controller {
     private void writeEncrypted(String text) throws IOException{
         // get encrypted text
         String encrypted = encrypt(text);
-
         // Write to the file
         Files.writeString(csvPath, encrypted);
     }
@@ -137,7 +137,7 @@ public class  AuthenticationController extends Controller {
                 sc.setCurrentSettings(userSettings);
                 setSettingsControllertoSM(sc);
                 // Write default stats if not saved already, via a temporary object
-                if(!new StatsController().isUserStatsSaved(email)) new StatsController().createDefaultUserStats(email);
+//                if(!new StatsController().isUserStatsSaved(email)) new StatsController().createDefaultUserStats(email);
                 return true;
             }
         }
@@ -252,6 +252,20 @@ public class  AuthenticationController extends Controller {
         }
         // Write into file
         rewriteUsersCSV(users);
+        // Update the stats.csv and settings.csv, replace old email with new
+        sc.updateEmail(temp.getEmail(), newEmail);
+        new StatsController().updateEmail(temp.getEmail(), newEmail);
+        // Rename the Sessions csv
+        Path oldSession = Paths.get(System.getProperty("user.dir"), "files", "sessions", temp.getEmail() + ".csv");
+        Path newSession = Paths.get(System.getProperty("user.dir"), "files", "sessions", newEmail + ".csv");
+        if(Files.exists(oldSession)) Files.move(oldSession, newSession, StandardCopyOption.REPLACE_EXISTING);
+        // Rename the decks folder
+        Path oldFolder = Paths.get(System.getProperty("user.dir"), "userFolders", temp.getEmail());
+        Path newFolder = Paths.get(System.getProperty("user.dir"), "userFolders", newEmail);
+        if(Files.exists(oldFolder)) Files.move(oldFolder, newFolder, StandardCopyOption.ATOMIC_MOVE);
+        // Update current user in memory
+        temp.setEmail(newEmail);
+        setCurrentUser(temp);
         return true;
     }
     // Change a user's recovery word

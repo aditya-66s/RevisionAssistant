@@ -76,7 +76,7 @@ public class AuthScreen {
 
         // Set up button to switch content when clicked
         selectRegister.button().setOnMouseClicked(_ -> {
-            buildRegistrationContent(contentLayer, selectRegister, selectLogin);
+            buildRegistrationContent(contentLayer, selectLogin, selectRegister);
             selectRegister.buttonRect().setStyle("-fx-fill: black");
             selectLogin.buttonRect().setStyle("-fx-fill: grey");
         });
@@ -248,13 +248,13 @@ public class AuthScreen {
     }
 
     // Displays registration content when register is selected
-    private void buildRegistrationContent(Group contentLayer, RectangleButtonBundle selectRegister, RectangleButtonBundle selectLogin) {
+    private void buildRegistrationContent(Group contentLayer, RectangleButtonBundle selectLogin, RectangleButtonBundle selectRegister) {
         // Style the tab buttons to indicate which one is selected
         selectRegister.buttonRect().setStyle("-fx-fill: black");
         selectLogin.buttonRect().setStyle("-fx-fill: grey");
         // Set up button to switch content when clicked
         selectLogin.button().setOnMouseClicked(_ -> {
-                buildLoginContent(contentLayer, selectRegister, selectLogin);
+                buildLoginContent(contentLayer, selectLogin, selectRegister);
                 selectRegister.buttonRect().setStyle("-fx-fill: grey");
                 selectLogin.buttonRect().setStyle("-fx-fill: black");
         });
@@ -291,7 +291,7 @@ public class AuthScreen {
         register.button().setOnMouseClicked(event -> registerSubmit(event, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
         // Create "Already have an account" button
         RectangleButtonBundle alreadyHaveAccount = ui.buildRectangularButtonBundle(700,60, "Already have an account", "smallerButtonText", 600, 805);
-        alreadyHaveAccount.button().setOnMouseClicked(_ -> buildLoginContent(contentLayer, selectRegister, selectLogin));
+        alreadyHaveAccount.button().setOnMouseClicked(_ -> buildLoginContent(contentLayer, selectLogin, selectRegister));
         // Replace content with registration form
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, register.button(), icons, alreadyHaveAccount.button());
     }

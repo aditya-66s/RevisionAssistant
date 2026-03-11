@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.Settings;
+import Models.UserStats;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -105,6 +106,20 @@ public class SettingsController extends Controller {
                 bw.newLine();
             }
         }
+    }
+    // Procedure to update the email within the file when the user changes their email
+    public void updateEmail(String oldEmail, String newEmail) throws IOException {
+        // load all users
+        ArrayList<Settings> settingsList = convertCSVtoArrayList();
+        for(Settings settings : settingsList){
+            if(settings.getEmail().equals(oldEmail)){
+                // change the email
+                settings.setEmail(newEmail);
+                break;
+            }
+        }
+        // rewrite the file
+        rewriteCSV(settingsList);
     }
 
     // Convert the settings object into a CSV Row

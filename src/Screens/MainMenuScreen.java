@@ -316,10 +316,12 @@ public class MainMenuScreen extends SystemScreens {
         }
         // Ask for user confirmation
         boolean confirmed = CustomAlert.confirm(window, "Import Backup", "This will replace your current " + fileName
-                    + ". Are you sure you want to continue?");
+                    + ". Are you sure you want to continue? You will be logged out following the import.");
         if(!confirmed) return;
         Path destination = Paths.get(System.getProperty("user.dir"), "files", fileName);
         Files.copy(source.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
         CustomAlert.success(window, fileName + " has been imported");
+        // Log out so imported files can be read from logging in
+        ac.logout();
     }
 }

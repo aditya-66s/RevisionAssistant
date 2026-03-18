@@ -1,9 +1,10 @@
 package Controllers;
 
+import Models.Flashcard;
 import Models.Settings;
 import Models.User;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -48,7 +49,32 @@ public abstract class Controller {
         // Create an empty users.csv so the system can continue
         Files.createFile(csvPath);
     }
-
+    // function to validate if the csv is suitable for import
+    public boolean validateCSV(File source, String fileName) throws  IOException{
+        try(BufferedReader br = new BufferedReader(new FileReader(source))){
+            String line;
+            while ((line = br.readLine()) != null) {
+                if(fileName.equals("flashcard")) {
+                    // Split at ,
+                    String[] data = line.split("\",\"");
+                    if(data.length != 2) return false;
+                    // Replace speech marks with empty space
+                    String question = data[0].replace("\"", "").replace("\\n", "\n");
+                    String answer = data[1].replace("\"", "").replace("\\n", "\n");
+                    return isNumeric(question) || isNumeric(answer);
+                }else{
+                    String[] data = line.split(",");
+                    if(fileName.equals("stats")) return data.length < 11;
+                    if(fileName.equals("settings")) return data.length < 7;
+                }
+            }
+        }
+        return true;
+    }
+    private boolean isNumeric(String s) {
+        try {Double.parseDouble(s);return true;}
+        catch (NumberFormatException e) {return false;}
+    }
     // Getters
     public User getCurrentUser(){
         return currentUser;

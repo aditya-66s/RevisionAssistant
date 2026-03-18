@@ -98,7 +98,7 @@ public class FlashcardController extends Controller {
                         + c.getQuestion().replace("\"", "\"\"") // Get rid of any speech marks within by adding another
                         .replace("\n", "\\n") // Replace new lines with \n so readline does not break mid-card
                         + "\",\"" // Closing speech marks with comma
-                        + c.getAnswer().replace("\"", "\"\"").replace("\n", "\\n"));
+                        + c.getAnswer().replace("\"", "\"\"").replace("\n", "\\n") + "\"");
                 bw.newLine();
             }
         }
@@ -329,6 +329,10 @@ public class FlashcardController extends Controller {
         if(file == null) return false;
         // Check size limits of flashcard deck
         ArrayList<Flashcard> cardsList = loadFCDeckFromPath(file.getAbsolutePath(), false);
+        if(!validateCSV(file ,"flashcard")){
+            CustomAlert.error(owner, "Invalid file format");
+            return false;
+        }
         if(cardsList.isEmpty() || cardsList.size() > 60){
             CustomAlert.error(owner, "A deck needs a minimum of 1 card and can have a maximum of 60 cards");
             return false;

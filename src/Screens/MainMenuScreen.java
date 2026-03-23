@@ -310,6 +310,10 @@ public class MainMenuScreen extends SystemScreens {
         File source = fileChooser.showOpenDialog(window);
         // return if empty or cancelled
         if(source == null) return;
+        if(!ac.validateCSV(source, fileName)){
+            CustomAlert.error(window, "Invalid file format");
+            return;
+        }
         if(source.length() == 0){
             CustomAlert.error(window, "File has no contents");
             return;

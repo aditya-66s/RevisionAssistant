@@ -61,19 +61,21 @@ public abstract class Controller {
                     // Replace speech marks with empty space
                     String question = data[0].replace("\"", "").replace("\\n", "\n");
                     String answer = data[1].replace("\"", "").replace("\\n", "\n");
-                    return isNumeric(question) || isNumeric(answer);
+                    if(isNumeric(question) || isNumeric(answer)) return false;
                 }else{
                     String[] data = line.split(",");
-                    if(fileName.equals("stats")) return data.length < 11;
-                    if(fileName.equals("settings")) return data.length < 7;
+                    if(fileName.equals("stats.csv") && data.length >= 11) return false;
+                    if(fileName.equals("settings.csv") && data.length != 7) return false;
                 }
             }
         }
         return true;
     }
+    // Check if the value is numeric
     private boolean isNumeric(String s) {
         try {Double.parseDouble(s);return true;}
-        catch (NumberFormatException e) {return false;}
+        catch (NumberFormatException e) {
+            return false;}
     }
     // Getters
     public User getCurrentUser(){

@@ -63,6 +63,7 @@ public class SettingsScreen extends SystemScreens{
             this.draftSettings = sC.getDraftSettings();
         }
     }
+
     // Function returning the scene displays all options in settings
     public Scene create() {
         Pane root = new Pane();
@@ -181,6 +182,7 @@ public class SettingsScreen extends SystemScreens{
         Window alertWindow = scene.getWindow();
         CustomAlert.info(alertWindow, message);
     }
+
 
     // Procedure to build accessibility settings content
     private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene) throws IOException {

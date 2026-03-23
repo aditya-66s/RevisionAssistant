@@ -263,7 +263,7 @@ Slider .thumb {
 }
 .cardBody{
     -fx-font-family: "Vipnagorgialla";
-    -fx-font-size: 30px;
+    -fx-font-size: 25px;
     -fx-wrapping-width: 1100px;
     -fx-text-alignment: center;
 }

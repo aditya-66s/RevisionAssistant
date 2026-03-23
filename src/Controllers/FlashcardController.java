@@ -347,8 +347,6 @@ public class FlashcardController extends Controller {
             String importDeck = file.getName().replace(".csv", "");
             // Set the file name
             setFlashcardDeckName(importDeck);
-            // Use previously initiated array list
-            readData(br, cardsList, false);
             // Use default save method
             saveFlashcardDeck(cardsList, true);
         }

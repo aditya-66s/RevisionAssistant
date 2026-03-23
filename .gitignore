@@ -28,3 +28,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 /log/
+/files/META-INF/

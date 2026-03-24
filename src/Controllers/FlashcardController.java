@@ -420,9 +420,11 @@ public class FlashcardController extends Controller {
         bw.newLine();
         bw.write("table{width: 100%; border-collapse: collapse; margin-top: 20px;}");
         bw.newLine();
-        bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black;}");
+        bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black; " +
+                "border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;}");
         bw.newLine();
-        bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; word-wrap: break-word; max-width: 250px;}");
+        bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; border-left: 1px solid black; " +
+                "border-top: 1px solid black;word-wrap: break-word; max-width: 250px;}");
         bw.newLine();
         bw.write("tr:nth-child(even){background-color: #f0f0f0;}");
         bw.newLine();

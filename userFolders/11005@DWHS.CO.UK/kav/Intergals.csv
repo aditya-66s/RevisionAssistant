@@ -1,0 +1,5 @@
+"what is the answer to ∫e^x dx","e^x +c"
+"what is the answer to ∫sinx dx","-cosx +c"
+"what is the answer to ∫cosx ln(sinx) dx","sinx ln(sinx)-sinx +c"
+"what is the answer to ∫xcosx dx","u= x v= sinx \nxsinx - ∫sinx dx=\nxsinx + cosx+c"
+"what is the answer to ∫2^x dx","2^x /ln 2"

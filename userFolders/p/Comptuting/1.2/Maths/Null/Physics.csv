@@ -1,10 +1,35 @@
-"What are the four stages of mitosis?","Prophase, metaphase, anaphase, telophase
-
-"1234567890","A
-
-"ThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThreeThree","SixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSixSix
-
-"asdasuhidauhsdhua","asdajisdjasjd
-
-"dfasdfijasdjfijasd","adsfasdfhj
-
+"Define velocity","Velocity is the rate of change of displacement with time and is a vector quantity with both magnitude and direction."
+"Define acceleration","Acceleration is the rate of change of velocity with time."
+"State Newton's First Law","An object remains at rest or in uniform motion unless acted upon by a resultant external force."
+"State Newton's Second Law","The resultant force on an object is equal to the rate of change of its momentum (F = ma for constant mass)."
+"State Newton's Third Law","For every action, there is an equal and opposite reaction."
+"Define momentum","Momentum is the product of mass and velocity (p = mv)."
+"State the conservation of momentum","In a closed system, total momentum before an interaction equals total momentum after."
+"Define work done","Work done is the product of force and displacement in the direction of the force (W = Fs)."
+"Define kinetic energy","Kinetic energy is the energy an object has due to its motion (Ek = 1/2 mv^2)."
+"Define gravitational potential energy","Energy stored due to an object's position in a gravitational field (Ep = mgh)."
+"Define power","Power is the rate of doing work or energy transfer (P = W/t)."
+"State Hooke's Law","The extension of a spring is proportional to the force applied, provided the limit of proportionality is not exceeded."
+"Define stress","Stress is force per unit area (σ = F/A)."
+"Define strain","Strain is the ratio of extension to original length."
+"Define density","Density is mass per unit volume (ρ = m/V)."
+"Define pressure","Pressure is force per unit area (P = F/A)."
+"State Boyle's Law","For a fixed mass of gas at constant temperature, pressure is inversely proportional to volume."
+"State Charles's Law","For a fixed mass of gas at constant pressure, volume is directly proportional to absolute temperature."
+"Define specific heat capacity","Energy required to raise the temperature of 1 kg of a substance by 1°C or 1K."
+"Define specific latent heat","Energy required to change the state of 1 kg of a substance without temperature change."
+"Define wave","A wave is a transfer of energy through oscillations without net movement of matter."
+"Define wavelength","The distance between two consecutive points in phase on a wave."
+"Define frequency","The number of oscillations per second."
+"State wave equation","Wave speed equals frequency times wavelength (v = fλ)."
+"Define refraction","The change in direction of a wave as it passes from one medium to another due to speed change."
+"Define diffraction","The spreading of waves as they pass through a gap or around an obstacle."
+"Define interference","The superposition of two waves to form a resultant wave."
+"Define electric current","The rate of flow of charge (I = Q/t)."
+"Define potential difference","Work done per unit charge (V = W/Q)."
+"State Ohm's Law","Current is proportional to potential difference provided temperature remains constant (V = IR)."
+"Define resistance","Resistance is the ratio of potential difference to current (R = V/I)."
+"Define power in circuits","Power is the rate of energy transfer in a circuit (P = IV)."
+"Define electric field strength","Force per unit charge (E = F/Q)."
+"Define gravitational field strength","Force per unit mass (g = F/m)."
+"Define magnetic flux density","Force per unit current per unit length on a conductor at right angles to a magnetic field."

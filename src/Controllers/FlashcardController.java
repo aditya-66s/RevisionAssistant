@@ -414,7 +414,7 @@ public class FlashcardController extends Controller {
         bw.newLine();
         bw.write("<html><head><title>" + exportDeck + "</title><style>");
         bw.newLine();
-        bw.write("body{font-family: Arial, sans-serif; margin: 40px;}");
+        bw.write("body{font-family: Arial, sans-serif; margin: 40px; font-size: 18px;}");
         bw.newLine();
         bw.write("h1{color: black; text-align: center;}");
         bw.newLine();
@@ -423,10 +423,10 @@ public class FlashcardController extends Controller {
         bw.write("th{background-color: black; color: white; padding: 40px; text-align: center; border-right: 1px solid black; " +
                 "border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;}");
         bw.newLine();
-        bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: center; border-right: 1px solid black; border-left: 1px solid black; " +
-                "border-top: 1px solid black;word-wrap: break-word; max-width: 250px;}");
+        bw.write("td{padding: 50px; border-bottom: 1px solid black; text-align: left; border-right: 1px solid black; border-left: 1px solid black; " +
+                "border-top: 1px solid black;word-wrap: break-word; max-width: 250px; font-size: 18px;}");
         bw.newLine();
-        bw.write("tr:nth-child(even){background-color: #f0f0f0;}");
+        bw.write("tr:nth-child(even){background-color: #c8c8c8;}");
         bw.newLine();
         bw.write("</style></head><body>");
         bw.newLine();

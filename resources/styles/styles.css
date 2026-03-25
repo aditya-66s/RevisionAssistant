@@ -129,6 +129,11 @@ Slider{
     -fx-show-tick-labels: true;
     -fx-show-tick-marks: true;
 }
+.rateSlider{
+    -fx-pref-width: 200px;
+    -fx-show-tick-labels: true;
+    -fx-show-tick-marks: true;
+}
 Slider .track{
     -fx-background-color: #444;
     -fx-background-radius: 6px;

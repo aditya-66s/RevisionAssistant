@@ -19,9 +19,11 @@ public class TTSController extends Controller{
     // Default values
     private String voice = "dfki-prudence-hsmm";
     private double ttsVolume;
+    private double rate;
     // Constructor
     public TTSController(double ttsVolume){
         this.ttsVolume = ttsVolume;
+        this.rate = 1.0;
         // Initialise the MaryTTS on a separate thread -> prevent slow start
         new Thread(() -> {
             try{
@@ -49,7 +51,7 @@ public class TTSController extends Controller{
             Media media = new Media(tempfile.toURI().toString());
             audioPlayer = new MediaPlayer(media);
             audioPlayer.setVolume(ttsVolume);
-
+            audioPlayer.setRate(rate);
             audioPlayer.play();
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -61,6 +63,12 @@ public class TTSController extends Controller{
             audioPlayer.stop();
             audioPlayer = null;
         }
+    }
+    public void setRate(double rate){
+        this.rate = Math.min(2.0, Math.max(1.0, Math.round(rate * 10.0) / 10.0));
+    }
+    public double getRate(){
+        return rate;
     }
 
     public void setTTSVolume(double ttsVolume) {

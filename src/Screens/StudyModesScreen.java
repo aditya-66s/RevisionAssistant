@@ -13,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -172,6 +173,7 @@ public class StudyModesScreen extends SystemScreens{
         ImageView ttsIcon = createIcon(100, 100, "/images/StudyModesScreen/tts.png");
         ttsIcon.setLayoutX(200); ttsIcon.setLayoutY(290);
         ttsIcon.setCursor(Cursor.HAND);
+
         ttsIcon.setOnMouseClicked(_->{
             // If showing answer, read out answer
             if(sessionC.isShowingAnswer()) tts.speak(sessionC.getCurrentCard().getAnswer());
@@ -211,8 +213,28 @@ public class StudyModesScreen extends SystemScreens{
         mode.getStyleClass().add("infoText");
         mode.setLayoutX(125); mode.setLayoutY(230); mode.setWrappingWidth(1350);
         Group newContent = new Group(timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
-        // If TTS is enabled, add the ttsIcon
-        if(sc.getCurrentSettings().isTTSEnabled()) newContent.getChildren().add(ttsIcon);
+
+        Text rateDisplay = new Text("Rate: 1.0");
+        rateDisplay.getStyleClass().add("infoText");
+        ui.setPosition(rateDisplay, 110, 470);
+        RectangleButtonBundle minus = ui.buildRectangularButtonBundle(40, 40, "-", "smallButtonText", 150, 480);
+        RectangleButtonBundle plus = ui.buildRectangularButtonBundle(40, 40, "+", "smallButtonText", 250, 480);
+        double[] rate = {1.0};
+        tts.setRate(rate[0]);
+        plus.button().setOnMouseClicked(_-> {
+            tts.setRate(rate[0] + 0.1);
+            rate[0] = tts.getRate();
+            rateDisplay.setText(String.format("Rate: %.1f", rate[0]));
+        });
+        minus.button().setOnMouseClicked(_-> {
+            tts.setRate(rate[0] - 0.1);
+            rate[0] = tts.getRate();
+            rateDisplay.setText(String.format("Rate: %.1f", rate[0]));
+        });
+        // If TTS is enabled, add the ttsIcon and rate option
+        Group ttsGroup = new Group(ttsIcon, rateDisplay, minus.button(), plus.button());
+
+        if(sc.getCurrentSettings().isTTSEnabled()) newContent.getChildren().add(ttsGroup);
         nav.switchContent(contentLayer, newContent, backButton(contentLayer));
         // Start the timer as soon as this content is built
         startTimer();

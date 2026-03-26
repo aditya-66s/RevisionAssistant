@@ -222,6 +222,7 @@ public class StudyModesScreen extends SystemScreens{
         RectangleButtonBundle plus = ui.buildRectangularButtonBundle(40, 40, "+", "smallButtonText", 250, 480);
         // Array value
         double[] rate = {1.0};
+        // Reset per session
         tts.setRate(rate[0]);
         // On plus
         plus.button().setOnMouseClicked(_-> {
@@ -237,7 +238,6 @@ public class StudyModesScreen extends SystemScreens{
         });
         // If TTS is enabled, add the ttsIcon and rate option
         Group ttsGroup = new Group(ttsIcon, rateDisplay, minus.button(), plus.button());
-
         if(sc.getCurrentSettings().isTTSEnabled()) newContent.getChildren().add(ttsGroup);
         nav.switchContent(contentLayer, newContent, backButton(contentLayer));
         // Start the timer as soon as this content is built

@@ -213,19 +213,23 @@ public class StudyModesScreen extends SystemScreens{
         mode.getStyleClass().add("infoText");
         mode.setLayoutX(125); mode.setLayoutY(230); mode.setWrappingWidth(1350);
         Group newContent = new Group(timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
-
+        // Create rate vary option
         Text rateDisplay = new Text("Rate: 1.0");
         rateDisplay.getStyleClass().add("infoText");
         ui.setPosition(rateDisplay, 110, 470);
+        // Create buttons
         RectangleButtonBundle minus = ui.buildRectangularButtonBundle(40, 40, "-", "smallButtonText", 150, 480);
         RectangleButtonBundle plus = ui.buildRectangularButtonBundle(40, 40, "+", "smallButtonText", 250, 480);
+        // Array value
         double[] rate = {1.0};
         tts.setRate(rate[0]);
+        // On plus
         plus.button().setOnMouseClicked(_-> {
             tts.setRate(rate[0] + 0.1);
             rate[0] = tts.getRate();
             rateDisplay.setText(String.format("Rate: %.1f", rate[0]));
         });
+        // On minus
         minus.button().setOnMouseClicked(_-> {
             tts.setRate(rate[0] - 0.1);
             rate[0] = tts.getRate();

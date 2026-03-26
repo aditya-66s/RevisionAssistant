@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Destruction error">
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/misc.xml" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/modules.xml" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40_[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40__Changes_.xml" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/RevisionAssistant.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.gitignore" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.gitignore" afterDir="false" />
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Uncommitted files">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/files/sessions/p.csv" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/files/sessions/p.csv" afterDir="false" />
+      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,7 +209,7 @@
       <workItem from="1774344997336" duration="1992000" />
       <workItem from="1774355630990" duration="65000" />
       <workItem from="1774526293367" duration="267000" />
-      <workItem from="1774526588994" duration="421000" />
+      <workItem from="1774526588994" duration="1320000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />
@@ -587,7 +580,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="images" />
     <MESSAGE value="Modular Password Design" />
     <MESSAGE value="Modular Email Input" />
     <MESSAGE value="Alerts" />
@@ -612,7 +604,8 @@
     <MESSAGE value="Destruction error" />
     <MESSAGE value="f" />
     <MESSAGE value="adas" />
-    <option name="LAST_COMMIT_MESSAGE" value="adas" />
+    <MESSAGE value="Uncommitted files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Uncommitted files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Destruction error" />
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Destruction error">
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/misc.xml" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/modules.xml" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40_[Changes]1/shelved.patch" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_03_2026_10_40__Changes_.xml" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/RevisionAssistant.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.gitignore" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,6 +94,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "git-widget-placeholder": "main",
@@ -90,7 +102,7 @@
     "last_opened_file_path": "N:/Computing/A Level/A Level NEA/RevisionAssistant",
     "nodejs_package_manager_path": "npm",
     "onboarding.tips.debug.path": "//srv043/10920$/Computing/A Level/A Level NEA/RevisionAssistant/src/Main.java",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "project.propCompiler",
@@ -204,7 +216,7 @@
       <workItem from="1774344997336" duration="1992000" />
       <workItem from="1774355630990" duration="65000" />
       <workItem from="1774526293367" duration="267000" />
-      <workItem from="1774526588994" duration="183000" />
+      <workItem from="1774526588994" duration="421000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />

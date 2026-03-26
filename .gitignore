@@ -29,5 +29,3 @@ bin/
 .DS_Store
 /log/
 /files/META-INF/
-/.idea/
-/RevisionAssistant.iml

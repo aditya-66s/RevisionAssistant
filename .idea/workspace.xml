@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Destruction error" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="printScope" value="4" />
+    <option name="PRINT_LINE_NUMBERS" value="true" />
+    <option name="OPEN_IN_BROWSER" value="true" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Aditya Sainath &lt;sainathaditya738@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Prototype-2" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="N:/Computing/A Level/A Level NEA/RevisionAssistant" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;aditya-66s&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/aditya-66s/RevisionAssistant.git&quot;,
+    &quot;accountId&quot;: &quot;5f1e3397-0f18-478b-89a0-fcd0c8cf9d6f&quot;
+  },
+  &quot;highlightDiffLinesInEditor&quot;: true
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/Main.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="38TqFNBIgkl00GajlmAJit3KazW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "N:/Computing/A Level/A Level NEA/RevisionAssistant",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "//srv043/10920$/Computing/A Level/A Level NEA/RevisionAssistant/src/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "project.propCompiler",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\srv043\10920$\Computing\A Level\A Level NEA\RevisionAssistant\resources\sounds" />
+      <recent name="\\srv043\10920$\Computing\A Level\A Level NEA\RevisionAssistant\resources\images\EndOfRevisionScreen" />
+      <recent name="\\srv043\10920$\Computing\A Level\A Level NEA\RevisionAssistant\resources\images\Constant" />
+      <recent name="\\srv043\10920$\Computing\A Level\A Level NEA\RevisionAssistant\resources\images\SettingsScreen" />
+      <recent name="\\srv043\10920$\Computing\A Level\A Level NEA\RevisionAssistant\resources\images\SplashScreen" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="RevisionAssistant" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="RevisionAssistant" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="" />
+      <created>1768833804786</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1768833804786</updated>
+      <workItem from="1771835738647" duration="494000" />
+      <workItem from="1771838251014" duration="3213000" />
+      <workItem from="1771842092153" duration="3110000" />
+      <workItem from="1771856166454" duration="3216000" />
+      <workItem from="1771921834276" duration="467000" />
+      <workItem from="1771926720373" duration="4036000" />
+      <workItem from="1771932915390" duration="3501000" />
+      <workItem from="1771942631925" duration="3233000" />
+      <workItem from="1772011148494" duration="3059000" />
+      <workItem from="1772019150415" duration="3464000" />
+      <workItem from="1772032236078" duration="159000" />
+      <workItem from="1772094871702" duration="628000" />
+      <workItem from="1772100964760" duration="2618000" />
+      <workItem from="1772105562157" duration="3435000" />
+      <workItem from="1772111064308" duration="64000" />
+      <workItem from="1772111447177" duration="34000" />
+      <workItem from="1772181504430" duration="139000" />
+      <workItem from="1772192031678" duration="2607000" />
+      <workItem from="1772194677417" duration="694000" />
+      <workItem from="1772451193426" duration="3194000" />
+      <workItem from="1772526898904" duration="568000" />
+      <workItem from="1772533002844" duration="3416000" />
+      <workItem from="1772541488745" duration="2269000" />
+      <workItem from="1772550807939" duration="27000" />
+      <workItem from="1772613965957" duration="60000" />
+      <workItem from="1772615788412" duration="5574000" />
+      <workItem from="1772705882023" duration="2431000" />
+      <workItem from="1772710353846" duration="2510000" />
+      <workItem from="1772717844671" duration="1452000" />
+      <workItem from="1772786581253" duration="53000" />
+      <workItem from="1772796892094" duration="224000" />
+      <workItem from="1772797131632" duration="20000" />
+      <workItem from="1772797197711" duration="254000" />
+      <workItem from="1773044754570" duration="842000" />
+      <workItem from="1773047842130" duration="66000" />
+      <workItem from="1773047933522" duration="3242000" />
+      <workItem from="1773052977115" duration="1118000" />
+      <workItem from="1773134251284" duration="5154000" />
+      <workItem from="1773142550610" duration="3115000" />
+      <workItem from="1773228881765" duration="53000" />
+      <workItem from="1773228978877" duration="2404000" />
+      <workItem from="1773313012491" duration="610000" />
+      <workItem from="1773315323975" duration="3420000" />
+      <workItem from="1773743958601" duration="817000" />
+      <workItem from="1773825645457" duration="3943000" />
+      <workItem from="1773830820952" duration="743000" />
+      <workItem from="1774000455375" duration="483000" />
+      <workItem from="1774260660859" duration="22000" />
+      <workItem from="1774340659945" duration="1229000" />
+      <workItem from="1774344997336" duration="1992000" />
+      <workItem from="1774355630990" duration="65000" />
+      <workItem from="1774526293367" duration="267000" />
+      <workItem from="1774526588994" duration="183000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial NEA project setup">
+      <option name="closed" value="true" />
+      <created>1768834579354</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1768834579354</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Revision Assistant Creation">
+      <option name="closed" value="true" />
+      <created>1768834856873</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1768834856873</updated>
+    </task>
+    <task id="LOCAL-00003" summary="LoginScreen">
+      <option name="closed" value="true" />
+      <created>1768906738943</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768906738943</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added ContentSwitch with button">
+      <option name="closed" value="true" />
+      <created>1768912375997</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1768912375997</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Extra Modularity">
+      <option name="closed" value="true" />
+      <created>1768922097854</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768922097854</updated>
+    </task>
+    <task id="LOCAL-00006" summary="nothing much">
+      <option name="closed" value="true" />
+      <created>1768989782562</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1768989782563</updated>
+    </task>
+    <task id="LOCAL-00007" summary="nothing much">
+      <option name="closed" value="true" />
+      <created>1768993586453</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1768993586453</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Merge branch 'Prototype-1' of https://github.com/aditya-66s/RevisionAssistant into Prototype-1&#10;&#10;# Conflicts:&#10;#&#9;src/Main.java">
+      <option name="closed" value="true" />
+      <created>1768998687649</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1768998687649</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added text+password fields">
+      <option name="closed" value="true" />
+      <created>1769004932417</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1769004932417</updated>
+    </task>
+    <task id="LOCAL-00010" summary="little changes">
+      <option name="closed" value="true" />
+      <created>1769007992811</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1769007992811</updated>
+    </task>
+    <task id="LOCAL-00011" summary="assdas">
+      <option name="closed" value="true" />
+      <created>1769087592838</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1769087592838</updated>
+    </task>
+    <task id="LOCAL-00012" summary="users.csv added">
+      <option name="closed" value="true" />
+      <created>1769088593064</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1769088593064</updated>
+    </task>
+    <task id="LOCAL-00013" summary="users.csv added">
+      <option name="closed" value="true" />
+      <created>1769088894532</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1769088894532</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Recovery Word added">
+      <option name="closed" value="true" />
+      <created>1769429702020</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1769429702020</updated>
+    </task>
+    <task id="LOCAL-00015" summary="test">
+      <option name="closed" value="true" />
+      <created>1769510125217</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1769510125217</updated>
+    </task>
+    <task id="LOCAL-00016" summary="test">
+      <option name="closed" value="true" />
+      <created>1769510248549</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1769510248549</updated>
+    </task>
+    <task id="LOCAL-00017" summary="images">
+      <option name="closed" value="true" />
+      <created>1769510495019</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1769510495019</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Modular Password Design">
+      <option name="closed" value="true" />
+      <created>1769521802264</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1769521802264</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Modular Email Input">
+      <option name="closed" value="true" />
+      <created>1769526652172</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1769526652172</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Alerts">
+      <option name="closed" value="true" />
+      <created>1769594485852</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1769594485852</updated>
+    </task>
+    <task id="LOCAL-00021" summary="adding constraints to email+password input">
+      <option name="closed" value="true" />
+      <created>1769597621292</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1769597621292</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Main Menu Creation">
+      <option name="closed" value="true" />
+      <created>1770131666583</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1770131666583</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Validation to Recovery word">
+      <option name="closed" value="true" />
+      <created>1770207820262</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1770207820262</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Extra changes">
+      <option name="closed" value="true" />
+      <created>1770293748847</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1770293748847</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Resources categorised">
+      <option name="closed" value="true" />
+      <created>1770294554582</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1770294554582</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Fixing errors">
+      <option name="closed" value="true" />
+      <created>1770372601837</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1770372601837</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Extra css">
+      <option name="closed" value="true" />
+      <created>1770635592197</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1770635592197</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Constant Brightness Update">
+      <option name="closed" value="true" />
+      <created>1770806917595</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1770806917595</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Constant Brightness Update">
+      <option name="closed" value="true" />
+      <created>1770899417104</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1770899417104</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Flashcard Creation">
+      <option name="closed" value="true" />
+      <created>1771858876649</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1771858876649</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Flashcard Creation">
+      <option name="closed" value="true" />
+      <created>1772032330890</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1772032330890</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Searching Added">
+      <option name="closed" value="true" />
+      <created>1772108981257</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1772108981257</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Wrong Answers Mode">
+      <option name="closed" value="true" />
+      <created>1772536451729</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1772536451729</updated>
+    </task>
+    <task id="LOCAL-00034" summary="extra changes">
+      <option name="closed" value="true" />
+      <created>1772543773185</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1772543773185</updated>
+    </task>
+    <task id="LOCAL-00035" summary="sfx initial">
+      <option name="closed" value="true" />
+      <created>1772621688291</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1772621688291</updated>
+    </task>
+    <task id="LOCAL-00036" summary="sfx initial">
+      <option name="closed" value="true" />
+      <created>1772719792830</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1772719792830</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Analytics Graphs">
+      <option name="closed" value="true" />
+      <created>1773051211454</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1773051211454</updated>
+    </task>
+    <task id="LOCAL-00038" summary="changed a graph">
+      <option name="closed" value="true" />
+      <created>1773138493708</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1773138493708</updated>
+    </task>
+    <task id="LOCAL-00039" summary="changed a graph">
+      <option name="closed" value="true" />
+      <created>1773138732330</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1773138732330</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Changes">
+      <option name="closed" value="true" />
+      <created>1773232144410</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1773232144410</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Changes">
+      <option name="closed" value="true" />
+      <created>1773317382145</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1773317382145</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Destruction error">
+      <option name="closed" value="true" />
+      <created>1773829604757</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1773829604757</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="images" />
+    <MESSAGE value="Modular Password Design" />
+    <MESSAGE value="Modular Email Input" />
+    <MESSAGE value="Alerts" />
+    <MESSAGE value="adding constraints to email+password input" />
+    <MESSAGE value="Main Menu Creation" />
+    <MESSAGE value="Validation to Recovery word" />
+    <MESSAGE value="Extra changes" />
+    <MESSAGE value="Resources categorised" />
+    <MESSAGE value="Fixing errors" />
+    <MESSAGE value="Extra css" />
+    <MESSAGE value="Constant Brightness Update" />
+    <MESSAGE value="Flashcard Creation" />
+    <MESSAGE value="Searching Added" />
+    <MESSAGE value="Wrong Answers Mode" />
+    <MESSAGE value="extra changes" />
+    <MESSAGE value="sfx initial" />
+    <MESSAGE value="wwww" />
+    <MESSAGE value="Analytics Graphs" />
+    <MESSAGE value="changed a graph" />
+    <MESSAGE value="awesbhas" />
+    <MESSAGE value="Changes" />
+    <MESSAGE value="Destruction error" />
+    <MESSAGE value="f" />
+    <MESSAGE value="adas" />
+    <option name="LAST_COMMIT_MESSAGE" value="adas" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IllegalStateException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.nio.file.InvalidPathException" package="java.nio.file" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception" />
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Uncommitted files">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/files/sessions/p.csv" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/files/sessions/p.csv" afterDir="false" />
-      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" afterDir="false" />
-    </list>
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Uncommitted files" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -209,7 +205,7 @@
       <workItem from="1774344997336" duration="1992000" />
       <workItem from="1774355630990" duration="65000" />
       <workItem from="1774526293367" duration="267000" />
-      <workItem from="1774526588994" duration="1320000" />
+      <workItem from="1774526588994" duration="1375000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />

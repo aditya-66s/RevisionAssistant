@@ -5,7 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Uncommitted files">
-      <change beforePath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" beforeDir="false" afterPath="N:/Computing/A Level/A Level NEA/RevisionAssistant/src/Screens/StudyModesScreen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/maryTTS.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RevisionAssistant.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/files/sessions/p.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/sessions/p.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/files/settings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/settings.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/files/stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/stats.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/TTSController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/TTSController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/1.2/Maths/lol/dogdog.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/1.2/flashcards_stress_test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/Chemistry_Renamed.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/M2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/Test28.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/bio.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/test100.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/Testest.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/qweq.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +70,7 @@
         <entry key="$PROJECT_DIR$" value="Prototype-2" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="N:/Computing/A Level/A Level NEA/RevisionAssistant" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -60,7 +81,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/aditya-66s/RevisionAssistant.git&quot;,
-    &quot;accountId&quot;: &quot;5f1e3397-0f18-478b-89a0-fcd0c8cf9d6f&quot;
+    &quot;accountId&quot;: &quot;a32bf77e-4b95-4b5e-8de1-89366a76f5ae&quot;
   },
   &quot;highlightDiffLinesInEditor&quot;: true
 }</component>
@@ -88,15 +109,20 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;N:/Computing/A Level/A Level NEA/RevisionAssistant&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;//srv043/10920$/Computing/A Level/A Level NEA/RevisionAssistant/src/Main.java&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -143,8 +169,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -209,6 +235,8 @@
       <workItem from="1774526293367" duration="267000" />
       <workItem from="1774526588994" duration="1375000" />
       <workItem from="1774527990069" duration="345000" />
+      <workItem from="1774552058065" duration="4088000" />
+      <workItem from="1774653765451" duration="3503000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />

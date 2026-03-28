@@ -453,6 +453,9 @@ public class FlashcardManagementScreen extends SystemScreens{
             cell.setOnDragDetected(e->{
                 // Don't allow the moving of empty cells
                 if(cell.isEmpty()) return;
+                // Don't allow root to be dragged
+                TreeItem<String> item = cell.getTreeItem();
+                if(item == null || item.getParent() == null ) return;
                 // Start a move drag operation on the cell
                 Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
                 // Put cell's text into a clipboard to know what's being dragged
@@ -472,7 +475,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             // User has entered the drag area of a cell
             cell.setOnDragEntered(e->{
                 // Change the styling of the cell to show it's a valid move
-                if(e.getDragboard().hasString() && e.getGestureSource() != cell){
+                if(e.getDragboard().hasString() && e.getGestureSource() != cell && isFolder(cell.getTreeItem())){
                     cell.setStyle("-fx-background-color: #6891de; -fx-background-radius: 6px;");
                 }
             });
@@ -542,11 +545,15 @@ public class FlashcardManagementScreen extends SystemScreens{
     }
     // Check if folder
     private boolean isFolder(TreeItem<String> potentialFolder){
-        return potentialFolder.getValue().startsWith("\uD83D\uDCC1");
+        return potentialFolder != null
+                && potentialFolder.getValue() != null
+                && potentialFolder.getValue().startsWith("\uD83D\uDCC1");
     }
     // Check if file
     private boolean isFile(TreeItem<String> potentialFile){
-        return potentialFile.getValue().startsWith("\uD83D\uDCC4");
+        return potentialFile != null
+                && potentialFile.getValue() != null
+                && potentialFile.getValue().startsWith("\uD83D\uDCC4");
     }
     // Subroutine to add a new folder within the tree
     private void addFolder(TreeView<String> tree){

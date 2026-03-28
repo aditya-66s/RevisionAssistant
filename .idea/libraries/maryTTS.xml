@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="maryTTS">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libraries/maryTTS/marytts-runtime-5.2-jar-with-dependencies.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/maryTTS/voice-dfki-prudence-hsmm-5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/maryTTS/marytts-lang-en-5.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -64,6 +64,7 @@ public class TTSController extends Controller{
             audioPlayer = null;
         }
     }
+    // Getters and Setters
     public void setRate(double rate){
         this.rate = Math.min(2.0, Math.max(1.0, Math.round(rate * 10.0) / 10.0));
     }

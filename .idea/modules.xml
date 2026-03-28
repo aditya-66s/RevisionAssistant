@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://N:/Computing/A Level/A Level NEA/RevisionAssistant/RevisionAssistant.iml" filepath="N:/Computing/A Level/A Level NEA/RevisionAssistant/RevisionAssistant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RevisionAssistant.iml" filepath="$PROJECT_DIR$/RevisionAssistant.iml" />
     </modules>
   </component>
 </project>

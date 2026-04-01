@@ -27,7 +27,7 @@ public class StatsController extends Controller{
             String line;
             while ((line = br.readLine()) != null) {
                 String[] stats = line.split(",");
-                if(stats.length < 11) throw new IllegalArgumentException("Corrupted Row: " + line);
+                if(stats.length < minStatsCSVDataItems) throw new IllegalArgumentException("Corrupted Row: " + line);
                 String email = stats[0];
                 int totalXP = Integer.parseInt(stats[1]);
                 int totalSessions = Integer.parseInt(stats[2]);

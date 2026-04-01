@@ -24,6 +24,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RevisionSystemScreen extends SystemScreens{
+    // Constants
+    private static final int titleX = 275;
+    // Graphs
+    private static final int graphBtnW = 380;
+    private static final int graphBtnH = 80;
+    private static final int graphButtonX = 180;
+    private static final int graphButtonY = 200;
+    private static final int graphX = 200;
+    private static final int graphY = 300;
+    private static final int graphW = 1500;
+    private static final int graphH = 600;
+    // Import / Export
+    private static final int iconX = 297;
+
     private final AuthenticationController ac;
     private final SettingsController sc;
     private final FlashcardController fc;
@@ -39,15 +53,15 @@ public class RevisionSystemScreen extends SystemScreens{
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
-        Scene scene = new Scene(root, 1920, 1057);
+        Scene scene = new Scene(root, sceneW, sceneH);
         Group background = createBackground("Revision System");
-        getTitle().setLayoutX(275);
+        getTitle().setLayoutX(titleX);
         ImageView back = getSwitchScreenBackView(ac);
 
         Group contentLayer = new Group();
 
-        RectangleButtonBundle fcManagement = ui.buildRectangularButtonBundle(rectW, rectH, "Flashcards", "buttonText", 310, 250);
-        ImageView fcmIcon = createIcon(310, 245, "/images/RevisionSystemScreen/flashcardmanagement.png");
+        RectangleButtonBundle fcManagement = ui.buildRectangularButtonBundle(rectW, rectH, "Flashcards", "buttonText", fourX, fourY1);
+        ImageView fcmIcon = createIcon(fourX, fourY1+iconOffset, "/images/RevisionSystemScreen/flashcardmanagement.png");
         fcManagement.button().setOnMouseClicked(_ -> {
             try {
                 fcManagementMouseClick();
@@ -56,8 +70,8 @@ public class RevisionSystemScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle studyModes = ui.buildRectangularButtonBundle(rectW, rectH, "Study Modes", "buttonText", 310,  420);
-        ImageView smIcon = createIcon(310, 415, "/images/RevisionSystemScreen/studymodes.png");
+        RectangleButtonBundle studyModes = ui.buildRectangularButtonBundle(rectW, rectH, "Study Modes", "buttonText", fourX,  fourY2);
+        ImageView smIcon = createIcon(fourX, fourY2+iconOffset, "/images/RevisionSystemScreen/studymodes.png");
         studyModes.button().setOnMouseClicked(_ -> {
             try {
                smMouseClick();
@@ -66,11 +80,11 @@ public class RevisionSystemScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle impOrExp = ui.buildRectangularButtonBundle(rectW, rectH, "Import / Export", "buttonText", 310, 591);
-        ImageView impIcon = createIcon(310, 586, "/images/RevisionSystemScreen/import.png");
+        RectangleButtonBundle impOrExp = ui.buildRectangularButtonBundle(rectW, rectH, "Import / Export", "buttonText", fourX, fourY3);
+        ImageView impIcon = createIcon(fourX, fourY3+iconOffset, "/images/RevisionSystemScreen/import.png");
         impOrExp.button().setOnMouseClicked(_ -> buildImportExport(contentLayer));
-        RectangleButtonBundle analytics = ui.buildRectangularButtonBundle(rectW, rectH, "Analytics", "buttonText", 310, 762);
-        ImageView aIcon = createIcon(310, 757, "/images/RevisionSystemScreen/analytics.png");
+        RectangleButtonBundle analytics = ui.buildRectangularButtonBundle(rectW, rectH, "Analytics", "buttonText", fourX, fourY4);
+        ImageView aIcon = createIcon(fourX, fourY4+iconOffset, "/images/RevisionSystemScreen/analytics.png");
         analytics.button().setOnMouseClicked(_-> {
             try {
                 buildAnalyticsContent(contentLayer);
@@ -84,18 +98,19 @@ public class RevisionSystemScreen extends SystemScreens{
         root.getChildren().addAll(background, back, contentLayer);
         return scene;
     }
+
     // Build the content to show the graphs
     private void buildAnalyticsContent(Group contentLayer) throws IOException {
         // Buttons to switch the graphs
-        RectangleButtonBundle accuracy = ui.buildRectangularButtonBundle(380, 80, "Accuracy", "smallerButtonText", 0, 0);
-        RectangleButtonBundle studyTime = ui.buildRectangularButtonBundle(380, 80, "Study Time", "smallerButtonText", 0, 0);
-        RectangleButtonBundle weakDecks = ui.buildRectangularButtonBundle(380, 80, "Weakest Decks", "smallerButtonText", 0, 0);
-        RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(380, 80, "Sessions / Week", "smallerButtonText", 0, 0);
-        HBox buttons = new HBox(10, accuracy.button(), studyTime.button(), weakDecks.button(), sessions.button());
-        ui.setPosition(buttons, 180, 200);
+        RectangleButtonBundle accuracy = ui.buildRectangularButtonBundle(graphBtnW, graphBtnH, "Accuracy", "smallerButtonText", zero, zero);
+        RectangleButtonBundle studyTime = ui.buildRectangularButtonBundle(graphBtnW, graphBtnH, "Study Time", "smallerButtonText", zero, zero);
+        RectangleButtonBundle weakDecks = ui.buildRectangularButtonBundle(graphBtnW, graphBtnH, "Weakest Decks", "smallerButtonText", zero, zero);
+        RectangleButtonBundle sessions = ui.buildRectangularButtonBundle(graphBtnW, graphBtnH, "Sessions / Week", "smallerButtonText", zero, zero);
+        HBox buttons = new HBox(vSpacing, accuracy.button(), studyTime.button(), weakDecks.button(), sessions.button());
+        ui.setPosition(buttons, graphButtonX, graphButtonY);
         // Create the chart group
         Group chartGroup = new Group();
-        ui.setPosition(chartGroup, 200, 300);
+        ui.setPosition(chartGroup, graphX, graphY);
         // Load all session history
         ArrayList<SessionRecord> historicalSessions = stats.loadSessionRecords(ac.getEmail());
         // Initial chart
@@ -119,8 +134,8 @@ public class RevisionSystemScreen extends SystemScreens{
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
         lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Accuracy over Time");
-        lineGraph.setMaxSize(1500, 600);
-        lineGraph.setPrefSize(1500, 600);
+        lineGraph.setMaxSize(graphW, graphH);
+        lineGraph.setPrefSize(graphW, graphH);
         lineGraph.setLegendVisible(false);
         lineGraph.setCreateSymbols(true); // data points at each plot point
         // Populate the graph
@@ -146,8 +161,8 @@ public class RevisionSystemScreen extends SystemScreens{
         LineChart<String, Number> lineGraph = new LineChart<>(xAxis, yAxis);
         lineGraph.getStyleClass().add("charts");
         lineGraph.setTitle("Study Time per Session");
-        lineGraph.setMaxSize(1500, 600);
-        lineGraph.setPrefSize(1500, 600);
+        lineGraph.setMaxSize(graphW, graphH);
+        lineGraph.setPrefSize(graphW, graphH);
         lineGraph.setLegendVisible(false);
         lineGraph.setCreateSymbols(true);
         // Populate the graph
@@ -175,8 +190,8 @@ public class RevisionSystemScreen extends SystemScreens{
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
         chart.getStyleClass().add("charts");
         chart.setTitle("Weakest Decks");
-        chart.setMaxSize(1500, 600);
-        chart.setPrefSize(1500, 600);
+        chart.setMaxSize(graphW, graphH);
+        chart.setPrefSize(graphW, graphH);
         chart.setLegendVisible(false);
         // Group sessions by deck and avg accuracy
         HashMap<String, ArrayList<Double>> deckAccuracies = new HashMap<>();
@@ -217,8 +232,8 @@ public class RevisionSystemScreen extends SystemScreens{
         chart.getStyleClass().add("charts");
         chart.setLegendVisible(false);
         chart.setTitle("Sessions per Week");
-        chart.setMaxSize(1500, 600);
-        chart.setPrefSize(1500, 600);
+        chart.setMaxSize(graphW, graphH);
+        chart.setPrefSize(graphW, graphH);
         // Populate the chart with a hash map
         HashMap<String, Integer> weeklySessions = new HashMap<>();
         for(SessionRecord s : historicalSessions){
@@ -260,8 +275,8 @@ public class RevisionSystemScreen extends SystemScreens{
     private void buildImportExport(Group contentLayer){
 
         Window owner = contentLayer.getScene().getWindow();
-        RectangleButtonBundle importCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Import CSV", "buttonText", 293, 315);
-        ImageView importIcon = createIcon(297, 310, "/images/RevisionSystemScreen/upload.png");
+        RectangleButtonBundle importCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Import CSV", "buttonText", threeX, threeY1);
+        ImageView importIcon = createIcon(iconX, threeY1+iconOffset, "/images/RevisionSystemScreen/upload.png");
         importCSV.button().setOnMouseClicked(_ -> {
             try {
                 if(fc.importCSV(owner)) CustomAlert.success(owner, "Successfully imported CSV file");
@@ -271,8 +286,8 @@ public class RevisionSystemScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle exportCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Export CSV", "buttonText", 293, 485);
-        ImageView exportIcon = createIcon(293, 480, "/images/RevisionSystemScreen/textFile.png");
+        RectangleButtonBundle exportCSV = ui.buildRectangularButtonBundle(rectW, rectH, "Export CSV", "buttonText", threeX, threeY2);
+        ImageView exportIcon = createIcon(threeX, threeY2+iconOffset, "/images/RevisionSystemScreen/textFile.png");
         exportCSV.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, false);
@@ -283,8 +298,8 @@ public class RevisionSystemScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle exportHTML = ui.buildRectangularButtonBundle(rectW, rectH, "Export HTML", "buttonText", 293, 656);
-        ImageView htmlIcon = createIcon(293, 651, "/images/RevisionSystemScreen/file.png");
+        RectangleButtonBundle exportHTML = ui.buildRectangularButtonBundle(rectW, rectH, "Export HTML", "buttonText", threeX, threeY3);
+        ImageView htmlIcon = createIcon(threeX, threeY3+iconOffset, "/images/RevisionSystemScreen/file.png");
         exportHTML.button().setOnMouseClicked(_ -> {
             try {
                 boolean exported = fc.export(owner, true);

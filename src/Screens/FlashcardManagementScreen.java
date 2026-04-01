@@ -29,6 +29,32 @@ import java.util.Optional;
 /* Class to be used to create the interface of the FlashcardManagementScreen, containing logic on creating,
 * editing, and organising flashcard and flashcard decks.*/
 public class FlashcardManagementScreen extends SystemScreens{
+    // Constants
+    private static final int titleX = 200;
+    // Creation
+    private static final int lowerQLimit = 10;
+    private static final int upperQLimit = 300;
+    private static final int lowerALimit = 1;
+    private static final int upperALimit = 600;
+    private static final int addW = 600;
+    private static final int saveW = 1000;
+    private static final int saveY = 755;
+    private static final int deckSizeLimit = 60;
+    private static final int hX = 140;
+    private static final int hY = 210;
+    // TableView
+    private static final int cMaxW = 250;
+    private static final int btnW = 80;
+    private static final int btnH = 25;
+    // Modification
+    private static final int minHeight = 600;
+    private static final int spacing = 5;
+    // Organisation
+    private static final int folderBtnW = 300;
+    private static final int folderBtnH = 80;
+    private static final int tableHeight = 700;
+    private static final int displayX = 125;
+    private static final int displayY = 200;
     // Controllers to be used for core system functionality
     private final AuthenticationController ac;
     private final SettingsController sc;
@@ -58,22 +84,22 @@ public class FlashcardManagementScreen extends SystemScreens{
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
-        scene = new Scene(root, 1920, 1057);
+        scene = new Scene(root, sceneW, sceneH);
         // Method inherited from parent class to add background
         Group background = createBackground("Flashcard Control");
-        getTitle().setLayoutX(200);
+        getTitle().setLayoutX(titleX);
         ImageView back = getSwitchScreenBackView(ac);
 
         // Group storing content within a page of the screen
         Group contentLayer = new Group();
 
         // Record class instances to bundle multiple logic components together
-        RectangleButtonBundle create = ui.buildRectangularButtonBundle(rectW, rectH, "Create", "buttonText", 293, 315);
-        ImageView createIcon = createIcon(293, 310, "/images/FlashcardManagementScreen/create.png");
+        RectangleButtonBundle create = ui.buildRectangularButtonBundle(rectW, rectH, "Create", "buttonText", threeX, threeY1);
+        ImageView createIcon = createIcon(threeX, threeY1+iconOffset, "/images/FlashcardManagementScreen/create.png");
         create.button().setOnMouseClicked(_->buildCreationContent(contentLayer, false));
 
-        RectangleButtonBundle modify = ui.buildRectangularButtonBundle(rectW, rectH, "Modify", "buttonText", 293, 485);
-        ImageView modifyIcon = createIcon(293, 480, "/images/FlashcardManagementScreen/modify.png");
+        RectangleButtonBundle modify = ui.buildRectangularButtonBundle(rectW, rectH, "Modify", "buttonText", threeX, threeY2);
+        ImageView modifyIcon = createIcon(threeX, threeY2+iconOffset, "/images/FlashcardManagementScreen/modify.png");
         modify.button().setOnMouseClicked(_-> {
             try {
                 buildModifyContent(contentLayer);
@@ -81,8 +107,8 @@ public class FlashcardManagementScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        RectangleButtonBundle organise = ui.buildRectangularButtonBundle(rectW, rectH, "Organise", "buttonText", 293, 656);
-        ImageView organiseIcon = createIcon(293, 651, "/images/FlashcardManagementScreen/sort.png");
+        RectangleButtonBundle organise = ui.buildRectangularButtonBundle(rectW, rectH, "Organise", "buttonText", threeX, threeY3);
+        ImageView organiseIcon = createIcon(threeX, threeY3+iconOffset, "/images/FlashcardManagementScreen/sort.png");
         organise.button().setOnMouseClicked(_-> {
             try {
                 buildOrganisationContent(contentLayer);
@@ -99,10 +125,10 @@ public class FlashcardManagementScreen extends SystemScreens{
     // Procedure creating page for the Creation of Flashcards
     private void buildCreationContent(Group contentLayer, boolean alreadyExists) {
         // Container for input fields and add button
-        VBox inputBox = new VBox(10);
+        VBox inputBox = new VBox(vSpacing);
         inputBox.getStyleClass().add("flashcardContent");
-        questionArea = ui.createTextArea("Front of card...", 300, 10);
-        answerArea = ui.createTextArea("Back of card...", 600, 1);
+        questionArea = ui.createTextArea("Front of card...", upperQLimit, lowerQLimit);
+        answerArea = ui.createTextArea("Back of card...", upperALimit, lowerALimit);
 
         // Table displaying all flashcards in the deck
         TableView<Flashcard> cardTable = buildFlashcardTableWActions();
@@ -115,7 +141,7 @@ public class FlashcardManagementScreen extends SystemScreens{
         }
         // Allow the table to grow vertically in its VBox
         VBox.setVgrow(cardTable, Priority.ALWAYS);
-        RectangleButtonBundle addFC = ui.buildRectangularButtonBundle(600, rectH, "Add", "buttonText", 0, 0);
+        RectangleButtonBundle addFC = ui.buildRectangularButtonBundle(addW, rectH, "Add", "buttonText", zero, zero);
 
         inputBox.getChildren().addAll(
                 questionArea.textArea(), questionArea.characterCounter(),
@@ -124,14 +150,14 @@ public class FlashcardManagementScreen extends SystemScreens{
         );
         // Flag to determine if the user wants to save to a diff file
         final boolean[] diffFile = {false};
-        RectangleButtonBundle save = ui.buildRectangularButtonBundle(1000, rectH, "Save", "buttonText", 293, 755);
+        RectangleButtonBundle save = ui.buildRectangularButtonBundle(saveW, rectH, "Save", "buttonText", threeX, saveY);
         save.button().setOnMouseClicked(_-> saving(cardTable, alreadyExists, diffFile, contentLayer));
 
         // Deck constraints label to indicate to user
         int size = cardTable.getItems().size();
         Label deckConstraint = new Label(size + " / 60");
         // Set initial colour identifier
-        if(size == 0 || size > 60){
+        if(size == zero || size > deckSizeLimit){
             deckConstraint.setStyle("-fx-text-fill: red;");
         }else {
             deckConstraint.setStyle("-fx-text-fill: green;");
@@ -141,19 +167,19 @@ public class FlashcardManagementScreen extends SystemScreens{
         cardTable.getItems().addListener((ListChangeListener<Flashcard>) _ ->{
             int varyingSize = cardTable.getItems().size();
             deckConstraint.setText(varyingSize + " / 60");
-            if(varyingSize == 0 || varyingSize > 60){
+            if(varyingSize == zero || varyingSize > deckSizeLimit){
                 deckConstraint.setStyle("-fx-text-fill: red;");
             }else{
                 deckConstraint.setStyle("-fx-text-fill: green;");
             }
         });
         // Another VBox containing the cardTable and save button
-        VBox fcContent = new VBox(10, cardTable, deckConstraint, save.button());
+        VBox fcContent = new VBox(vSpacing, cardTable, deckConstraint, save.button());
 
         // HBox with spacing of 20 to display the two Vboxes
-        HBox display = new HBox(20, inputBox, fcContent);
-        display.setLayoutX(140);
-        display.setLayoutY(210);
+        HBox display = new HBox(hSpacing, inputBox, fcContent);
+        display.setLayoutX(hX);
+        display.setLayoutY(hY);
         display.getStyleClass().add("display");
 
         addFC.button().setOnMouseClicked(_->addFlashcard(questionArea.textArea(), answerArea.textArea()));
@@ -162,7 +188,7 @@ public class FlashcardManagementScreen extends SystemScreens{
     // Method used to save created flashcards, outputting appropriate messages
     private void saving(TableView<Flashcard> cardTable, boolean alreadyExists, boolean[] diffFile, Group contentLayer){
         // Checks if flashcard deck is a valid size
-        if(!cardList.isEmpty() && cardList.size() <= 60) {
+        if(!cardList.isEmpty() && cardList.size() <= deckSizeLimit) {
             // Does this already exist -> write into same file as before
             // Does this not exist already or user has chosen diffFile -> write into a new file
             if (!alreadyExists || diffFile[0]) {
@@ -226,6 +252,7 @@ public class FlashcardManagementScreen extends SystemScreens{
             CustomAlert.error(scene.getWindow(), "Minimum of 0 and maximum of 50 cards in a deck");
         }
     }
+
     // Function which builds the table to display Flashcards
     public TableView<Flashcard> buildFlashcardTableWActions() {
         // Create a new tableview bound to observable list
@@ -237,10 +264,10 @@ public class FlashcardManagementScreen extends SystemScreens{
         TableColumn<Flashcard, String> backColumn = new TableColumn<>("Back");
         backColumn.setCellValueFactory(new PropertyValueFactory<>("answer"));
         TableColumn<Flashcard, Void> actionsColumn = new TableColumn<>("Actions");
-        actionsColumn.setMaxWidth(250);
+        actionsColumn.setMaxWidth(cMaxW);
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
-            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
-            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
+            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(btnW, btnH, "Delete", "tableText", zero, zero);
+            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(btnW, btnH, "Edit", "tableText", zero, zero);
             final VBox actions = new VBox(5, edit.button(), delete.button());
             {
                 // Delete - removed the card at this row from the list
@@ -287,8 +314,8 @@ public class FlashcardManagementScreen extends SystemScreens{
         String question = q.getText().trim();
         String answer = a.getText().trim();
         // Check if valid
-        boolean validQ = question.length() >= 10 && question.length() <= 300;
-        boolean validA = !answer.isEmpty() && answer.length() <= 600;
+        boolean validQ = question.length() >= lowerQLimit && question.length() <= upperQLimit;
+        boolean validA = !answer.isEmpty() && answer.length() <= upperALimit;
         // Add to list
         if(validQ && validA){
             cardList.add(new Flashcard(question, answer));
@@ -300,21 +327,22 @@ public class FlashcardManagementScreen extends SystemScreens{
             CustomAlert.error(scene.getWindow(), qReq + "\n" + aReq);
         }
     }
+
     // Procedure to create the modification page
     private void buildModifyContent(Group contentLayer) throws IOException {
         // Table to display the deck names
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
-        decksTable.setMinHeight(600);
+        decksTable.setMinHeight(minHeight);
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
         deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
         TableColumn<String, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(_ -> new TableCell<>(){
             // Buttons in the actions column
-            final RectangleButtonBundle rename = ui.buildRectangularButtonBundle(80, 25, "Rename", "tableText", 0, 0);
-            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(80, 25, "Edit", "tableText", 0, 0);
-            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(80, 25, "Delete", "tableText", 0, 0);
-            final VBox buttons = new VBox(5, rename.button(), edit.button(), delete.button());
+            final RectangleButtonBundle rename = ui.buildRectangularButtonBundle(btnW, btnH, "Rename", "tableText", zero, zero);
+            final RectangleButtonBundle edit = ui.buildRectangularButtonBundle(btnW, btnH, "Edit", "tableText", zero, zero);
+            final RectangleButtonBundle delete = ui.buildRectangularButtonBundle(btnW, btnH, "Delete", "tableText", zero, zero);
+            final VBox buttons = new VBox(spacing, rename.button(), edit.button(), delete.button());
             {
                 // Renaming the file logic
                 rename.button().setOnMouseClicked(_->{
@@ -377,9 +405,9 @@ public class FlashcardManagementScreen extends SystemScreens{
         TreeView<String> tree = buildTree();
         addDragAndDrop(tree);
 
-        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(300, 80, "Add Folder", "smallerButtonText", 0, 0);
+        RectangleButtonBundle newFolder = ui.buildRectangularButtonBundle(folderBtnW, folderBtnH, "Add Folder", "smallerButtonText", zero, zero);
         newFolder.button().setOnMouseClicked(_->addFolder(tree));
-        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(300, 80, "Delete Folder", "smallerButtonText", 0, 0);
+        RectangleButtonBundle delete = ui.buildRectangularButtonBundle(folderBtnW, folderBtnH, "Delete Folder", "smallerButtonText", zero, zero);
         delete.button().setOnMouseClicked(_-> {
             try {
                 deleteFolder(tree);
@@ -387,10 +415,10 @@ public class FlashcardManagementScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        HBox options = new HBox(20, newFolder.button(), delete.button());
-        VBox treeViewVBox = new VBox(20, options, tree);
+        HBox options = new HBox(hSpacing, newFolder.button(), delete.button());
+        VBox treeViewVBox = new VBox(hSpacing, options, tree);
 
-        TableView<Flashcard> cardsPreview = buildCardPreviewTable(700);
+        TableView<Flashcard> cardsPreview = buildCardPreviewTable(tableHeight);
         cardsPreview.getItems().clear();
 
         // Listener to change the card preview based on selection
@@ -415,9 +443,9 @@ public class FlashcardManagementScreen extends SystemScreens{
         }));
 
 
-        HBox display = new HBox(20, treeViewVBox, cardsPreview);
-        display.setLayoutX(125);
-        display.setLayoutY(200);
+        HBox display = new HBox(hSpacing, treeViewVBox, cardsPreview);
+        display.setLayoutX(displayX);
+        display.setLayoutY(displayY);
         display.getStyleClass().add("display");
         nav.switchContent(contentLayer, display, getBackView(contentLayer));
     }

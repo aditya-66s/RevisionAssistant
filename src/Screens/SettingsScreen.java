@@ -35,6 +35,57 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class SettingsScreen extends SystemScreens{
+    // Constants
+    private static final int titleX = 290;
+    private static final int y1 = 241;
+    private static final int oneTimeOffset = -2;
+    private static final int y2 = 412;
+    private static final int y3 = 583;
+    private static final int y4 = 755;
+    private static final int saveY = 755;
+    private static final int iTX = 180;
+    private static final int iTY = 270;
+    private static final int ssBtnY = 300;
+    private static final int othersY1 = 315;
+    private static final int othersY2 = 485;
+    private static final int othersY3 = 656;
+    private static final int one = 1;
+    private static final int four = 4;
+    private static final int ten = 10;
+    private static final int fieldX = 388;
+    private static final int fieldH = 98;
+    private static final int passwordIconY1 = 247;
+    private static final int passwordIconY2 = 419;
+    private static final int passwordIconY3 = 589;
+    private static final int passwordRIconX = 1535;
+    private static final int passwordRIconY1 = 267;
+    private static final int passwordRIconY2 = 438;
+    private static final int passwordRIconY3 = 609;
+    private static final int fieldY1 = 241;
+    // Common
+    private static final int labelX = 150;
+    private static final int valueX = 1500;
+    private static final int inputX = 1600;
+    private static final int sliderX = 250;
+    private static final int toggleX = 1200;
+    // SFX
+    private static final int sfxY = 270;
+    private static final int sfxInputY = 290;
+    private static final int sfxSliderY = 300;
+    // TTS
+    private static final int ttsY = 470;
+    private static final int ttsInputY = 490;
+    private static final int ttsSliderY = 500;
+    // Toggles
+    private static final int toggleMuteY = 630;
+    private static final int toggleMuteBoxY = 560;
+    private static final int toggleTTSY = 730;
+    private static final int toggleTTSBoxY = 660;
+    // Darkness
+    private static final int darknessY = 300;
+    private static final int darknessInputY = 490;
+    private static final int darknessSliderY = 490;
+
     private final Group background = createBackground("System Settings");
     private final AuthenticationController ac;
     private final SettingsController sC;
@@ -69,18 +120,18 @@ public class SettingsScreen extends SystemScreens{
     public Scene create() {
         Pane root = new Pane();
         root.getStyleClass().add("screens");
-        Scene scene = new Scene(root, 1920, 1057);
-        getTitle().setLayoutX(290);
+        Scene scene = new Scene(root, sceneW, sceneH);
+        getTitle().setLayoutX(titleX);
         ImageView back = getSwitchScreenBackView(ac);
 
         Group contentLayer = new Group();
         // Creating Buttons for Settings
-        RectangleButtonBundle stylesheetOptions = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", 310, 241);
-        ImageView sOIcon = createIcon(310, 239, "/images/SettingsScreen/stylesheets.png");
+        RectangleButtonBundle stylesheetOptions = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", fourX, y1);
+        ImageView sOIcon = createIcon(fourX, y1+oneTimeOffset, "/images/SettingsScreen/stylesheets.png");
         stylesheetOptions.button().setOnMouseClicked(_-> buildStylesheetOptionsContent(contentLayer, scene));
 
-        RectangleButtonBundle accessibility = ui.buildRectangularButtonBundle(rectW, rectH, "Accessibility", "buttonText", 310, 412);
-        ImageView aIcon = createIcon(310, 412, "/images/SettingsScreen/accessibility.png");
+        RectangleButtonBundle accessibility = ui.buildRectangularButtonBundle(rectW, rectH, "Accessibility", "buttonText", fourX, y2);
+        ImageView aIcon = createIcon(fourX, y2, "/images/SettingsScreen/accessibility.png");
         accessibility.button().setOnMouseClicked(_-> {
             try {
                 buildAccessibilityOptionsContent(contentLayer, scene);
@@ -89,12 +140,12 @@ public class SettingsScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle audioControl = ui.buildRectangularButtonBundle(rectW, rectH, "Audio Control", "buttonText", 310, 583);
-        ImageView aCIcon = createIcon(310, 583, "/images/SettingsScreen/audio.png");
+        RectangleButtonBundle audioControl = ui.buildRectangularButtonBundle(rectW, rectH, "Audio Control", "buttonText", fourX, y3);
+        ImageView aCIcon = createIcon(fourX, y3, "/images/SettingsScreen/audio.png");
         audioControl.button().setOnMouseClicked(_-> buildAudioControlContent(contentLayer, scene));
 
-        RectangleButtonBundle others = ui.buildRectangularButtonBundle(rectW, rectH, "Others", "buttonText", 310, 755);
-        ImageView oIcon = createIcon(310, 755, "/images/SettingsScreen/others.png");
+        RectangleButtonBundle others = ui.buildRectangularButtonBundle(rectW, rectH, "Others", "buttonText", fourX, y4);
+        ImageView oIcon = createIcon(fourX, y4, "/images/SettingsScreen/others.png");
         others.button().setOnMouseClicked(_ -> buildOthersContent(contentLayer));
 
         Group menuLayer = new Group(stylesheetOptions.button(), accessibility.button(), audioControl.button(), others.button(), sOIcon, aIcon, aCIcon, oIcon);
@@ -105,7 +156,7 @@ public class SettingsScreen extends SystemScreens{
 
     // Re-usable save button
     private RectangleButtonBundle saveRect(Scene scene){
-        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", 310, 755);
+        RectangleButtonBundle save = ui.buildRectangularButtonBundle(rectW, rectH, "Save Settings", "buttonText", fourX, saveY);
         save.button().setOnMouseClicked(_ -> {
             try {
                 sC.saveSettings(draftSettings);
@@ -122,11 +173,9 @@ public class SettingsScreen extends SystemScreens{
 
     // Procedure creating the UI for user to pick between stylesheet options
     private void buildStylesheetOptionsContent(Group contentLayer, Scene scene) {
-//        Settings currentSettings = sC.getCurrentSettings();
-//        Settings draftSettings = currentSettings.copy();
         saved = false;
 
-        Text instructionText = new Text(180, 270, "Pick your stylesheet option:");
+        Text instructionText = new Text(iTX, iTY, "Pick your stylesheet option:");
         instructionText.getStyleClass().add("instructionText");
 
         MenuItem darkMode = new MenuItem("Dark Mode");
@@ -137,10 +186,10 @@ public class SettingsScreen extends SystemScreens{
         lightMode.getStyleClass().add("options");
         highContrast.getStyleClass().add("options");
 
-        RectangleButtonBundle styles = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", 310, 300);
+        RectangleButtonBundle styles = ui.buildRectangularButtonBundle(rectW, rectH, "Stylesheet Options", "buttonText", fourX, ssBtnY);
         ContextMenu menu = new ContextMenu(darkMode, lightMode, highContrast);
         menu.getStyleClass().add("options-menu");
-        styles.button().setOnMouseClicked(_-> menu.show(styles.button(), Side.BOTTOM, 0, 0));
+        styles.button().setOnMouseClicked(_-> menu.show(styles.button(), Side.BOTTOM, zero, zero));
 
         String infoMessage = "This is only a preview. \n The change will persist until you exist settings. \n Press save to ensure changes persist";
         darkMode.setOnAction(_ -> {
@@ -194,7 +243,6 @@ public class SettingsScreen extends SystemScreens{
         CustomAlert.info(alertWindow, message);
     }
 
-
     // Procedure to build accessibility settings content
     private void buildAccessibilityOptionsContent(Group contentLayer, Scene scene) throws IOException {
         saved = false;
@@ -203,25 +251,25 @@ public class SettingsScreen extends SystemScreens{
         brightnessOverlay.setOpacity(draftSettings.getDarkness());
         Text darknessText = new Text("Darkness Overlay:");
         darknessText.getStyleClass().add("instructionText");
-        darknessText.setLayoutX(150);
-        darknessText.setLayoutY(300);
+        darknessText.setLayoutX(labelX);
+        darknessText.setLayoutY(darknessY);
 
         Text darknessValue = new Text(String.format("%.0f%%", draftSettings.getDarkness() * 100));
         darknessValue.getStyleClass().add("instructionText");
-        darknessValue.setLayoutX(1500);
-        darknessValue.setLayoutY(300);
+        darknessValue.setLayoutX(valueX);
+        darknessValue.setLayoutY(darknessY);
 
         TextField darknessInput = new TextField();
         darknessInput.getStyleClass().add("sliderInputAlt");
-        darknessInput.setLayoutX(1600);
-        darknessInput.setLayoutY(490);
+        darknessInput.setLayoutX(inputX);
+        darknessInput.setLayoutY(darknessInputY);
 
         darknessInput.setText(String.format("%.0f%%", draftSettings.getDarkness() * 100));
 
         Slider darknessSlider = new Slider(0, 0.8, draftSettings.getDarkness());
         // Darkness/Brightness Control
-        darknessSlider.setLayoutX(250);
-        darknessSlider.setLayoutY(500);
+        darknessSlider.setLayoutX(sliderX);
+        darknessSlider.setLayoutY(darknessSliderY);
         darknessSlider.setMajorTickUnit(0.1);
         darknessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double darkness = newVal.doubleValue();
@@ -268,7 +316,7 @@ public class SettingsScreen extends SystemScreens{
         if(scene.getRoot() instanceof StackPane wrapper){
             // Check every node in the StackPane to get the brightness overlay and set it to the new one
             for(var node : wrapper.getChildren()){
-                if(node instanceof Rectangle rect && rect.getWidth() == 1920 && rect.getHeight() == 1057){
+                if(node instanceof Rectangle rect && rect.getWidth() == sceneW && rect.getHeight() == sceneH){
                     brightnessOverlay = rect;
                     break;
                 }
@@ -285,54 +333,54 @@ public class SettingsScreen extends SystemScreens{
         saved = false;
         Text sfxText = new Text("Sound Effects Volume: ");
         sfxText.getStyleClass().add("instructionText");
-        sfxText.setLayoutX(150);
-        sfxText.setLayoutY(270);
+        sfxText.setLayoutX(labelX);
+        sfxText.setLayoutY(sfxY);
 
         Text sfxValue = new Text(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
         sfxValue.getStyleClass().add("instructionText");
-        sfxValue.setLayoutX(1500);
-        sfxValue.setLayoutY(270);
+        sfxValue.setLayoutX(valueX);
+        sfxValue.setLayoutY(sfxY);
 
         TextField sfxInput = new TextField(String.format("%.0f%%", draftSettings.getSFXVolume() * 100));
         sfxInput.getStyleClass().add("sliderInputAlt");
-        sfxInput.setLayoutX(1600);
-        sfxInput.setLayoutY(290);
+        sfxInput.setLayoutX(inputX);
+        sfxInput.setLayoutY(sfxInputY);
 
         Slider sfxSlider = new Slider(0, 1.0, draftSettings.getSFXVolume());
-        sfxSlider.setLayoutX(250);
-        sfxSlider.setLayoutY(300);
+        sfxSlider.setLayoutX(sliderX);
+        sfxSlider.setLayoutY(sfxSliderY);
         sfxSlider.setMajorTickUnit(0.1);
 
         Text  ttsText = new Text("Text-To-Speech Volume: ");
         ttsText.getStyleClass().add("instructionText");
-        ttsText.setLayoutX(150);
-        ttsText.setLayoutY(470);
+        ttsText.setLayoutX(labelX);
+        ttsText.setLayoutY(ttsY);
 
         Text ttsValue = new Text(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
         ttsValue.getStyleClass().add("instructionText");
-        ttsValue.setLayoutX(1500);
-        ttsValue.setLayoutY(470);
+        ttsValue.setLayoutX(valueX);
+        ttsValue.setLayoutY(ttsY);
 
         TextField ttsInput = new TextField(String.format("%.0f%%", draftSettings.getTTSVolume() * 100));
         ttsInput.getStyleClass().add("sliderInputAlt");
-        ttsInput.setLayoutX(1600);
-        ttsInput.setLayoutY(490);
+        ttsInput.setLayoutX(inputX);
+        ttsInput.setLayoutY(ttsInputY);
 
         Slider ttsSlider = new Slider(0, 1.0, draftSettings.getTTSVolume());
-        ttsSlider.setLayoutX(250);
-        ttsSlider.setLayoutY(500);
+        ttsSlider.setLayoutX(sliderX);
+        ttsSlider.setLayoutY(ttsSliderY);
         ttsSlider.setMajorTickUnit(0.1);
 
         Text toggleMuteText = new Text("Toggle Mute: ");
         toggleMuteText.getStyleClass().add("instructionText");
-        toggleMuteText.setLayoutX(150);
-        toggleMuteText.setLayoutY(630);
+        toggleMuteText.setLayoutX(labelX);
+        toggleMuteText.setLayoutY(toggleMuteY);
 
         CheckBox toggleMute = new CheckBox();
         toggleMute.setSelected(draftSettings.isMuted());
         toggleMute.getStyleClass().add("toggles");
-        toggleMute.setLayoutX(1200);
-        toggleMute.setLayoutY(560);
+        toggleMute.setLayoutX(toggleX);
+        toggleMute.setLayoutY(toggleMuteBoxY);
         toggleMute.setOnAction(_ -> {
             draftSettings.setMuted(toggleMute.isSelected());
             onToggle(toggleMute, sfxInput, sfxValue, sfxSlider, false);
@@ -340,14 +388,14 @@ public class SettingsScreen extends SystemScreens{
 
         Text toggleTTSText = new Text("Toggle TTS: ");
         toggleTTSText.getStyleClass().add("instructionText");
-        toggleTTSText.setLayoutX(150);
-        toggleTTSText.setLayoutY(730);
+        toggleTTSText.setLayoutX(labelX);
+        toggleTTSText.setLayoutY(toggleTTSY);
 
         CheckBox toggleTTS = new CheckBox();
         toggleTTS.setSelected(draftSettings.isTTSEnabled());
         toggleTTS.getStyleClass().add("toggles");
-        toggleTTS.setLayoutX(1200);
-        toggleTTS.setLayoutY(660);
+        toggleTTS.setLayoutX(toggleX);
+        toggleTTS.setLayoutY(toggleTTSBoxY);
         toggleTTS.setOnAction(_ -> {
             draftSettings.setTTSEnabled(toggleTTS.isSelected());
             onToggle(toggleTTS, ttsInput, ttsValue, ttsSlider, true);
@@ -494,31 +542,32 @@ public class SettingsScreen extends SystemScreens{
 
     // Procedure to create and display all buttons when Other Options is selected
     private void buildOthersContent(Group contentLayer) {
-        RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 315);
-        ImageView emailIcon = createIcon(293, 310, "/images/SettingsScreen/whiteUser.png");
+        RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", threeX, othersY1);
+        ImageView emailIcon = createIcon(threeX, othersY1+iconOffset, "/images/SettingsScreen/whiteUser.png");
         changeEmail.button().setOnMouseClicked(_ -> buildChangeEmail(contentLayer));
 
-        RectangleButtonBundle changeRw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Word", "buttonText", 293, 485);
-        ImageView recoveryIcon = createIcon(293, 480, "/images/SettingsScreen/whiteRecovery.png");
+        RectangleButtonBundle changeRw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Word", "buttonText", threeX, othersY2);
+        ImageView recoveryIcon = createIcon(threeX, othersY2+iconOffset, "/images/SettingsScreen/whiteRecovery.png");
         changeRw.button().setOnMouseClicked(_ -> buildChangeRW(contentLayer));
 
-        RectangleButtonBundle changePw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Password", "buttonText", 293, 656);
-        ImageView pwIcon = createIcon(293, 651, "/images/SettingsScreen/whiteLock.png");
+        RectangleButtonBundle changePw = ui.buildRectangularButtonBundle(rectW, rectH, "Change Password", "buttonText", threeX, othersY3);
+        ImageView pwIcon = createIcon(threeX, othersY3+iconOffset, "/images/SettingsScreen/whiteLock.png");
         changePw.button().setOnMouseClicked(_ -> buildChangePassword(contentLayer));
 
         Group otherOptionsLayer = new Group(changeEmail.button(), changePw.button(), changeRw.button(), emailIcon, recoveryIcon, pwIcon);
 
         nav.switchContent(contentLayer, otherOptionsLayer, getBackView(contentLayer));
     }
+
     // Procedure to create and display all input fields and buttons when Change Email is selected
     private void buildChangeEmail(Group contentLayer) {
         PasswordBundle passwordInput = originalPasswordInput();
         String userIcon =  "/images/AuthScreen/user.png";
-        TextBundle newEmailInput = ui.buildTextFieldInput(293, 412, rectW, 98, 388, 422, "Enter Email", userIcon, 292,  416, 95, 90);
+        TextBundle newEmailInput = ui.buildTextFieldInput(threeX, y2, rectW, fieldH , fieldX, y2+ten, "Enter Email", userIcon, threeX-one,  y2+four, iconW, iconH);
         newEmailInput.tf().getStyleClass().add("resetTextField");
-        TextBundle confirmNewEmailInput = ui.buildTextFieldInput(293, 583, rectW, 98, 388, 593, "Confirm Email", userIcon, 292,  587, 95, 90);
+        TextBundle confirmNewEmailInput = ui.buildTextFieldInput(threeX, y3, rectW, fieldH, fieldX, y3+ten, "Confirm Email", userIcon, threeX-one,  y3+four, iconW, iconH);
         confirmNewEmailInput.tf().getStyleClass().add("resetTextField");
-        RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", 293, 755);
+        RectangleButtonBundle changeEmail = ui.buildRectangularButtonBundle(rectW, rectH, "Change Email", "buttonText", threeX, y4);
 
         UIComponents.attachValidator(newEmailInput.tf(), UIComponents::isValidEmail, "error");
         UIComponents.attachValidator(confirmNewEmailInput.tf(), UIComponents::isValidEmail, "error");
@@ -576,11 +625,11 @@ public class SettingsScreen extends SystemScreens{
     private void buildChangeRW(Group contentLayer) {
         PasswordBundle passwordInput = originalPasswordInput();
         String recoveryIcon = "/images/AuthScreen/recover.png";
-        TextBundle newRecovery = ui.buildTextFieldInput(293, 412, rectW, 98, 388, 422, "Enter Recovery Word", recoveryIcon, 292,  416, 95, 90);
+        TextBundle newRecovery = ui.buildTextFieldInput(threeX, y2, rectW, fieldH, fieldX, y2+ten, "Enter Recovery Word", recoveryIcon, threeX-one,  y2+four, iconW, iconH);
         newRecovery.tf().getStyleClass().add("resetTextField");
-        TextBundle confirmNewRecovery = ui.buildTextFieldInput(293, 583, rectW, 98, 388, 593, "Confirm Recovery Word", recoveryIcon, 292,  587, 95, 90);
+        TextBundle confirmNewRecovery = ui.buildTextFieldInput(threeX, y3, rectW, fieldH, fieldX, y3+ten, "Confirm Recovery Word", recoveryIcon, threeX-one,  y3+four, iconW, iconH);
         confirmNewRecovery.tf().getStyleClass().add("resetTextField");
-        RectangleButtonBundle changeRecoveryWord = ui.buildRectangularButtonBundle(rectW, rectH, "Change Recovery Word", "buttonText", 293, 755);
+        RectangleButtonBundle changeRecoveryWord = ui.buildRectangularButtonBundle(rectW, rectH, "Change Recovery Word", "buttonText", threeX, y4);
 
         UIComponents.attachValidator(newRecovery.tf(), UIComponents::isValidRecoveryW, "error");
         UIComponents.attachValidator(confirmNewRecovery.tf(), UIComponents::isValidRecoveryW, "error");
@@ -631,14 +680,15 @@ public class SettingsScreen extends SystemScreens{
             }
         }
     }
+
     // Procedure to create and display all input fields and buttons when Change Password is selected
     private void buildChangePassword(Group contentLayer) {
         PasswordBundle passwordInput = originalPasswordInput();
-        PasswordBundle newPassword = ui.buildPasswordInput(293, 412, rectW, 388, 422, "Enter New Password", 293, 419, 1535, 438);
+        PasswordBundle newPassword = ui.buildPasswordInput(threeX, y2, rectW, fieldX, y2+ten, "Enter New Password", threeX, passwordIconY2, passwordRIconX, passwordRIconY2);
         attachStylesheetToPWField(newPassword);
-        PasswordBundle cNewPassword = ui.buildPasswordInput(293, 583, rectW, 388, 593, "Enter New Password", 293, 589, 1535, 609);
+        PasswordBundle cNewPassword = ui.buildPasswordInput(threeX, y3, rectW, fieldX, y3+ten, "Enter New Password", threeX, passwordIconY3, passwordRIconX, passwordRIconY3);
         attachStylesheetToPWField(cNewPassword);
-        RectangleButtonBundle changePassword = ui.buildRectangularButtonBundle(rectW, rectH, "Change Password", "buttonText", 293, 755);
+        RectangleButtonBundle changePassword = ui.buildRectangularButtonBundle(rectW, rectH, "Change Password", "buttonText", threeX, y4);
 
         UIComponents.attachValidator(newPassword.password(), UIComponents::isValidPassword, "error", newPassword.copyPw());
         UIComponents.attachValidator(cNewPassword.password(), UIComponents::isValidPassword, "error", cNewPassword.copyPw());
@@ -691,7 +741,7 @@ public class SettingsScreen extends SystemScreens{
     }
     // Consistent field throughout all changing data options, extracted into a field
     private PasswordBundle originalPasswordInput(){
-        PasswordBundle passwordInput = ui.buildPasswordInput(293, 241, rectW, 388, 251,"Enter Password", 293, 247, 1535, 267);
+        PasswordBundle passwordInput = ui.buildPasswordInput(threeX, fieldY1, rectW, fieldX, fieldY1+ten,"Enter Password", threeX, passwordIconY1, passwordRIconX, passwordRIconY1);
         attachStylesheetToPWField(passwordInput);
         return passwordInput;
     }

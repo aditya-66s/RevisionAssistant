@@ -281,23 +281,12 @@ public class  AuthenticationController extends Controller {
         rewriteUsersCSV(users);
         return true;
     }
-//    // Will be used to update CSV when user makers changes
-//    private void rewriteUsersCSV(ArrayList<User> users) throws IOException {
-//        // Rewrite the entire file, so updates persist
-//        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvPath.toString()))) {
-//            for (User u : users) {
-//                // writes row back into file
-//                bw.write(u.getEmail() + "," + u.getHashedPassword() + "," + u.getSaltBase64() + "," + u.getLastLogin() + "," + u.getRecoveryWord());
-//                bw.newLine();
-//            }
-//        }
-//    }
+
     // System Logout
     public void logout(){
         if (getCurrentUser() != null){
             getCurrentUser().setLastLogin(getDate());
         }
-        // add a save data method, will be added when more data as been added to system
         // System has no current user, so data cannot be accessed
         setCurrentUser(null);
         // User cannot find a way to go back into Main Menu after logging out

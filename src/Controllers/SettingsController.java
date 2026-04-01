@@ -81,7 +81,7 @@ public class SettingsController extends Controller {
             while ((line = br.readLine()) != null) {
                 String[] temp = line.split(",");
                 // Validate row lengths to avoid ArrayIndexOutOfBoundsException, throw an exception
-                if (temp.length < 6){
+                if (temp.length != settingsCSVDataItems) {
                     throw new IllegalArgumentException("Corrupted Row: " + line);
                 }
                 // Create a settings object

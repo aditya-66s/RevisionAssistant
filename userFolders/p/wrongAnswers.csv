@@ -1,2 +1,9 @@
 "What is the difference between discrete and continuous data?","Discrete data takes countable values; continuous data can take any value in an interval.
 "What is the variance of a random variable?","Var(X) = E(X²) − [E(X)]².
+"What is the mean of a discrete random variable?","E(X) = Σ xP(X=x).
+"What are the conditions for a binomial model?","Fixed n, independent trials, two outcomes, constant probability p.
+"What is the mean of a binomial distribution?","np.
+"What is the variance of a binomial distribution?","np(1−p).
+"When can a binomial be approximated by a normal distribution?","When np ≥ 5 and n(1−p) ≥ 5.
+"What is a random variable?","A variable that takes numerical values determined by chance.
+"testing destructively","testing destructively

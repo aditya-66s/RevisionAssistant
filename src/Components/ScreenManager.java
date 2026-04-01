@@ -15,6 +15,9 @@ import java.util.Objects;
 
 // Utility class for managing scene navigation
 public class ScreenManager {
+    // Constants
+    private static final int sceneW = 1920;
+    private static final int sceneH = 1057;
     // Primary stage of application, allows access from anywhere in application
     private static Stage stage;
     // Stack to maintain navigation of history opf scenes.
@@ -68,7 +71,7 @@ public class ScreenManager {
             changeStyleSheet(nextScene, email);
             if(nextScene.getRoot() instanceof StackPane wrapper){
                 for(var node : wrapper.getChildren()){
-                    if(node instanceof Rectangle rect && rect.getWidth() == 1920 && rect.getHeight() == 1057){
+                    if(node instanceof Rectangle rect && rect.getWidth() == sceneW && rect.getHeight() == sceneH){
                         Settings cS = getUserSettings(email);
                         rect.setOpacity(cS.getDarkness());
                         break;
@@ -106,7 +109,7 @@ public class ScreenManager {
     // Returns a rectangle to act as a brightness overlay
     public static Rectangle getBrightnessOverlay(String email) throws IOException {
         Settings userSettings = getUserSettings(email);
-        Rectangle brightnessOverlay = new Rectangle(1920, 1057);
+        Rectangle brightnessOverlay = new Rectangle(sceneW, sceneH);
         brightnessOverlay.getStyleClass().add("brightnessOverlay");
         brightnessOverlay.setOpacity(userSettings.getDarkness());
         brightnessOverlay.setMouseTransparent(true);

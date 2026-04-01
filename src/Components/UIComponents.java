@@ -20,10 +20,21 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 public class UIComponents {
+    // Constants
+    private static final int passwordRectH = 98;
+    private static final int lockIconW = 98;
+    private static final int lockIconH = 88;
+    private static final int brImageX = 1820;
+    private static final int brImageY = 957;
+    private static final int logoX = 0;
+    private static final int logoY = 0;
+    private static final int invalidPLength = 6;
+    private static final int hintW = 95;
+    private static final int hintH = 95;
     // Creates a password bundle with show/hide functionality
     public PasswordBundle buildPasswordInput(int rectX, int rectY, int rectW, int fieldX, int fieldY, String promptText, int lIconX, int lIconY, int rIconX, int rIconY){
         // Create background rectangle for password input
-        Rectangle passwordInpRect = new Rectangle(rectX, rectY, rectW, 98);
+        Rectangle passwordInpRect = new Rectangle(rectX, rectY, rectW, passwordRectH);
         passwordInpRect.getStyleClass().add("inputRect");
         // Create hidden password field
         PasswordField password = new PasswordField();
@@ -40,8 +51,8 @@ public class UIComponents {
         ImageView lock = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/lock.png")).toExternalForm());
         lock.setLayoutX(lIconX);
         lock.setLayoutY(lIconY);
-        lock.setFitHeight(88);
-        lock.setFitWidth(95);
+        lock.setFitHeight(lockIconH);
+        lock.setFitWidth(lockIconW);
         // Bind text fields together so they stay synchronized
         copyPw.textProperty().bindBidirectional(password.textProperty());
         // Create show/hide password icons
@@ -129,8 +140,8 @@ public class UIComponents {
     public ImageView createLogoView() {
         ImageView logoView = new ImageView(Objects.requireNonNull(getClass().getResource("/images/Constant/logo.png")).toExternalForm());
         logoView.getStyleClass().add("constantImages");
-        logoView.setLayoutX(0);
-        logoView.setLayoutY(0);
+        logoView.setLayoutX(logoX);
+        logoView.setLayoutY(logoY);
         return logoView;
     }
 
@@ -138,8 +149,8 @@ public class UIComponents {
     public ImageView createBRImageView(String name){
         ImageView iv = new ImageView(Objects.requireNonNull(getClass().getResource("/images/Constant/" + name + ".png")).toExternalForm());
         iv.getStyleClass().add("constantImages");
-        iv.setLayoutX(1820);
-        iv.setLayoutY(957);
+        iv.setLayoutX(brImageX);
+        iv.setLayoutY(brImageY);
         iv.setCursor(Cursor.HAND);
         return iv;
     }
@@ -205,7 +216,7 @@ public class UIComponents {
     // Validates strength of password
     public static boolean isValidPassword(String pw){
         if(pw == null) return false;
-        return pw.length()>=6 && pw.matches(".*[^a-zA-Z0-9].*");
+        return pw.length()>= invalidPLength && pw.matches(".*[^a-zA-Z0-9].*");
     }
     // Makes sure recovery is something rememberable
     public static boolean isValidRecoveryW(String recoveryWord){
@@ -232,9 +243,9 @@ public class UIComponents {
     public ImageView getHintView(){
         ImageView hint = new ImageView("/images/Constant/question.png");
         hint.setCursor(Cursor.HAND);
-        hint.setLayoutX(1820);
-        hint.setFitHeight(95);
-        hint.setFitWidth(95);
+        hint.setLayoutX(brImageX);
+        hint.setFitHeight(hintH);
+        hint.setFitWidth(hintW);
         return hint;
     }
 }

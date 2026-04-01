@@ -4,28 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Uncommitted files">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/maryTTS.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="New Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RevisionAssistant.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/files/sessions/p.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/sessions/p.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/settings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/settings.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/files/stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/stats.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/TTSController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/TTSController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/CustomAlert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/CustomAlert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ScreenManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ScreenManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/UIComponents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/UIComponents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/AuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/FlashcardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/FlashcardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/SettingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/StatsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/StatsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controllers/XPController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/XPController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/AuthScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/AuthScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/EndOfRevisionScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/EndOfRevisionScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/MainMenuScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/RevisionSystemScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/RevisionSystemScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/1.2/Maths/lol/dogdog.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/1.2/flashcards_stress_test.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/Chemistry_Renamed.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/M2.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/Test28.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/bio.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Comptuting/test100.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/Testest.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/qweq.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/SplashScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SplashScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/StudyModesScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/StudyModesScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screens/SystemScreens.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SystemScreens.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +123,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -236,7 +237,12 @@
       <workItem from="1774526588994" duration="1375000" />
       <workItem from="1774527990069" duration="345000" />
       <workItem from="1774552058065" duration="4088000" />
-      <workItem from="1774653765451" duration="3503000" />
+      <workItem from="1774653765451" duration="3848000" />
+      <workItem from="1774708839406" duration="2741000" />
+      <workItem from="1774946442735" duration="75000" />
+      <workItem from="1774979912047" duration="1307000" />
+      <workItem from="1775051569433" duration="7124000" />
+      <workItem from="1775058732635" duration="6366000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />
@@ -574,7 +580,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773829604757</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="New Changes">
+      <option name="closed" value="true" />
+      <created>1774658171576</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1774658171576</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -607,7 +621,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Modular Password Design" />
     <MESSAGE value="Modular Email Input" />
     <MESSAGE value="Alerts" />
     <MESSAGE value="adding constraints to email+password input" />
@@ -632,7 +645,8 @@
     <MESSAGE value="f" />
     <MESSAGE value="adas" />
     <MESSAGE value="Uncommitted files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Uncommitted files" />
+    <MESSAGE value="New Changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="New Changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

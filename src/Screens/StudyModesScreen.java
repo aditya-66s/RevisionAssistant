@@ -13,7 +13,6 @@ import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -28,7 +27,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Window;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +37,56 @@ import java.util.Objects;
 
 
 public class StudyModesScreen extends SystemScreens{
+    // Constants
+    private static final int titleX = 420;
+    // Deck Selector
+    private static final int minHeight = 500;
+    private static final int startW = 500;
+    private static final int startH = 100;
+    // Session Content
+    private static final int timerX = 700;
+    private static final int timerY = 940;
+    private static final int progressX = 1400;
+    private static final int progressY = 225;
+    private static final int flashcardX = 360;
+    private static final int flashcardY = 290;
+    private static final int ttsIconW = 100;
+    private static final int ttsIconH = 100;
+    private static final int ttsIconX = 200;
+    private static final int ttsIconY = 290;
+    private static final int tickX = 1035;
+    private static final int tickY = 760;
+    private static final int crossX = 685;
+    private static final int crossY = 760;
+    private static final int correctX = 1520;
+    private static final int correctY = 830;
+    private static final int incorrectX = 200;
+    private static final int incorrectY = 830;
+    private static final int modeX = 125;
+    private static final int modeY = 230;
+    private static final int modeWrapWidth = 1350;
+    private static final int rateTextX = 110;
+    private static final int rateTextY = 470;
+    private static final int rateBtnW = 40;
+    private static final int rateBtnH = 40;
+    private static final int minusX = 150;
+    private static final int minusY = 480;
+    private static final int plusX = 250;
+    private static final int plusY = 480;
+    // Flashcard
+    private static final int fcW = 1200;
+    private static final int fcH = 450;
+    private static final int cardLabelTranslate = -170;
+    private static final int wrappingWidth = 1100;
+    private static final int hintTranslate = 185;
+    // Flashcard buttons
+    private static final int btnW = 200;
+    private static final int btnH = 130;
+    // Animation
+    private static final int duration = 150;
+    private static final int endValue = 90;
+    // Tick
+    private static final int tick = 1;
     // Controllers
     private final AuthenticationController ac;
     private final SettingsController sc;
@@ -86,19 +134,19 @@ public class StudyModesScreen extends SystemScreens{
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
-        Scene scene = new Scene(root, 1920, 1057);
+        Scene scene = new Scene(root, sceneW, sceneW);
         Group background = createBackground("Study Modes");
-        getTitle().setLayoutX(420);
+        getTitle().setLayoutX(titleX);
         ImageView back = getSwitchScreenBackView(ac);
 
         Group contentLayer = new Group();
 
-        RectangleButtonBundle serial = ui.buildRectangularButtonBundle(rectW, rectH, "Serial Mode", "buttonText", 293, 315);
-        ImageView serialIcon = createIcon(293, 310, "/images/StudyModesScreen/serial.png");
+        RectangleButtonBundle serial = ui.buildRectangularButtonBundle(rectW, rectH, "Serial Mode", "buttonText", threeX, threeY1);
+        ImageView serialIcon = createIcon(threeX, threeY1+iconOffset, "/images/StudyModesScreen/serial.png");
         serial.button().setOnMouseClicked(_-> buildDeckSelector(contentLayer, "Serial"));
 
-        RectangleButtonBundle wrongAnswers = ui.buildRectangularButtonBundle(rectW, rectH, "Wrong Answers", "buttonText", 293, 485);
-        ImageView wrongAnswersIcon = createIcon(293, 480, "/images/StudyModesScreen/wrongAnswers.png");
+        RectangleButtonBundle wrongAnswers = ui.buildRectangularButtonBundle(rectW, rectH, "Wrong Answers", "buttonText", threeX, threeY2);
+        ImageView wrongAnswersIcon = createIcon(threeX, threeY2+iconOffset, "/images/StudyModesScreen/wrongAnswers.png");
         wrongAnswers.button().setOnMouseClicked(_-> {
             try {
                 buildWrongAnswersMode(contentLayer);
@@ -107,8 +155,8 @@ public class StudyModesScreen extends SystemScreens{
             }
         });
 
-        RectangleButtonBundle shuffle = ui.buildRectangularButtonBundle(rectW, rectH, "Shuffle Mode", "buttonText", 293, 656);
-        ImageView shuffleIcon = createIcon(293, 651, "/images/StudyModesScreen/shuffle.png");
+        RectangleButtonBundle shuffle = ui.buildRectangularButtonBundle(rectW, rectH, "Shuffle Mode", "buttonText", threeX, threeY3);
+        ImageView shuffleIcon = createIcon(threeX, threeY3+iconOffset, "/images/StudyModesScreen/shuffle.png");
         shuffle.button().setOnMouseClicked(_-> buildDeckSelector(contentLayer, "Shuffle"));
 
         Group buttons = new Group(serial.button(), wrongAnswers.button(), shuffle.button(), serialIcon, wrongAnswersIcon, shuffleIcon);
@@ -123,7 +171,7 @@ public class StudyModesScreen extends SystemScreens{
         // Create table with decks
         TableView<String> decksTable = new TableView<>();
         decksTable.getStyleClass().add("cardTable");
-        decksTable.setMinHeight(500);
+        decksTable.setMinHeight(minHeight);
         TableColumn<String, String> deckNameColumn = new TableColumn<>("Deck Names");
         deckNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
         decksTable.getColumns().add(deckNameColumn);
@@ -133,7 +181,7 @@ public class StudyModesScreen extends SystemScreens{
         deckTablesPh.setStyle("-fx-text-fill: red; -fx-wrap-text: true; -fx-text-alignment: center;");
         decksTable.setPlaceholder(deckTablesPh);
         // Start session button which creates the session
-        RectangleButtonBundle startSession = ui.buildRectangularButtonBundle(500, 100, "Start Session", "smallButtonText", 760, 0);
+        RectangleButtonBundle startSession = ui.buildRectangularButtonBundle(startW, startH, "Start Session", "smallButtonText", 760, 0);
         startSession.button().setOnMouseClicked(_->{
             String deckName = decksTable.getSelectionModel().getSelectedItem();
             if(deckName == null){
@@ -155,23 +203,22 @@ public class StudyModesScreen extends SystemScreens{
         HBox display = getPreviewDecksAndCards(fc, decksTable, owner, startSession.button());
         nav.switchContent(contentLayer, display, getBackView(contentLayer));
     }
-
     // Create content where flashcard is displayed with buttons
     private void buildSessionContent(Group contentLayer){
         // Timer text
         timerLabel = new Label(sessionC.getFormattedTime());
         timerLabel.getStyleClass().add("timerLabel");
-        timerLabel.setLayoutX(700); timerLabel.setLayoutY(940);
+        timerLabel.setLayoutX(timerX); timerLabel.setLayoutY(timerY);
 
         progressText = new Text(sessionC.getProgressText());
         progressText.getStyleClass().add("infoText");
-        progressText.setLayoutX(1400); progressText.setLayoutY(225);
+        progressText.setLayoutX(progressX); progressText.setLayoutY(progressY);
         // Actual flashcard
         StackPane flashcard = buildCard();
-        flashcard.setLayoutX(360); flashcard.setLayoutY(290);
+        flashcard.setLayoutX(flashcardX); flashcard.setLayoutY(flashcardY);
         // TTS Icon
-        ImageView ttsIcon = createIcon(100, 100, "/images/StudyModesScreen/tts.png");
-        ttsIcon.setLayoutX(200); ttsIcon.setLayoutY(290);
+        ImageView ttsIcon = createIcon(ttsIconW, ttsIconH, "/images/StudyModesScreen/tts.png");
+        ttsIcon.setLayoutX(ttsIconX); ttsIcon.setLayoutY(ttsIconY);
         ttsIcon.setCursor(Cursor.HAND);
 
         ttsIcon.setOnMouseClicked(_->{
@@ -189,7 +236,7 @@ public class StudyModesScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        tick.setLayoutX(1035); tick.setLayoutY(760);
+        tick.setLayoutX(tickX); tick.setLayoutY(tickY);
         StackPane cross = buildFlashcardButton("✗", "red");
         cross.setOnMouseClicked(_-> {
             try {
@@ -198,28 +245,28 @@ public class StudyModesScreen extends SystemScreens{
                 throw new RuntimeException(e);
             }
         });
-        cross.setLayoutX(685); cross.setLayoutY(760);
+        cross.setLayoutX(crossX); cross.setLayoutY(crossY);
         // Text for correct count
         correctText = new Text("✓      " + sessionC.getCorrectCount());
         correctText.getStyleClass().add("correctC");
-        correctText.setLayoutX(1520); correctText.setLayoutY(830);
+        correctText.setLayoutX(correctX); correctText.setLayoutY(correctY);
         // Text for incorrect count
         incorrectText = new Text("✗      " + sessionC.getIncorrectCount());
         incorrectText.getStyleClass().add("incorrectC");
-        incorrectText.setLayoutX(200); incorrectText.setLayoutY(830);
+        incorrectText.setLayoutX(incorrectX); incorrectText.setLayoutY(incorrectY);
         // Extra info text
         Text mode = new Text(sessionC.getStudyMode() + "  ·  "
                 + sessionC.getSelectedDeck());
         mode.getStyleClass().add("infoText");
-        mode.setLayoutX(125); mode.setLayoutY(230); mode.setWrappingWidth(1350);
+        mode.setLayoutX(modeX); mode.setLayoutY(modeY); mode.setWrappingWidth(modeWrapWidth);
         Group newContent = new Group(timerLabel, progressText, flashcard, tick, cross, correctText, incorrectText, mode);
         // Create rate vary option
         Text rateDisplay = new Text("Rate: 1.0");
         rateDisplay.getStyleClass().add("infoText");
-        ui.setPosition(rateDisplay, 110, 470);
+        ui.setPosition(rateDisplay, rateTextX, rateTextY);
         // Create buttons
-        RectangleButtonBundle minus = ui.buildRectangularButtonBundle(40, 40, "-", "smallButtonText", 150, 480);
-        RectangleButtonBundle plus = ui.buildRectangularButtonBundle(40, 40, "+", "smallButtonText", 250, 480);
+        RectangleButtonBundle minus = ui.buildRectangularButtonBundle(rateBtnW, rateBtnH, "-", "smallButtonText", minusX, minusY);
+        RectangleButtonBundle plus = ui.buildRectangularButtonBundle(rateBtnW, rateBtnH, "+", "smallButtonText", plusX, plusY);
         // Array value
         double[] rate = {1.0};
         // Reset per session
@@ -266,20 +313,20 @@ public class StudyModesScreen extends SystemScreens{
 
     // Function returning the flashcard display
     private StackPane buildCard() {
-        cardRect = new Rectangle(1200, 450);
+        cardRect = new Rectangle(fcW, fcH);
         cardRect.getStyleClass().add("fcRect");
 
         cardLabel = new Text("Question");
         cardLabel.getStyleClass().add("cardLabel");
-        cardLabel.setTranslateY(-170);
+        cardLabel.setTranslateY(cardLabelTranslate);
 
         cardBody = new Text(sessionC.getCurrentCard().getQuestion());
         cardBody.getStyleClass().add("cardBody");
-        cardBody.setWrappingWidth(1100);
+        cardBody.setWrappingWidth(wrappingWidth);
 
         Text flipHint = new Text("Click card to flip");
         flipHint.getStyleClass().add("flipH");
-        flipHint.setTranslateY(185);
+        flipHint.setTranslateY(hintTranslate);
 
         StackPane card = new  StackPane(cardRect, cardLabel, cardBody, flipHint);
         card.getStyleClass().add("flashcard");
@@ -289,7 +336,7 @@ public class StudyModesScreen extends SystemScreens{
     }
     // Function to get tick and cross buttons
     private StackPane buildFlashcardButton(String symbol, String colour){
-        Rectangle buttonRect = new Rectangle(200, 130);
+        Rectangle buttonRect = new Rectangle(btnW, btnH);
         buttonRect.getStyleClass().add("fcButtonRect");
         buttonRect.setStyle("-fx-fill: " + colour + ";");
         Text label = new Text(symbol);
@@ -307,9 +354,9 @@ public class StudyModesScreen extends SystemScreens{
         // Add a perspective camera to add 3d effect
         flashcard.getScene().setCamera(new PerspectiveCamera());
         // Create first half of flip, rotating card half way
-        Timeline half1 = new Timeline(new KeyFrame(Duration.millis(150),
+        Timeline half1 = new Timeline(new KeyFrame(Duration.millis(duration),
                 // 150ms, 90 degrees, start slowly
-                new KeyValue(flashcard.rotateProperty(), 90, Interpolator.EASE_IN)));
+                new KeyValue(flashcard.rotateProperty(), endValue, Interpolator.EASE_IN)));
         half1.setOnFinished(_->{
             // toggle whether answer side is showing
             sessionC.setShowingAnswer(!sessionC.isShowingAnswer());
@@ -328,10 +375,10 @@ public class StudyModesScreen extends SystemScreens{
                 cardRect.getStyleClass().add("fcRect");
             }
             // rotate card back to -90, so text change is not visible mid-flip
-            flashcard.setRotate(-90);
+            flashcard.setRotate(-endValue);
             // Create a second half animation -90 to 0
-           Timeline half2 = new Timeline(new KeyFrame(Duration.millis(150),
-                   new KeyValue(flashcard.rotateProperty(), 0, Interpolator.EASE_OUT)));
+           Timeline half2 = new Timeline(new KeyFrame(Duration.millis(duration),
+                   new KeyValue(flashcard.rotateProperty(), zero, Interpolator.EASE_OUT)));
            half2.play();
         });
         half1.play();
@@ -372,7 +419,7 @@ public class StudyModesScreen extends SystemScreens{
     }
     // Update timer
     private void startTimer() {
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
+        timer = new Timeline(new KeyFrame(Duration.seconds(tick), _ -> {
             sessionC.tick();
             timerLabel.setText(sessionC.getFormattedTime());
         }));

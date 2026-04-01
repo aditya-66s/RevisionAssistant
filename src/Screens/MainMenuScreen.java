@@ -29,25 +29,55 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class MainMenuScreen extends SystemScreens {
+    // Constants
+    private static final int titleX = 510;
+    // Statistics
+    private static final int levelTextX = 300;
+    private static final int levelTextY = 900;
+    private static final int barX = 300;
+    private static final int barY = 820;
+    private static final int barW = 1320;
+    private static final int barH = 40;
+    private static final int xpTextX = 1420;
+    private static final int xpTextY = 900;
+    private static final int statsLeftX = 200;
+    private static final int statsRightX = 1000;
+    private static final int statsStartY = 310;
+    private static final int statsRowH = 70;
+    private static final int statsXOffset = 500;
+    // Achievements
+    private static final int achLeftX = 450;
+    private static final int achRightX = 1000;
+    private static final int achStartY = 250;
+    private static final int achRowH = 105;
+    private static final int achXOffset = 40;
+    private static final int achYOffset = 30;
+    // Import / Export
+    private static final int contentX = 270;
+    private static final int contentY = 350;
+    private static final int buttonW = 450;
+    private static final int buttonH = 100;
+    private static final int spacing = 30;
+
     private final AuthenticationController ac;
     private final SettingsController sc;
     private final StatsController stats;
-
+    // Constructor
     public MainMenuScreen(AuthenticationController ac, SettingsController sC) throws IOException {
         this.ac = ac;
         this.sc = sC;
         this.stats = new StatsController();
     }
-
+    // Creates
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
         // Creating the background rectangle using the inherited method from the SystemScreens Class
         Group background = createBackground("Main Menu");
-        getTitle().setLayoutX(510);
+        getTitle().setLayoutX(titleX);
         Group contentLayer = new Group();
         // Creating buttons bundles for all
-        RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", 310, 250);
+        RectangleButtonBundle revisionSystem = ui.buildRectangularButtonBundle(rectW, rectH, "Revision System", "buttonText", fourX, fourY1);
         revisionSystem.button().setOnMouseClicked(_ -> {
             try {
                 revisionSystemMouseClick();
@@ -55,13 +85,13 @@ public class MainMenuScreen extends SystemScreens {
                 throw new RuntimeException(e);
             }
         });
-        ImageView rsIcon = createIcon(310, 245, "/images/MainMenuScreen/books.png");
+        ImageView rsIcon = createIcon(fourX, fourY1+iconOffset, "/images/MainMenuScreen/books.png");
 
-        RectangleButtonBundle userManagement = ui.buildRectangularButtonBundle(rectW, rectH, "User Management", "buttonText", 310,  420);
+        RectangleButtonBundle userManagement = ui.buildRectangularButtonBundle(rectW, rectH, "User Management", "buttonText", fourX,  fourY2);
         userManagement.button().setOnMouseClicked(_ -> buildUMContent(contentLayer));
-        ImageView umIcon = createIcon(310, 415, "/images/MainMenuScreen/userbook.png");
+        ImageView umIcon = createIcon(fourX, fourY2+iconOffset, "/images/MainMenuScreen/userbook.png");
 
-        RectangleButtonBundle settings = ui.buildRectangularButtonBundle(rectW, rectH, "Settings", "buttonText", 310, 591);
+        RectangleButtonBundle settings = ui.buildRectangularButtonBundle(rectW, rectH, "Settings", "buttonText", fourX, fourY3);
         settings.button().setOnMouseClicked(_ -> {
             try {
                 settingsMouseClick();
@@ -69,19 +99,17 @@ public class MainMenuScreen extends SystemScreens {
                 throw new RuntimeException(e);
             }
         });
-        ImageView sIcon = createIcon(310, 586, "/images/MainMenuScreen/settings.png");
+        ImageView sIcon = createIcon(fourX, fourY3+iconOffset, "/images/MainMenuScreen/settings.png");
 
-        RectangleButtonBundle logout = ui.buildRectangularButtonBundle(rectW, rectH, "Logout", "buttonText", 310, 762);
+        RectangleButtonBundle logout = ui.buildRectangularButtonBundle(rectW, rectH, "Logout", "buttonText", fourX, fourY4);
         logout.button().setOnMouseClicked(this::logout);
-        ImageView lIcon = createIcon(310, 757, "/images/MainMenuScreen/door.png");
+        ImageView lIcon = createIcon(fourX, fourY4+iconOffset, "/images/MainMenuScreen/door.png");
 
         Group buttons = new Group(revisionSystem.button(), userManagement.button(), settings.button(), logout.button());
         Group icons = new Group(rsIcon, umIcon, sIcon, lIcon);
         contentLayer.getChildren().addAll(buttons, icons);
         root.getChildren().addAll(background, contentLayer);
-        Scene scene = new Scene(root, 1920, 1057);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
-        return scene;
+        return new Scene(root, sceneW, sceneH);
     }
 
     private void logout(Event e) {
@@ -100,8 +128,8 @@ public class MainMenuScreen extends SystemScreens {
     }
     // Procedure which builds the content for the User Management Page
     private void buildUMContent(Group contentLayer) {
-        RectangleButtonBundle statistics = ui.buildRectangularButtonBundle(rectW, rectH, "Statistics", "buttonText", 293, 315);
-        ImageView sIcon = createIcon(293, 310, "/images/MainMenuScreen/stats.png");
+        RectangleButtonBundle statistics = ui.buildRectangularButtonBundle(rectW, rectH, "Statistics", "buttonText", threeX, threeY1);
+        ImageView sIcon = createIcon(threeX, threeY1+iconOffset, "/images/MainMenuScreen/stats.png");
         statistics.button().setOnMouseClicked(_ -> {
             try {
                 buildStatisticsContent(contentLayer);
@@ -110,8 +138,8 @@ public class MainMenuScreen extends SystemScreens {
             }
         });
 
-        RectangleButtonBundle achievements = ui.buildRectangularButtonBundle(rectW, rectH, "Achievements", "buttonText", 293, 485);
-        ImageView aIcon = createIcon(293, 480, "/images/MainMenuScreen/achievement.png");
+        RectangleButtonBundle achievements = ui.buildRectangularButtonBundle(rectW, rectH, "Achievements", "buttonText", threeX, threeY2);
+        ImageView aIcon = createIcon(threeX, threeY2+iconOffset, "/images/MainMenuScreen/achievement.png");
         achievements.button().setOnMouseClicked(_ -> {
             try {
                 buildAchievementsContent(contentLayer);
@@ -120,8 +148,8 @@ public class MainMenuScreen extends SystemScreens {
             }
         });
 
-        RectangleButtonBundle fileManagement = ui.buildRectangularButtonBundle(rectW, rectH, "File Management", "buttonText", 293, 656);
-        ImageView fmIcon = createIcon(293, 651, "/images/MainMenuScreen/folder.png");
+        RectangleButtonBundle fileManagement = ui.buildRectangularButtonBundle(rectW, rectH, "File Management", "buttonText", threeX, threeY3);
+        ImageView fmIcon = createIcon(threeX, threeY3+iconOffset, "/images/MainMenuScreen/folder.png");
         fileManagement.button().setOnMouseClicked(_ -> buildFileManagementContent(contentLayer));
 
         Group options = new Group(statistics.button(), fileManagement.button(), achievements.button(), sIcon, aIcon, fmIcon);
@@ -134,19 +162,19 @@ public class MainMenuScreen extends SystemScreens {
         // Level header
         Text levelText = new Text("Level " + uStats.getLevel());
         levelText.getStyleClass().add("levelText");
-        ui.setPosition(levelText, 300, 900);
+        ui.setPosition(levelText, levelTextX, levelTextY);
         // XP Bar
-        Rectangle bar = new Rectangle(300, 820, 1320, 40);
+        Rectangle bar = new Rectangle(barX, barY, barW, barH);
         bar.getStyleClass().add("XPBar");
         // XP Progress
         double progress = (double) uStats.getXPIntoCurrentLevel() / uStats.getXPForNext();
         progress = Math.min(progress, 1.0); // clamp to 1.0
-        Rectangle progressFill = new Rectangle(300, 820, 1320*progress, 40);
+        Rectangle progressFill = new Rectangle(barX, barY, barW*progress, barH);
         progressFill.getStyleClass().add("progressFill");
         // Text under bar
         Text xpProgressText = new Text( uStats.getXPIntoCurrentLevel() + "/" + uStats.getXPForNext());
         xpProgressText.getStyleClass().add("infoText");
-        ui.setPosition(xpProgressText, 1420, 900);
+        ui.setPosition(xpProgressText, xpTextX, xpTextY);
 
         nav.switchContent(contentLayer, createStatsGrid(uStats), levelText, xpProgressText, bar, progressFill, getBackView(contentLayer));
     }
@@ -174,10 +202,10 @@ public class MainMenuScreen extends SystemScreens {
                 {"Achievements", uStats.getUnlockedAchievements().size() + " / 14"},
                 {"Last Study Date", uStats.getLastStudyDate()},
         };
-        int leftX = 200;
-        int rightX = 1000;
-        int startY = 310;
-        int rowH = 70;
+        int leftX = statsLeftX;
+        int rightX = statsRightX;
+        int startY = statsStartY;
+        int rowH = statsRowH;
         for(int i = 0; i < grid.length; i++){
             // Even rows go on the left, odd goes to the right
             int x = (i % 2 == 0) ? leftX : rightX;
@@ -189,7 +217,7 @@ public class MainMenuScreen extends SystemScreens {
             // Create the actual statistic to accompany this text
             Text statistic = new Text(grid[i][1]);
             statistic.getStyleClass().add("statText");
-            ui.setPosition(statistic, x + 500, y);
+            ui.setPosition(statistic, x + statsXOffset, y);
             statsGrid.getChildren().addAll(statNameText, statistic);
         }
         return statsGrid;
@@ -219,11 +247,12 @@ public class MainMenuScreen extends SystemScreens {
                 {"Never Give Up", "Retry 10 sessions"},
                 {"Ultimate Scholar", "Unlock all achievements"},
         };
+
         Group grid = new Group();
-        int leftX = 450;
-        int rightX = 1000;
-        int startY = 250;
-        int rowH = 105;
+        int leftX = achLeftX;
+        int rightX = achRightX;
+        int startY = achStartY;
+        int rowH = achRowH;
         // build the Text
         for(int i = 0; i < achievements.length; i++){
             String achievement = achievements[i][0];
@@ -239,7 +268,7 @@ public class MainMenuScreen extends SystemScreens {
 
             Text descriptionText = new Text(description);
             descriptionText.getStyleClass().add("descriptionText");
-            ui.setPosition(descriptionText, x + 40, y + 30);
+            ui.setPosition(descriptionText, x + achXOffset, y + achYOffset);
             // Set the colour to locked achievements differently
             if(!unlocked){
                 achievementText.setStyle("-fx-fill: #888888;");
@@ -252,8 +281,8 @@ public class MainMenuScreen extends SystemScreens {
     // Create file management content
     private void buildFileManagementContent(Group contentLayer) {
         Window window = contentLayer.getScene().getWindow();
-        HBox content = new HBox(20);
-        ui.setPosition(content, 270, 350);
+        HBox content = new HBox(hSpacing);
+        ui.setPosition(content, contentX, contentY);
         String[] files = { "users.csv", "settings.csv", "stats.csv" };
         // Create buttons for each
         for(int i = 0; i < files.length; i++){
@@ -262,7 +291,7 @@ public class MainMenuScreen extends SystemScreens {
             Text text = new Text(file);
             text.getStyleClass().add("infoText");
 
-            RectangleButtonBundle exp = ui.buildRectangularButtonBundle(450, 100, "Export Backup", "smallerButtonText", 0, 0);
+            RectangleButtonBundle exp = ui.buildRectangularButtonBundle(buttonW, buttonH, "Export Backup", "smallerButtonText", zero, zero);
             exp.button().setOnMouseClicked(_ -> {
                 try {
                     exportFile(window, file);
@@ -270,7 +299,7 @@ public class MainMenuScreen extends SystemScreens {
                     throw new RuntimeException(e);
                 }
             });
-            RectangleButtonBundle imp = ui.buildRectangularButtonBundle(450, 100, "Import Backup", "smallerButtonText", 0, 0);
+            RectangleButtonBundle imp = ui.buildRectangularButtonBundle(buttonW, buttonH, "Import Backup", "smallerButtonText", zero, zero);
             imp.button().setOnMouseClicked(_ -> {
                 try {
                     importFile(window, file);
@@ -278,7 +307,7 @@ public class MainMenuScreen extends SystemScreens {
                     throw new RuntimeException(e);
                 }
             });
-            VBox box = new VBox(30, text, exp.button(), imp.button());
+            VBox box = new VBox(spacing, text, exp.button(), imp.button());
             content.getChildren().addAll(box);
         }
         nav.switchContent(contentLayer, content, getBackView(contentLayer));

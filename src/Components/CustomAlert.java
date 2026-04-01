@@ -9,6 +9,9 @@ import java.util.Optional;
 
 // Utility class for creating and displaying custom alerts, proving convenient static methods for common alert types
 public class CustomAlert {
+    // Constants
+    private static final int spacing = 10;
+    private static final int minWidth = 410;
     // Constructor not used, all methods are static
     public CustomAlert(){}
     // Displays an error alert dialog
@@ -47,7 +50,7 @@ public class CustomAlert {
             okButton.setDisable(sanitisedInput.trim().isEmpty());
         });
         Label messageText = new Label(message);
-        VBox content = new VBox(15, messageText, input);
+        VBox content = new VBox(spacing, messageText, input);
         a.getDialogPane().setContent(content);
         // Return text trimmed
         return a.showAndWait().filter(b -> b == ButtonType.OK).map(_ -> input.getText().trim());
@@ -70,13 +73,13 @@ public class CustomAlert {
         Label label = new Label(message);
         label.setWrapText(true);
         // Set the label as the content, wrapped in a VBox with 10px spacing
-        a.getDialogPane().setContent(new VBox(10, label));
+        a.getDialogPane().setContent(new VBox(spacing, label));
         // Set the buttons that will appear at the bottom of the alert
         a.getDialogPane().getButtonTypes().setAll(buttons);
         // Configure minimum size to use preferred size (auto-sizing based on content)
         a.getDialogPane().setMinHeight(Control.USE_PREF_SIZE);
         // Set minimum width to ensure the alert is not too narrow
-        a.getDialogPane().setMinWidth(420);
+        a.getDialogPane().setMinWidth(minWidth);
         // Add a CSS class based on the alert type (such as: "error", "information", "confirmation")
         a.getDialogPane().getStyleClass().add(alertType.name().toLowerCase());
         // Apply custom stylesheet for alert styling

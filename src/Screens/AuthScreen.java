@@ -29,6 +29,106 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class AuthScreen {
+    // Constants
+    // Scene
+    private static final int sceneW = 1920;
+    private static final int sceneH = 1057;
+    // Background Rectangle
+    private static final int backgroundX = 357;
+    private static final int backgroundY = 187;
+    private static final int backgroundW = 1206;
+    private static final int backgroundH = 683;
+    // Tabs
+    private static final int tabW = 334;
+    private static final int tabH = 98;
+    private static final int lTabX = 578;
+    private static final int rTabX = 972;
+    private static final int tabY = 215;
+    // Buttons
+    private static final int mainButtonW = 1083;
+    private static final int login_mainButtonY = 684;
+    private static final int reg_mainButtonY = 699;
+    private static final int forgot_mainButtonX = 418;
+    private static final int forgot_mainButtonY = 729;
+    private static final int mainButtonH = 98;
+    private static final int mainButtonX = 430;
+    private static final int smallButtonW = 700;
+    private static final int smallButtonH = 60;
+    private static final int smallButtonX = 600;
+    private static final int login_smallButtonY = 790;
+    private static final int reg_smallButtonY = 805;
+    // Login input fields
+    private static final int login_inputX = 695;
+    private static final int login_emailY = 372;
+    private static final int login_passwordY = 510;
+    private static final int login_fieldX = 790;
+    private static final int login_emailFieldY = 382;
+    private static final int login_passwordFieldY = 520;
+    private static final int login_lIconX = 694;
+    private static final int login_emailIconY = 376;
+    private static final int login_passwordIconY = 513;
+    private static final int login_rIconX = 1166;
+    private static final int login_passwordRIconY = 534;
+    private static final int login_inputW = 530;
+    private static final int login_inputH = 98;
+    // Icons
+    private static final int iconW = 95;
+    private static final int iconH = 90;
+    // Forgot Password
+    private static final int fp_inputH = 98;
+    private static final int fp_fieldX = 633;
+    private static final int fp_emailFieldY = 258;
+    private static final int fp_recoveryFieldY = 380;
+    private static final int fp_passwordFieldY = 499;
+    private static final int fp_cPFieldY = 619;
+    private static final int fp_lIconX = 531;
+    private static final int fp_emailIconY = 251;
+    private static final int fp_recoveryIconX = 534;
+    private static final int fp_recoveryIconY = 373;
+    private static final int fp_passwordIconY = 495;
+    private static final int fp_cPIconY = 615;
+    private static final int fp_rIconX = 1280;
+    private static final int fp_passwordRIconY = 515;
+    private static final int fp_cPRIconY = 635;
+    private static final int fp_inputX = 531;
+    private static final int fp_inputW = 815;
+    private static final int fp_emailY = 248;
+    private static final int fp_recoveryY = 370;
+    private static final int fp_passwordY = 489;
+    private static final int fp_cPY = 609;
+    // Register
+    private static final int reg_emailY = 345;
+    private static final int reg_passwordY = 458;
+    private static final int reg_cPY = 572;
+    private static final int reg_inputX = 531;
+    private static final int reg_inputW = 815;
+    private static final int reg_inputH = 98;
+    private static final int reg_fieldX = 630;
+    private static final int reg_emailFieldY = 355;
+    private static final int reg_passwordFieldY = 468;
+    private static final int reg_cPFieldY = 582;
+    private static final int reg_lIconX = 531;
+    private static final int reg_emailIconY = 345;
+    private static final int reg_passwordIconY = 463;
+    private static final int reg_cPIconY = 576;
+    private static final int reg_rIconX = 1280;
+    private static final int reg_passwordRIconY = 483;
+    private static final int reg_cPRIconY = 598;
+    // Recovery word
+    private static final int rw_infoX = 530;
+    private static final int rw_infoY = 300;
+    private static final int rw_inputY = 460;
+    private static final int rw_inputX = 531;
+    private static final int rw_inputW = 815;
+    private static final int rw_inputH = 98;
+    private static final int rw_fieldX = 640;
+    private static final int rw_fieldY = 470;
+    private static final int rw_iconX = 534;
+    private static final int rw_iconY = 463;
+    private static final int rw_enterX = 1245;
+    private static final int rw_enterY = 463;
+    private static final int rw_enterW = 95;
+    private static final int rw_enterH = 90;
     // Authentication Controller for account-related operations
     private final AuthenticationController ac;
     private final UIComponents ui = new UIComponents();
@@ -50,22 +150,17 @@ public class AuthScreen {
         root.getStyleClass().add("screens");
         ImageView logo = ui.createLogoView();
         // Create consistent background rectangle for content
-        Rectangle background = new Rectangle(357, 187, 1206,683);
+        Rectangle background = new Rectangle(backgroundX, backgroundY, backgroundW,backgroundH);
         background.getStyleClass().add("backgroundRect");
-
         // Create tab buttons for switching between login and registration
-        RectangleButtonBundle selectLogin = ui.buildRectangularButtonBundle(334, 98, "Login", "smallButtonText", 578, 215);
-        RectangleButtonBundle selectRegister = ui.buildRectangularButtonBundle(334,98, "Register", "smallButtonText", 972, 215);
+        RectangleButtonBundle selectLogin = ui.buildRectangularButtonBundle(tabW, tabH, "Login", "smallButtonText", lTabX, tabY);
+        RectangleButtonBundle selectRegister = ui.buildRectangularButtonBundle(tabW,tabH, "Register", "smallButtonText", rTabX, tabY);
         // Group content that changes based on selected tab
         Group contentLayer = new Group(selectLogin.button(), selectRegister.button());
         // Initialise first with login content
         buildLoginContent(contentLayer, selectLogin, selectRegister);
-
         root.getChildren().addAll(logo, background, contentLayer);
-        
-        Scene scene = new Scene(root, 1920, 1057);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
-        return scene;
+        return new Scene(root, sceneW, sceneH);
     }
 
     // Displays log in content when login is selected
@@ -73,7 +168,6 @@ public class AuthScreen {
         // Style the tab buttons to indicate which one is selected
         selectRegister.buttonRect().setStyle("-fx-fill: grey");
         selectLogin.buttonRect().setStyle("-fx-fill: black");
-
         // Set up button to switch content when clicked
         selectRegister.button().setOnMouseClicked(_ -> {
             buildRegistrationContent(contentLayer, selectLogin, selectRegister);
@@ -83,10 +177,10 @@ public class AuthScreen {
 
         // Create input field with user icon
         String iconURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(695, 372, 530, 98,790, 382, "Enter Email", iconURL, 694, 376, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(login_inputX, login_emailY, login_inputW, login_inputH,login_fieldX, login_emailFieldY, "Enter Email", iconURL, login_lIconX, login_emailIconY, iconW, iconH);
         emailInput.tf().getStyleClass().add("loginTextField");
         // Create password input field with show and hide functionality
-        PasswordBundle loginPasswordInput = ui.buildPasswordInput(695, 510, 530, 790, 520, "Enter Password", 694, 513,1166, 534);
+        PasswordBundle loginPasswordInput = ui.buildPasswordInput(login_inputX, login_passwordY, login_inputW, login_fieldX, login_passwordFieldY, "Enter Password", login_lIconX, login_passwordIconY,login_rIconX, login_passwordRIconY);
         loginPasswordInput.copyPw().getStyleClass().add("loginTextField");
         loginPasswordInput.password().getStyleClass().add("loginTextField");
         // Add enter to submit
@@ -104,7 +198,7 @@ public class AuthScreen {
         Group icons = new Group(emailInput.icon(), loginPasswordInput.getIconGroup());
 
         // Create a login button
-        RectangleButtonBundle login = ui.buildRectangularButtonBundle(1083, 98, "Login", "buttonText", 430, 684);
+        RectangleButtonBundle login = ui.buildRectangularButtonBundle(mainButtonW, mainButtonH, "Login", "buttonText", mainButtonX, login_mainButtonY);
         login.button().setOnMouseClicked(event -> {
             try {
                 loginSubmit(event, emailInput, loginPasswordInput);
@@ -114,7 +208,7 @@ public class AuthScreen {
         });
 
         // Create a "Forgot Password" button
-        RectangleButtonBundle forgotPassword = ui.buildRectangularButtonBundle(700, 60, "Forgot Password", "smallerButtonText", 600, 790);
+        RectangleButtonBundle forgotPassword = ui.buildRectangularButtonBundle(smallButtonW, smallButtonH, "Forgot Password", "smallerButtonText", smallButtonX, login_smallButtonY);
         forgotPassword.button().setOnMouseClicked(_ -> {
             // Change content to display forgot password options
             forgotPassword(contentLayer);
@@ -149,13 +243,13 @@ public class AuthScreen {
     private void forgotPassword(Group contentLayer) {
         // Create email input field
         String userURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(531, 248, 815, 98, 633, 258, "Enter Email", userURL, 531, 251, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(fp_inputX, fp_emailY, fp_inputW, fp_inputH, fp_fieldX, fp_emailFieldY, "Enter Email", userURL, fp_lIconX, fp_emailIconY, iconW, iconH);
         // Create recovery word input field
         String recoveryURL = "/images/AuthScreen/recover.png";
-        TextBundle recoveryWord = ui.buildTextFieldInput(531, 370, 815 , 98,633, 380, "Enter Recovery Word", recoveryURL, 534, 373 ,95, 90);
+        TextBundle recoveryWord = ui.buildTextFieldInput(fp_inputX, fp_recoveryY, fp_inputW ,fp_inputH ,fp_fieldX, fp_recoveryFieldY, "Enter Recovery Word", recoveryURL, fp_recoveryIconX, fp_recoveryIconY ,iconW, iconH);
         // Create password input fields
-        PasswordBundle resetPassword = ui.buildPasswordInput(531, 489, 815, 633, 499, "Enter Password", 531, 495 ,1280, 515);
-        PasswordBundle confirmResetPassword = ui.buildPasswordInput(531, 609, 815, 633, 619, "Confirm password", 531, 615, 1280, 635);
+        PasswordBundle resetPassword = ui.buildPasswordInput(fp_inputX, fp_passwordY, fp_inputW, fp_fieldX, fp_passwordFieldY, "Enter Password", fp_lIconX, fp_passwordIconY ,fp_rIconX, fp_passwordRIconY);
+        PasswordBundle confirmResetPassword = ui.buildPasswordInput(fp_inputX, fp_cPY, fp_inputW, fp_fieldX, fp_cPFieldY, "Confirm password", fp_lIconX, fp_cPIconY, fp_rIconX, fp_cPRIconY);
         // Attach real time validators to tell user when input is valid
         // :: method reference, allowing it's specified method to be passed as a function
         UIComponents.attachValidator(emailInput.tf(), UIComponents::isValidEmail, "error");
@@ -166,7 +260,7 @@ public class AuthScreen {
         EventHandler<ActionEvent> resetHandler = e -> resetSubmit(e, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer);
         ui.bindEnter(resetHandler, emailInput.tf(), resetPassword.password(), resetPassword.copyPw(), confirmResetPassword.password(), confirmResetPassword.copyPw(), recoveryWord.tf());
         // Create password reset button
-        RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(1083,98,"Reset Password", "buttonText", 418, 729);
+        RectangleButtonBundle resetPasswordRectangle = ui.buildRectangularButtonBundle(mainButtonW,mainButtonH,"Reset Password", "buttonText", forgot_mainButtonX, forgot_mainButtonY);
         resetPasswordRectangle.button().setOnMouseClicked(event -> resetSubmit(event, recoveryWord, emailInput, resetPassword, confirmResetPassword, contentLayer));
         // Create a back button to return to login screen
         ImageView back = ui.createBRImageView("back");
@@ -261,10 +355,10 @@ public class AuthScreen {
 
         // Create input field
         String iconURL = "/images/AuthScreen/user.png";
-        TextBundle emailInput = ui.buildTextFieldInput(531, 345, 815, 98, 630, 355, "Enter Email", iconURL, 531, 345, 95, 90);
+        TextBundle emailInput = ui.buildTextFieldInput(reg_inputX, reg_emailY, reg_inputW, fp_inputH, reg_fieldX, reg_emailFieldY, "Enter Email", iconURL, reg_lIconX, reg_emailIconY, iconW, iconH);
         // Create password input fields
-        PasswordBundle registrationPassword = ui.buildPasswordInput(531, 458, 815, 630, 468, "Enter Password", 531, 463 ,1280, 483);
-        PasswordBundle confirmRegistrationPassword = ui.buildPasswordInput(531, 572, 815, 630, 582, "Confirm password", 531, 576, 1280, 598);
+        PasswordBundle registrationPassword = ui.buildPasswordInput(reg_inputX, reg_passwordY, reg_inputW, reg_fieldX, reg_passwordFieldY, "Enter Password", reg_lIconX, reg_passwordIconY ,reg_rIconX, reg_passwordRIconY);
+        PasswordBundle confirmRegistrationPassword = ui.buildPasswordInput(reg_inputX, reg_cPY, reg_inputW, reg_fieldX, reg_cPFieldY, "Confirm password", reg_lIconX, reg_cPIconY, reg_rIconX, reg_cPRIconY);
         // attach real-time validators to input fields
         UIComponents.attachValidator(registrationPassword.password(), UIComponents::isValidPassword, "error", registrationPassword.copyPw());
         UIComponents.attachValidator(confirmRegistrationPassword.password(), UIComponents::isValidPassword, "error", confirmRegistrationPassword.copyPw());
@@ -281,7 +375,7 @@ public class AuthScreen {
         Group icons = new Group(emailInput.icon(), registrationPassword.getIconGroup(), confirmRegistrationPassword.getIconGroup(), question);
 
         // Create register button
-        RectangleButtonBundle register = ui.buildRectangularButtonBundle(1083, 98, "Register", "buttonText", 430, 699);
+        RectangleButtonBundle register = ui.buildRectangularButtonBundle(mainButtonW, mainButtonH, "Register", "buttonText", mainButtonX, reg_mainButtonY);
         // Show requirements when question mark is clicked
         question.setOnMouseClicked(event -> {
             Window alertWindow = ((Node) event.getSource()).getScene().getWindow();
@@ -290,7 +384,7 @@ public class AuthScreen {
         // Handle registration button click
         register.button().setOnMouseClicked(event -> registerSubmit(event, emailInput, registrationPassword, confirmRegistrationPassword, contentLayer));
         // Create "Already have an account" button
-        RectangleButtonBundle alreadyHaveAccount = ui.buildRectangularButtonBundle(700,60, "Already have an account", "smallerButtonText", 600, 805);
+        RectangleButtonBundle alreadyHaveAccount = ui.buildRectangularButtonBundle(smallButtonW,smallButtonH, "Already have an account", "smallerButtonText", smallButtonX, reg_smallButtonY);
         alreadyHaveAccount.button().setOnMouseClicked(_ -> buildLoginContent(contentLayer, selectLogin, selectRegister));
         // Replace content with registration form
         nav.switchContent(contentLayer, selectLogin.button(), selectRegister.button(), inputs, register.button(), icons, alreadyHaveAccount.button());
@@ -324,11 +418,11 @@ public class AuthScreen {
         Text infoText = new Text("Enter a recovery word to use \n when resetting password \n Minimum 3 Characters");
         infoText.getStyleClass().add("infoText");
         infoText.setTextAlignment(TextAlignment.CENTER);
-        infoText.setLayoutX(530);
-        infoText.setLayoutY(300);
+        infoText.setLayoutX(rw_infoX);
+        infoText.setLayoutY(rw_infoY);
         String iconURL = "/images/AuthScreen/recover.png";
         // Create recovery word input field
-        TextBundle recoveryWord = ui.buildTextFieldInput(531, 460, 815 , 98,640, 470, "Enter Recovery Word", iconURL, 534, 463 ,95, 90);
+        TextBundle recoveryWord = ui.buildTextFieldInput(fp_inputX, rw_inputY, rw_inputW , reg_inputH,rw_fieldX, rw_fieldY, "Enter Recovery Word", iconURL, rw_iconX, rw_iconY ,iconW, iconH);
         UIComponents.attachValidator(recoveryWord.tf(), UIComponents::isValidRecoveryW, "error");
         recoveryWord.tf().setOnAction(e -> {
             try {
@@ -339,10 +433,10 @@ public class AuthScreen {
         });
         // Create enter button (as an icon)
         ImageView enter = new ImageView(Objects.requireNonNull(getClass().getResource("/images/AuthScreen/enter.png")).toExternalForm());
-        enter.setFitHeight(90);
-        enter.setFitWidth(95);
-        enter.setLayoutX(1245);
-        enter.setLayoutY(463);
+        enter.setFitHeight(rw_enterH);
+        enter.setFitWidth(rw_enterW);
+        enter.setLayoutX(rw_enterX);
+        enter.setLayoutY(rw_enterY);
         enter.setCursor(Cursor.HAND);
         // Handle registration submission
         enter.setOnMouseClicked(event -> {

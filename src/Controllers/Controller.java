@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Controller {
+    // Constants
+    protected static final int minStatsCSVDataItems = 11;
+    protected static final int settingsCSVDataItems = 7;
     // Holds the application's current user
     private User currentUser;
     private Settings currentSettings;
@@ -64,8 +67,8 @@ public abstract class Controller {
                     if(isNumeric(question) || isNumeric(answer)) return false;
                 }else{
                     String[] data = line.split(",");
-                    if(fileName.equals("stats.csv") && data.length >= 11) return false;
-                    if(fileName.equals("settings.csv") && data.length != 7) return false;
+                    if(fileName.equals("stats.csv") && data.length >= minStatsCSVDataItems) return false;
+                    if(fileName.equals("settings.csv") && data.length != settingsCSVDataItems) return false;
                 }
             }
         }

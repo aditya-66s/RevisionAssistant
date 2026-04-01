@@ -16,6 +16,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class FlashcardController extends Controller {
+    // Constants
+    private static final int deckDataItems = 2;
+    private static final int maxDeckSize = 60;
     // Holds the string to the user's directory path
     private final String userFolderPath;
     // Hold then name of the flashcard deck file
@@ -140,7 +143,7 @@ public class FlashcardController extends Controller {
         while ((line = br.readLine()) != null) {
             // Split at ,
             String[] data = line.split("\",\"");
-            if(data.length == 2){
+            if(data.length == deckDataItems){
                 // Replace speech marks with empty space
                 String question = data[0].replace("\"", "").replace("\\n", "\n");
                 String answer = data[1].replace("\"", "").replace("\\n", "\n");
@@ -333,7 +336,7 @@ public class FlashcardController extends Controller {
             CustomAlert.error(owner, "Invalid file format");
             return false;
         }
-        if(cardsList.isEmpty() || cardsList.size() > 60){
+        if(cardsList.isEmpty() || cardsList.size() > maxDeckSize){
             CustomAlert.error(owner, "A deck needs a minimum of 1 card and can have a maximum of 60 cards");
             return false;
         }

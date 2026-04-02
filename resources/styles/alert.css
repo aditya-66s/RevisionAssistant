@@ -34,19 +34,19 @@
     -fx-background-color: #1492ff;
 }
 
-/* ERROR */
+/* errors */
 .dialog-pane.error {
     -fx-border-color: #b00020;
     -fx-border-width: 3;
 }
 
-/* CONFIRMATION / SUCCESS */
+/*  confirm/success */
 .dialog-pane.confirmation {
     -fx-border-color: #1e6f3e;
     -fx-border-width: 3;
 }
 
-/* INFORMATION */
+/* info */
 .dialog-pane.information {
     -fx-border-color: #005a9e;
     -fx-border-width: 3;

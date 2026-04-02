@@ -491,5 +491,4 @@ public class AuthScreen {
             return 2; // Registration failed
         }
     }
-
 }

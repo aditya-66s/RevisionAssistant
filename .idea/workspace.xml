@@ -4,30 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="New Changes">
+    <list default="true" id="91294a66-2f6c-4f99-8eba-0c9f7f68bb8c" name="Changes" comment="Got rid of magic numbers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/sessions/p.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/sessions/p.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/stats.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/CustomAlert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/CustomAlert.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ScreenManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ScreenManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/UIComponents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/UIComponents.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/AuthenticationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/FlashcardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/FlashcardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controllers/StatsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/StatsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/styles/alert.css" beforeDir="false" afterPath="$PROJECT_DIR$/resources/styles/alert.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/resources/styles/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controllers/XPController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controllers/XPController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/AuthScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/AuthScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/EndOfRevisionScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/EndOfRevisionScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/FlashcardManagementScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/MainMenuScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/RevisionSystemScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/RevisionSystemScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SettingsScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/SplashScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SplashScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screens/StudyModesScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/StudyModesScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screens/SystemScreens.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screens/SystemScreens.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/userFolders/p/wrongAnswers.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,7 +226,8 @@
       <workItem from="1774946442735" duration="75000" />
       <workItem from="1774979912047" duration="1307000" />
       <workItem from="1775051569433" duration="7124000" />
-      <workItem from="1775058732635" duration="6366000" />
+      <workItem from="1775058732635" duration="8288000" />
+      <workItem from="1775145819806" duration="3800000" />
     </task>
     <task id="LOCAL-00001" summary="Initial NEA project setup">
       <option name="closed" value="true" />
@@ -588,7 +573,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774658171576</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Got rid of magic numbers">
+      <option name="closed" value="true" />
+      <created>1775065146079</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1775065146079</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -621,7 +614,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Modular Email Input" />
     <MESSAGE value="Alerts" />
     <MESSAGE value="adding constraints to email+password input" />
     <MESSAGE value="Main Menu Creation" />
@@ -646,7 +638,8 @@
     <MESSAGE value="adas" />
     <MESSAGE value="Uncommitted files" />
     <MESSAGE value="New Changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="New Changes" />
+    <MESSAGE value="Got rid of magic numbers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got rid of magic numbers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

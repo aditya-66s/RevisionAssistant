@@ -24,10 +24,7 @@ public class User {
     public void setEmail(String email){
         this.email = email;
     }
-    // ERROR
-//    public void setPasswordHash(String passwordHash){
-//        this.hashedPassword = hashedPassword;
-//    }
+
     public void setPasswordHash(String passwordHash){
         this.hashedPassword = passwordHash;
     }
@@ -56,5 +53,4 @@ public class User {
     public String getRecoveryWord(){
         return this.recoveryWord;
     }
-
 }

@@ -1,6 +1,4 @@
-/*.screens{*/
-/*    -fx-background-color: black;*/
-/*}*/
+/*Images*/
 .constantImages{
     -fx-fit-height: 100px;
     -fx-fit-width: 100px;
@@ -9,39 +7,46 @@
     -fx-fit-height: 141px;
     -fx-fit-width: 144px;
 }
+/*Typography*/
 .title{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 120px;
-    /*-fx-fill: white;*/
 }
 .postAuthTitle{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 120px;
-    /*-fx-fill: white;*/
 }
 .screens .text{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 80px;
-    /*-fx-fill: white;*/
 }
 .brightnessOverlay{
     -fx-arc-height: 0px;
     -fx-arc-width: 0px;
     -fx-stroke: transparent;
 }
+.infoText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 40px;
+}
+.instructionText{
+    -fx-font-family: "Vipnagorgialla";
+    -fx-font-size: 80px;
+}
 Rectangle{
     -fx-arc-height: 50px;
     -fx-arc-width: 50px;
 }
+/*Backgrounds and Rectangles*/
 .backgroundRect{
     -fx-arc-height: 100px;
     -fx-arc-width: 100px;
-    /*-fx-fill: #ffffff;*/
 }
 .inputRect{
     -fx-fill: #ffffff;
     -fx-stroke: #000000;
 }
+/*Input Fields*/
 .text-field {
     -fx-pref-width: 600px;
     -fx-pref-height: 80px;
@@ -54,6 +59,11 @@ Rectangle{
 .resetTextField{
     -fx-pref-width: 1140px;
 }
+.passwordImage{
+    -fx-fit-height: 47px;
+    -fx-fit-width: 48px;
+}
+/*Drop Down Menus*/
 .context-menu {
     -fx-font-size: 12px;
     -fx-padding: 2px;
@@ -67,27 +77,14 @@ Rectangle{
     -fx-text-fill: black;
     -fx-fill: black;
 }
-.passwordImage{
-    -fx-fit-height: 47px;
-    -fx-fit-width: 48px;
-}
+/*Buttons*/
 .buttonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 60px;
-    /*-fx-fill: white;*/
 }
 .smallButtonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 40px;
-    /*-fx-fill: white;*/
-}
-.infoText{
-    -fx-font-family: "Vipnagorgialla";
-    -fx-font-size: 40px;
-}
-.instructionText{
-    -fx-font-family: "Vipnagorgialla";
-    -fx-font-size: 80px;
 }
 .StackPane-Button{
     -fx-cursor: hand;
@@ -95,7 +92,6 @@ Rectangle{
 .smallerButtonText{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 20px;
-    /*-fx-fill: white;*/
 }
 .tableText{
     -fx-font-family: "Vipnagorgialla";
@@ -104,6 +100,7 @@ Rectangle{
 .error{
     -fx-text-fill: red;
 }
+/*Menu Items*/
 .menu-item.options {
     -fx-background-color: black;
     -fx-padding: 20 80;
@@ -113,17 +110,15 @@ Rectangle{
 }
 .menu-item.options{
     -fx-text-alignment: center;
-
 }
 .menu-item.options:hover {
     -fx-background-color: #222;
 }
-
+/*Sliders*/
 .sliderInputAlt{
     -fx-pref-width: 90px;
     -fx-pref-height: 50px;
 }
-
 Slider{
     -fx-pref-width: 1300px;
     -fx-show-tick-labels: true;
@@ -153,6 +148,7 @@ Slider .thumb {
     -fx-pref-height: 16px;
     -fx-cursor: hand;
 }
+/*Checkboxes*/
 .toggles {
     -fx-font-size: 28px;
     -fx-text-fill: black;
@@ -166,7 +162,7 @@ Slider .thumb {
     -fx-border-radius: 3px;
     -fx-background-radius: 3px;
 }
-
+/*Text Areas*/
 .textArea{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 20px;
@@ -177,7 +173,7 @@ Slider .thumb {
     -fx-arc-width: 10px;
     -fx-wrap-text: true;
 }
-
+/*Flashcard Table */
 .flashcardContent{
     -fx-max-width: 600px;
 }
@@ -186,7 +182,6 @@ Slider .thumb {
     -fx-max-height: 510px;
     -fx-wrap-text: true;
 }
-
 .cardTable .column-header .label {
     -fx-font-weight: bold;
 }
@@ -194,11 +189,9 @@ Slider .thumb {
 .cardTable .table-cell {
     -fx-padding: 6px 10px;
 }
-
 .cardTable .table-row-cell:odd {
     -fx-background-color: #f9f9f9;
 }
-
 .cardTable .table-cell .text {
     -fx-font-family: "Vipnagorgialla" !important;
     -fx-font-size: 12px !important;
@@ -206,7 +199,6 @@ Slider .thumb {
     -fx-font-weight: bold;
     -fx-fill: black;
 }
-
 .cardTable .column-header .label .text {
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 13px !important;
@@ -214,7 +206,7 @@ Slider .thumb {
     -fx-font-weight: bold;
     -fx-wrap-text: true;
 }
-
+/*Study View*/
 .counter .text{
     -fx-font-size: 13px !important;
 }
@@ -243,7 +235,6 @@ Slider .thumb {
 .fcSearch{
     -fx-pref-width: 850px;
 }
-
 .timerLabel{
     -fx-font-family: "Xirod-Regular";
     -fx-font-size: 36px;
@@ -293,6 +284,7 @@ Slider .thumb {
     -fx-font-size: 48px;
     -fx-fill: red;
 }
+/*Flashcard Actions*/
 .flashcard{
     -fx-pref-width: 1200;
     -fx-pref-height: 450;
@@ -313,6 +305,7 @@ Slider .thumb {
     -fx-pref-height: 130px;
     -fx-cursor: hand;
 }
+/*Summary*/
 .summaryText{
     -fx-font-family: "Vipnagorgialla";
     -fx-font-size: 80px;

@@ -24,6 +24,4 @@ public class XPController {
         if(session.getAccuracy() >= 90.0) xp += bonus;
         return xp;
     }
-
-
 }

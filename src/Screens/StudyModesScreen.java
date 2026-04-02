@@ -35,7 +35,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
 public class StudyModesScreen extends SystemScreens{
     // Constants
     private static final int titleX = 420;

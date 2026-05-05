@@ -304,7 +304,7 @@ public class  AuthenticationController extends Controller {
         random.nextBytes(salt);
         this.salt = salt;
     }
-    //Setters
+
     // Getters for attributes
     public byte[] getSalt(){
         return this.salt;
@@ -314,6 +314,7 @@ public class  AuthenticationController extends Controller {
         DateTimeFormatter expectedFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return time.format(expectedFormat);
     }
+    //Setters
     private void setSettingsControllertoSM(SettingsController sc){
         ScreenManager.setSC(sc);
     }

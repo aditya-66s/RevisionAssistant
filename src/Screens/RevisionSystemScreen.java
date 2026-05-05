@@ -49,7 +49,7 @@ public class RevisionSystemScreen extends SystemScreens{
         this.fc = new FlashcardController(ac.getEmail());
         this.stats = stats;
     }
-
+    // Creates the revision system scene
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");

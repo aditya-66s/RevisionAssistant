@@ -68,7 +68,7 @@ public class MainMenuScreen extends SystemScreens {
         this.sc = sC;
         this.stats = new StatsController();
     }
-    // Creates
+    // Creates scene
     public Scene create(){
         Pane root = new Pane();
         root.getStyleClass().add("screens");
@@ -111,18 +111,18 @@ public class MainMenuScreen extends SystemScreens {
         root.getChildren().addAll(background, contentLayer);
         return new Scene(root, sceneW, sceneH);
     }
-
+    // logout function
     private void logout(Event e) {
         Window alertWindow = ((Node) e.getSource()).getScene().getWindow();
         if(CustomAlert.confirm(alertWindow, "Logout Confirmation", "Are you sure you would like to log out?")){
             ac.logout();
         }
     }
-
+    // switch scene to settings
     private void settingsMouseClick() throws IOException {
         ScreenManager.switchScene(new SettingsScreen(ac, sc).create(), ac.getEmail());
     }
-
+    // switch to revision system screen
     private void revisionSystemMouseClick() throws IOException {
         ScreenManager.switchScene(new RevisionSystemScreen(ac, sc, stats).create(), ac.getEmail());
     }

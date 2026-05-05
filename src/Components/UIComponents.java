@@ -173,6 +173,7 @@ public class UIComponents {
         password.setVisible(false);
         password.setManaged(false);
     }
+    // Method to create the context menu
     private ContextMenu createContextMenu(TextField tf){
         MenuItem cut = new MenuItem("Cut");
         cut.setOnAction(_ -> tf.cut());
